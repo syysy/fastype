@@ -16,14 +16,13 @@
             android:layout_marginTop="@dimen/default_margin"
             android:layout_marginStart="@dimen/default_margin" android:id="@+id/textView"/>
 
+
     <FrameLayout
-            android:id="@+id/fragment_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="100dp"
-    />
-
-
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="40dp"
+        tools:layout_editor_absoluteY="123dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
