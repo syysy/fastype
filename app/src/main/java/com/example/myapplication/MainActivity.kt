@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     }
     val sauvegarde = mutableListOf<String>()
 
-    @SuppressLint("SetTextI18n")
+   /* @SuppressLint("SetTextI18n")
     fun scannerEtAjout(){
         val scanner = Scanner(File("data/listWords.csv"))
         val listeMots = mutableListOf<String>()
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             val view : TextView = findViewById(R.id.text_randomList)
             view.text = view.text.toString() + i
         }
-    }
+    }*/
 
 
 }

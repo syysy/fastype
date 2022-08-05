@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Fastype</string>
 
-    <string name="home_player_name_input">Enter your name</string>
-    <string name="home_play_button">Play</string>
 
 </resources>
