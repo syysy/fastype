@@ -106,6 +106,7 @@
         android:id="@+id/text_forgotPassword"
         android:text="Forgot your password ?"
 
+        android:onClick="buttongotoForgotpassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@+id/button_login"
@@ -116,6 +117,7 @@
         android:text="Create Account"
         android:textSize = "15sp"
 
+        android:onClick="buttonGotoRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
