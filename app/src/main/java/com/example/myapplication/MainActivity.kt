@@ -42,18 +42,16 @@ class MainActivity : AppCompatActivity() {
 
         }
         println(sauvegarde)
-<<<<<<< HEAD
         for(i in sauvegarde){
             val view : TextView = findViewById(R.id.text_randomList)
             view.text = view.text.toString() + i
         }
     }*/
-=======
         //for(i in sauvegarde){
         //    val view : TextView = findViewById(R.id.text_randomList)
         //     view.text = view.text.toString() + i
         //}
-    }
+    // }
 
     /*
      *  boutons pour changer de vue
@@ -94,7 +92,6 @@ class MainActivity : AppCompatActivity() {
         transaction.addToBackStack(null)
         transaction.commit()
     }
->>>>>>> 586ece0 (1.2)
 
 
 }
