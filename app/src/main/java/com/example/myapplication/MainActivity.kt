@@ -5,24 +5,28 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import com.example.myapplication.Fragments.ForgotpasswordFragment
-import com.example.myapplication.Fragments.HomeFragment
-import com.example.myapplication.Fragments.LoginFragment
-import com.example.myapplication.Fragments.RegisterFragment
+import com.example.myapplication.BaseDeDonnées.StatsRepository
+import com.example.myapplication.Fragments.*
 import java.io.File
 import java.util.*
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        println("oui")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // injecter le fragment dans notre boite
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, LoginFragment())
-        transaction.addToBackStack(null)
-        transaction.commit()
+        val repo = StatsRepository()
+        repo.updateDate{
+            // injecter le fragment dans notre boite
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, LoginFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+
+
     }
 
     val sauvegarde = mutableListOf<String>()
@@ -66,6 +70,14 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
+    fun buttonGotoLeaderBoard(view: View) {
+        // injecter le fragment dans notre boite
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, LeaderboardFragment(this))
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
     fun buttonGotoLogin(view: View) {
         // injecter le fragment dans notre boite
         val transaction = supportFragmentManager.beginTransaction()
@@ -82,13 +94,13 @@ class MainActivity : AppCompatActivity() {
         transaction.commit()
     }
 
-    fun buttonlogin(view: View) {
+    fun buttongotoGame(view: View) {
 
         // SYSTEME DE LOGIN
 
         // injecter le fragment dans notre boite
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, HomeFragment())
+        transaction.replace(R.id.fragment_container, LeaderboardFragment(this))
         transaction.addToBackStack(null)
         transaction.commit()
     }
