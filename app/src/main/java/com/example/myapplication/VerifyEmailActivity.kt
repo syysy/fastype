@@ -8,6 +8,7 @@ import com.example.myapplication.databinding.ForgotyourpasswordBinding
 import com.example.myapplication.databinding.LoginBinding
 import com.example.myapplication.databinding.VerifyemailBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 
 class VerifyEmailActivity : AppCompatActivity() {
 
@@ -22,14 +23,11 @@ class VerifyEmailActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
 
         binding.buttonRetry.setOnClickListener {
-            if (firebaseAuth.currentUser!!.isEmailVerified ){
-                val intent = Intent(this,MainActivity::class.java)
-                startActivity(intent)
-            }else{
-                Toast.makeText(this,"Email not verified !", Toast.LENGTH_SHORT).show()
-            }
+            val act = SignInActivity()
+            act.emailFill(firebaseAuth.currentUser!!.email!!)
+            val intent = Intent(this,SignInActivity::class.java)
+            startActivity(intent)
         }
-
         binding.buttonSendEmail.setOnClickListener {
             firebaseAuth.currentUser!!.sendEmailVerification().addOnCompleteListener {
                 if (it.isSuccessful){
@@ -39,7 +37,6 @@ class VerifyEmailActivity : AppCompatActivity() {
                 }
             }
         }
-
         binding.buttonBackToLogin.setOnClickListener {
             val intent = Intent(this,LoginBinding::class.java)
             startActivity(intent)
