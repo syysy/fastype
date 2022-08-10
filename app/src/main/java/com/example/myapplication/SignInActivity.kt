@@ -31,6 +31,7 @@ class SignInActivity : AppCompatActivity() {
         binding.textForgotPassword.setOnClickListener {
             val intent = Intent(this, ForgotPasswordActivity::class.java)
             startActivity(intent)
+            firebaseAuth.signOut()
         }
 
         binding.buttonLogin.setOnClickListener {
@@ -61,8 +62,10 @@ class SignInActivity : AppCompatActivity() {
         super.onStart()
 
         if (firebaseAuth.currentUser != null){
-            val intent = Intent(this, MainActivity::class.java)
+            /*val intent = Intent(this, MainActivity::class.java)
             firebaseAuth.signOut()
+
+             */
         }
     }
 

@@ -39,46 +39,46 @@ class SignUpActivity : AppCompatActivity() {
 
             // requête au serveur
 
-            val params = mutableMapOf<Any?,Any?>()
+            val params = mutableMapOf<Any?, Any?>()
             params["email"] = email
             params["name"] = name
             val jsonObject = JSONObject(params)
 
             val queue = Volley.newRequestQueue(this)
             val url = "https://fastype.mathieuazerty.repl.co/new_player"
-            val jsonRequest = JsonObjectRequest(Request.Method.POST,url,jsonObject, {
+            val jsonRequest = JsonObjectRequest(Request.Method.POST, url, jsonObject, {
                     response ->
                 // Process the json
                 try {
-                    Toast.makeText(this,response.toString(),Toast.LENGTH_SHORT).show()
-                }catch (e:Exception){
-                    Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, response.toString(), Toast.LENGTH_SHORT).show()
+                } catch (e:Exception) {
+                    Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
                 }
 
             }, {
                 // Error in request
-                Toast.makeText(this,it.toString(),Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, it.networkResponse.statusCode.toString(), Toast.LENGTH_SHORT).show()
             })
 
 
-            if (email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()){
-                if ( password == confirmPassword ){
-                    firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener {
-                        if (it.isSuccessful){
+            if (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()) {
+                if ( password == confirmPassword ) {
+                    firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
+                        if (it.isSuccessful) {
                             queue.add(jsonRequest) // Envoie de la requête https
                             firebaseAuth.currentUser!!.sendEmailVerification()
-                            val intent = Intent(this,SignInActivity::class.java)
+                            val intent = Intent(this, SignInActivity::class.java)
                             startActivity(intent)
-                        }else{
+                        } else {
                             println("test")
                             Toast.makeText(this,it.exception.toString(),Toast.LENGTH_SHORT).show()
                         }
                     }
-                }else{
+                } else {
                     Toast.makeText(this, "$password, $confirmPassword",Toast.LENGTH_SHORT).show()
                     // Toast.makeText(this,"Password is not matching !",Toast.LENGTH_SHORT).show()
                 }
-            }else{
+            } else {
                 Toast.makeText(this,"Empty fields are not allowed",Toast.LENGTH_SHORT).show()
             }
         }
