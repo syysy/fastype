@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".SignUpActivity"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -88,7 +89,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInput_mail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -120,12 +122,15 @@
             android:hint="Enter your password"
             app:layout_constraintStart_toStartOf="@+id/text_pseudo"
             app:layout_constraintTop_toBottomOf="@+id/text_password"
-            tools:ignore="HardcodedText">
+            tools:ignore="HardcodedText"
+            app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInput_password"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -156,12 +161,14 @@
             android:hint="Confirm your password"
             app:layout_constraintStart_toStartOf="@+id/text_pseudo"
             app:layout_constraintTop_toBottomOf="@+id/text_passwordConfirm"
-            tools:ignore="HardcodedText">
+            tools:ignore="HardcodedText"
+            app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInput_passwordConfirm"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

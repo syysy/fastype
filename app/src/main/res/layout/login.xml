@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".SignInActivity">
 
     <TextView
         android:id="@+id/text_welcome"
@@ -26,7 +27,7 @@
         android:layout_height="wrap_content"
 
         android:layout_marginStart="60dp"
-        android:text="Pseudo"
+        android:text="Mail"
         android:textColor="#171717"
         android:textSize="22sp"
         android:layout_marginTop="50dp"
@@ -35,22 +36,23 @@
         tools:ignore="HardcodedText" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout_pseudo"
+        android:id="@+id/textInputLayout_email"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
 
-        android:hint="Enter your pseudo"
+        android:hint="Enter your mail"
         app:boxBackgroundColor="#F4F4F4"
         app:layout_constraintStart_toStartOf="@+id/text_pseudo"
         app:layout_constraintTop_toBottomOf="@+id/text_pseudo"
         tools:ignore="HardcodedText">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/textInput_pseudo"
+            android:id="@+id/textInput_email"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"/>
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -67,8 +69,8 @@
         android:textSize="22sp"
         android:layout_marginTop="15dp"
 
-        app:layout_constraintStart_toStartOf="@+id/textInputLayout_pseudo"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_pseudo"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayout_email"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_email"
         tools:ignore="HardcodedText" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -82,12 +84,15 @@
         app:boxBackgroundColor="#F4F4F4"
         app:layout_constraintStart_toStartOf="@+id/text_password"
         app:layout_constraintTop_toBottomOf="@+id/text_password"
-        tools:ignore="HardcodedText">
+        tools:ignore="HardcodedText"
+        app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/textInput_password"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
@@ -102,7 +107,7 @@
         android:layout_height="60dp"
         app:layout_constraintStart_toStartOf="@+id/textInputLayout_password"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout_password"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText,OnClick" />
 
     <TextView
         android:id="@+id/text_forgotPassword"
@@ -112,7 +117,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="@+id/button_login"
-        app:layout_constraintTop_toBottomOf="@+id/button_login" />
+        app:layout_constraintTop_toBottomOf="@+id/button_login"
+        tools:ignore="OnClick" />
 
     <TextView
         android:id="@+id/text_createAccount"
@@ -126,7 +132,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_login"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText,OnClick" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

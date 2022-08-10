@@ -12,19 +12,22 @@ import java.util.*
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        println("oui")
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            setContentView(R.layout.activity_main)
 
-        val repo = StatsRepository()
+        /*val repo = StatsRepository()
         repo.updateDate{
             // injecter le fragment dans notre boite
             val transaction = supportFragmentManager.beginTransaction()
             transaction.replace(R.id.fragment_container, LoginFragment())
             transaction.addToBackStack(null)
             transaction.commit()
-        }
+        }*/
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, LoginFragment())
+            transaction.addToBackStack(null)
+            transaction.commit()
 
 
     }
