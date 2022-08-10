@@ -15,7 +15,6 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = LoginBinding.inflate(layoutInflater)
@@ -41,10 +40,10 @@ class SignInActivity : AppCompatActivity() {
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
                         if (firebaseAuth.currentUser!!.isEmailVerified) {
-                            val intent = Intent(this, SignInActivity::class.java)
+                            val intent = Intent(this, MainActivity::class.java)
                             startActivity(intent)
                         }else{
-                            val intent = Intent(this, SignInActivity::class.java)
+                            val intent = Intent(this, VerifyEmailActivity::class.java)
                             startActivity(intent)
                         }
                     } else {
@@ -64,6 +63,11 @@ class SignInActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             firebaseAuth.signOut()
         }
+    }
+
+    fun emailFill(email : String) {
+        binding = LoginBinding.inflate(layoutInflater)
+        binding.textInputEmail.setText(email)
     }
 
 }
