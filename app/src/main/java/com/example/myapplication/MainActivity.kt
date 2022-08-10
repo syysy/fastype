@@ -24,10 +24,11 @@ class MainActivity : AppCompatActivity() {
             transaction.addToBackStack(null)
             transaction.commit()
         }*/
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragment_container, LoginFragment())
-            transaction.addToBackStack(null)
-            transaction.commit()
+            
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, LoginFragment())
+        transaction.addToBackStack(null)
+        transaction.commit()
 
 
     }

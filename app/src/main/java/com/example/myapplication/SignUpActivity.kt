@@ -32,10 +32,10 @@ class SignUpActivity : AppCompatActivity() {
 
         binding.buttonCreateAccount.setOnClickListener {
 
-            val email = binding.textInputMail.toString()
-            val password = binding.textInputPassword.toString()
-            val confirmPassword = binding.textInputPasswordConfirm.toString()
-            val name = binding.textInputPseudo.toString()
+            val email = binding.textInputMail.text.toString()
+            val password = binding.textInputPassword.text.toString()
+            val confirmPassword = binding.textInputPasswordConfirm.text.toString()
+            val name = binding.textInputPseudo.text.toString()
 
             // requête au serveur
 
@@ -62,18 +62,20 @@ class SignUpActivity : AppCompatActivity() {
 
 
             if (email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()){
-                if ( password == confirmPassword){
+                if ( password == confirmPassword ){
                     firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener {
                         if (it.isSuccessful){
                             queue.add(jsonRequest) // Envoie de la requête https
                             val intent = Intent(this,SignInActivity::class.java)
                             startActivity(intent)
                         }else{
+                            println("test")
                             Toast.makeText(this,it.exception.toString(),Toast.LENGTH_SHORT).show()
                         }
                     }
                 }else{
-                    Toast.makeText(this,"Password is not matching !",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "$password, $confirmPassword",Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(this,"Password is not matching !",Toast.LENGTH_SHORT).show()
                 }
             }else{
                 Toast.makeText(this,"Empty fields are not allowed",Toast.LENGTH_SHORT).show()
