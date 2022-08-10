@@ -66,6 +66,7 @@ class SignUpActivity : AppCompatActivity() {
                     firebaseAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener {
                         if (it.isSuccessful){
                             queue.add(jsonRequest) // Envoie de la requête https
+                            firebaseAuth.currentUser!!.sendEmailVerification()
                             val intent = Intent(this,SignInActivity::class.java)
                             startActivity(intent)
                         }else{
@@ -80,8 +81,6 @@ class SignUpActivity : AppCompatActivity() {
             }else{
                 Toast.makeText(this,"Empty fields are not allowed",Toast.LENGTH_SHORT).show()
             }
-
-
         }
     }
 }

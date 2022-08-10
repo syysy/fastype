@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         }*/
             
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, LoginFragment())
+        transaction.replace(R.id.fragment_container, HomeFragment())
         transaction.addToBackStack(null)
         transaction.commit()
 
@@ -60,55 +60,6 @@ class MainActivity : AppCompatActivity() {
         //     view.text = view.text.toString() + i
         //}
     // }
-
-    /*
-     *  boutons pour changer de vue
-     */
-
-
-    fun buttonGotoRegister(view: View) {
-        // injecter le fragment dans notre boite
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, RegisterFragment())
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
-    fun buttonGotoLeaderBoard(view: View) {
-        // injecter le fragment dans notre boite
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, LeaderboardFragment(this))
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
-    fun buttonGotoLogin(view: View) {
-        // injecter le fragment dans notre boite
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, LoginFragment())
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
-    fun buttongotoForgotpassword(view: View) {
-        // injecter le fragment dans notre boite
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, ForgotpasswordFragment())
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
-    fun buttongotoGame(view: View) {
-
-        // SYSTEME DE LOGIN
-
-        // injecter le fragment dans notre boite
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, LeaderboardFragment(this))
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
 
 }
 
