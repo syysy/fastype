@@ -14,6 +14,7 @@ import com.android.volley.toolbox.Volley
 import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.databinding.LoginBinding
 import com.example.myapplication.databinding.RegisterBinding
+import com.example.myapplication.objets.SendRequest
 import com.google.firebase.auth.FirebaseAuth
 import org.json.JSONObject
 
@@ -37,40 +38,22 @@ class SignUpActivity : AppCompatActivity() {
             val confirmPassword = binding.textInputPasswordConfirm.text.toString()
             val name = binding.textInputPseudo.text.toString()
 
-            // requête au serveur
-
-            val params = mutableMapOf<Any?, Any?>()
-            params["email"] = email
-            params["name"] = name
-            val jsonObject = JSONObject(params)
-
-            val queue = Volley.newRequestQueue(this)
-            val url = "https://fastype.mathieuazerty.repl.co/new_player"
-            val jsonRequest = JsonObjectRequest(Request.Method.POST, url, jsonObject, {
-                    response ->
-                // Process the json
-                try {
-                    Toast.makeText(this, response.toString(), Toast.LENGTH_SHORT).show()
-                } catch (e:Exception) {
-                    Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
-                }
-
-            }, {
-                // Error in request
-                Toast.makeText(this, it.networkResponse.statusCode.toString(), Toast.LENGTH_SHORT).show()
-            })
-
 
             if (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()) {
                 if ( password == confirmPassword ) {
                     firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
                         if (it.isSuccessful) {
-                            queue.add(jsonRequest) // Envoie de la requête https
+                            // requête au serveur
+                            val params = mutableMapOf<Any?, Any?>()
+                            params["email"] = email
+                            params["name"] = name
+                            val jsonObject = JSONObject(params)
+                            val responseJson = SendRequest().post("https://fastype.mathieuazerty.repl.co/new_player", jsonObject, this)
+                            println(responseJson)
                             firebaseAuth.currentUser!!.sendEmailVerification()
                             val intent = Intent(this, SignInActivity::class.java)
                             startActivity(intent)
                         } else {
-                            println("test")
                             Toast.makeText(this,it.exception.toString(),Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -83,6 +66,5 @@ class SignUpActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }
+

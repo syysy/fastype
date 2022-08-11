@@ -9,19 +9,25 @@ import org.json.JSONObject
 
 class SendRequest {
 
+    private var response = JSONObject()
+
     public fun post(url: String, jsonObject: JSONObject, context: Context): JSONObject {
         val queue = Volley.newRequestQueue(context)
         var json: JSONObject = JSONObject()
         val jsonRequest = JsonObjectRequest(Request.Method.POST, url, jsonObject, {
                 response ->
-            run {
+            try {
                 json = response
+                this.response = response
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }, {
             // Error in request
             Toast.makeText(context, this.codeToText(it.networkResponse.statusCode), Toast.LENGTH_SHORT).show()
         })
         queue.add(jsonRequest)
+        Thread.sleep(1_000)
         return json
     }
 
@@ -30,14 +36,18 @@ class SendRequest {
         var json: JSONObject = JSONObject()
         val jsonRequest = JsonObjectRequest(Request.Method.GET, url, null, {
                response ->
-            run {
+            try {
                 json = response
+                this.response = response
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }, {
             // Error in request
             Toast.makeText(context, this.codeToText(it.networkResponse.statusCode), Toast.LENGTH_SHORT).show()
         })
         queue.add(jsonRequest)
+        Thread.sleep(1_000)
         return json
     }
 
