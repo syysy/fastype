@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.text.LineBreaker.JUSTIFICATION_MODE_INTER_WORD
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -59,10 +60,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     fun scannerEtAjout(){
-        sauvegarde.clear()
-
         val listeMots = mutableListOf<String>()
-
         val minput = InputStreamReader(assets.open("listWords.csv"))
         val reader = BufferedReader(minput)
         var line : String?
@@ -70,14 +68,13 @@ class MainActivity : AppCompatActivity() {
         while (reader.readLine().also { line = it } != null){
             listeMots.add(line!!)
         }
+        listeMots.shuffle()
         for (j in 0 until 200){
-            val rand = Random.nextInt(0, listeMots.size)
-            sauvegarde.add(listeMots[rand])
+            displayData += listeMots[j] + " "
+            sauvegarde.add(listeMots[j])
         }
-        for(word in sauvegarde){
-            displayData += "$word "
-        }
-        binding.textGame.setText(displayData)
+        binding.textGame.text = displayData
+
     }
 }
 
