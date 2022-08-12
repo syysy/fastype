@@ -11,7 +11,6 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.JsonRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.example.myapplication.databinding.ActivityMainBinding
 import com.example.myapplication.databinding.LoginBinding
 import com.example.myapplication.databinding.RegisterBinding
 import com.example.myapplication.objets.SendRequest
@@ -25,7 +24,7 @@ class SignUpActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        supportActionBar?.hide()
         binding = RegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

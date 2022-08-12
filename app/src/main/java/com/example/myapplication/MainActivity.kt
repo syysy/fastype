@@ -1,65 +1,104 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import com.example.myapplication.BaseDeDonnées.StatsRepository
-import com.example.myapplication.Fragments.*
+import com.example.myapplication.databinding.GameBinding
+import com.example.myapplication.databinding.LoginBinding
+import com.google.firebase.auth.FirebaseAuth
 import java.io.File
+import java.io.FileReader
+import java.nio.charset.StandardCharsets
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.*
 import kotlin.random.Random
+import com.opencsv.CSVReader
 
 class MainActivity : AppCompatActivity() {
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_main)
 
-        /*val repo = StatsRepository()
-        repo.updateDate{
-            // injecter le fragment dans notre boite
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragment_container, LoginFragment())
-            transaction.addToBackStack(null)
-            transaction.commit()
-        }*/
-            
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, HomeFragment())
-        transaction.addToBackStack(null)
-        transaction.commit()
+    // Timer variables
+    enum class TimerState{
+        Stopped,Paused,Running
+    }
+    private lateinit var timer : CountDownTimer
+    private var timerLenghtSeconds = 0L
+    private var timerState = TimerState.Stopped
+    private var secondsRemaining = 0L
 
+    private lateinit var binding: GameBinding
+    private lateinit var firebaseAuth: FirebaseAuth
+
+    @RequiresApi(33)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        supportActionBar?.hide()
+        super.onCreate(savedInstanceState)
+        binding = GameBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        scannerEtAjout()
+
+        binding.leaderboardButton.setOnClickListener {
+            val intent = Intent(this,LeaderBoardActivity::class.java)
+            val repo = StatsRepository()
+            repo.updateDate {
+                startActivity(intent)
+            }
+        }
 
     }
 
     val sauvegarde = mutableListOf<String>()
 
-   /* @SuppressLint("SetTextI18n")
+    @RequiresApi(33)
+    @SuppressLint("SetTextI18n")
     fun scannerEtAjout(){
-        val scanner = Scanner(File("data/listWords.csv"))
         val listeMots = mutableListOf<String>()
-
-        while (scanner.hasNextLine()){
-            val i = scanner.nextLine()
-            listeMots.add(i)
+        val fileName = "app/src/main/java/com/example/myapplication/data/listWords.csv"
+        val fr = FileReader(fileName,StandardCharsets.UTF_8)
+        fr.use {
+            val reader = CSVReader(fr)
+            reader.use {
+                r ->
+                var line = r.readNext()
+                while( line != null){
+                    line.forEach {
+                        listeMots.add(it)
+                    }
+                    line = r.readNext()
+                }
+            }
         }
         for (j in 0 until 200){
             val rand = Random.nextInt(0, listeMots.size)
             sauvegarde.add(listeMots[rand])
-
         }
-        println(sauvegarde)
-        for(i in sauvegarde){
-            val view : TextView = findViewById(R.id.text_randomList)
-            view.text = view.text.toString() + i
+        var words = ""
+        for(word in sauvegarde){
+            words += "$word "
         }
-    }*/
-        //for(i in sauvegarde){
-        //    val view : TextView = findViewById(R.id.text_randomList)
-        //     view.text = view.text.toString() + i
-        //}
-    // }
-
+        binding.textGame.setText(words)
+    }
 }
 
+
+
+/*
+  val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, HomeFragment())
+        transaction.addToBackStack(null)
+        transaction.commit()
+
+val repo = StatsRepository()
+      repo.updateDate{
+          // injecter le fragment dans notre boite
+          val transaction = supportFragmentManager.beginTransaction()
+          transaction.replace(R.id.fragment_container, LoginFragment())
+          transaction.addToBackStack(null)
+          transaction.commit()
+      }*/

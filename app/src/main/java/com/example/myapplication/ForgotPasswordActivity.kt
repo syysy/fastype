@@ -15,6 +15,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        supportActionBar?.hide()
         super.onCreate(savedInstanceState)
         binding = ForgotyourpasswordBinding.inflate(layoutInflater)
         setContentView(binding.root)

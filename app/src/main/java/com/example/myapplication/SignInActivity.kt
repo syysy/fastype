@@ -16,6 +16,7 @@ class SignInActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        supportActionBar?.hide()
         super.onCreate(savedInstanceState)
         binding = LoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -61,10 +62,9 @@ class SignInActivity : AppCompatActivity() {
         super.onStart()
 
         if (firebaseAuth.currentUser != null){
-            /*val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
+            //startActivity(intent)
             firebaseAuth.signOut()
-
-             */
         }
     }
 

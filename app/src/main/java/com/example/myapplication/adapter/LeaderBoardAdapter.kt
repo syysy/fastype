@@ -9,12 +9,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.myapplication.LeaderBoardActivity
 import com.example.myapplication.MainActivity
 import com.example.myapplication.objets.ProfilModel
 import com.example.myapplication.R
 
 class LeaderBoardAdapter(
-    private val context : MainActivity,
+    private val context : LeaderBoardActivity,
     private val listPlayer : List<ProfilModel>,
     private val layoutId : Int
     ) : RecyclerView.Adapter<LeaderBoardAdapter.ViewHolder>(){
@@ -25,7 +26,6 @@ class LeaderBoardAdapter(
         val profilImage = view.findViewById<ImageView>(R.id.image_item)
         val profilName = view.findViewById<TextView>(R.id.player_name)
         val profilBestGame = view.findViewById<TextView>(R.id.player_stats)
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

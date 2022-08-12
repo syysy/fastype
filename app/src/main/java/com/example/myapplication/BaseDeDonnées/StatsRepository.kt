@@ -13,7 +13,7 @@ class StatsRepository {
     // pour éviter de recréer une liste vide à chaque appel de la class StatsRepository
     object Singleton{
         // se connecter à la dataBase Firebase
-        val databaseRef = FirebaseDatabase.getInstance().getReference("https://fastype-c5cc4-default-rtdb.europe-west1.firebasedatabase.app")
+        val databaseRef = FirebaseDatabase.getInstance().getReference("players")
 
         // liste des users
         val listPlayer = mutableListOf<ProfilModel>()
@@ -38,6 +38,8 @@ class StatsRepository {
             override fun onCancelled(p0: DatabaseError) {}
 
         })
+
+
 
     }
 
