@@ -20,19 +20,25 @@ class StatsRepository {
     }
     
     fun updateDate(callback:() -> Unit){
-        println("oui")
         listPlayer.clear()
         // absorber les données
         databaseRef.addValueEventListener( object : ValueEventListener{
             override fun onDataChange(p0: DataSnapshot) {
                 // recolter la liste
                 for(i in p0.children){
-                    println("ouioui")
                     val user = i.getValue(ProfilModel::class.java)
                     if (user != null){
-                        listPlayer.add(user)
+                        if (listPlayer.size == 0){
+                            listPlayer.add(user)
+                        }
+                        if (user in listPlayer){
+                                listPlayer[listPlayer.indexOf(user)].bestGame = user.bestGame
+                        }else{
+                            listPlayer.add(user)
+                        }
                     }
                 }
+                listPlayer.sortByDescending { ProfilModel -> ProfilModel.bestGame }
                 callback()
             }
             override fun onCancelled(p0: DatabaseError) {}

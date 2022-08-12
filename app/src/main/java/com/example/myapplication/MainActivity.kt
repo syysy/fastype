@@ -20,6 +20,8 @@ import java.nio.file.Paths
 import java.util.*
 import kotlin.random.Random
 import com.opencsv.CSVReader
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,18 +37,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: GameBinding
     private lateinit var firebaseAuth: FirebaseAuth
 
-    @RequiresApi(33)
     override fun onCreate(savedInstanceState: Bundle?) {
         supportActionBar?.hide()
         super.onCreate(savedInstanceState)
         binding = GameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         scannerEtAjout()
 
         binding.leaderboardButton.setOnClickListener {
-            val intent = Intent(this,LeaderBoardActivity::class.java)
             val repo = StatsRepository()
             repo.updateDate {
+                val intent = Intent(this,LeaderBoardActivity::class.java)
                 startActivity(intent)
             }
         }
@@ -55,50 +57,28 @@ class MainActivity : AppCompatActivity() {
 
     val sauvegarde = mutableListOf<String>()
 
-    @RequiresApi(33)
     @SuppressLint("SetTextI18n")
     fun scannerEtAjout(){
+        sauvegarde.clear()
+
         val listeMots = mutableListOf<String>()
-        val fileName = "app/src/main/java/com/example/myapplication/data/listWords.csv"
-        val fr = FileReader(fileName,StandardCharsets.UTF_8)
-        fr.use {
-            val reader = CSVReader(fr)
-            reader.use {
-                r ->
-                var line = r.readNext()
-                while( line != null){
-                    line.forEach {
-                        listeMots.add(it)
-                    }
-                    line = r.readNext()
-                }
-            }
+
+        val minput = InputStreamReader(assets.open("listWords.csv"))
+        val reader = BufferedReader(minput)
+        var line : String?
+        var displayData = ""
+        while (reader.readLine().also { line = it } != null){
+            listeMots.add(line!!)
         }
         for (j in 0 until 200){
             val rand = Random.nextInt(0, listeMots.size)
             sauvegarde.add(listeMots[rand])
         }
-        var words = ""
         for(word in sauvegarde){
-            words += "$word "
+            displayData += "$word "
         }
-        binding.textGame.setText(words)
+        binding.textGame.setText(displayData)
     }
 }
 
 
-
-/*
-  val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, HomeFragment())
-        transaction.addToBackStack(null)
-        transaction.commit()
-
-val repo = StatsRepository()
-      repo.updateDate{
-          // injecter le fragment dans notre boite
-          val transaction = supportFragmentManager.beginTransaction()
-          transaction.replace(R.id.fragment_container, LoginFragment())
-          transaction.addToBackStack(null)
-          transaction.commit()
-      }*/
