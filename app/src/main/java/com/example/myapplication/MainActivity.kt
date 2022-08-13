@@ -63,8 +63,6 @@ class MainActivity : AppCompatActivity() {
         // Changement de l'image du profil
 
 
-
-
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
         databaseRef.addValueEventListener( object : ValueEventListener {
