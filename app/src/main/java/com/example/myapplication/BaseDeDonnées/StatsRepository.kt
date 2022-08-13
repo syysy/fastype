@@ -31,7 +31,7 @@ class StatsRepository {
                         if (listPlayer.size == 0){
                             listPlayer.add(user)
                         }
-                        if (user in listPlayer){
+                        if (user in listPlayer){ // verif si un user est déjà présent de le classement
                                 listPlayer[listPlayer.indexOf(user)].bestGame = user.bestGame
                         }else{
                             listPlayer.add(user)
