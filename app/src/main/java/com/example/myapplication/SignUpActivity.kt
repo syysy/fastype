@@ -1,26 +1,21 @@
 package com.example.myapplication
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.JsonRequest
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
-import com.example.myapplication.databinding.LoginBinding
 import com.example.myapplication.databinding.RegisterBinding
-import com.example.myapplication.objets.SendRequest
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import org.json.JSONObject
 
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: RegisterBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var databaseRef: DatabaseReference
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,17 +38,24 @@ class SignUpActivity : AppCompatActivity() {
                     firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener {
                         if (it.isSuccessful) {
                             // requête au serveur
-                            val params = mutableMapOf<Any?, Any?>()
-                            params["email"] = email
-                            params["name"] = name
-                            val jsonObject = JSONObject(params)
-                            val responseJson = SendRequest().post("https://fastype.mathieuazerty.repl.co/new_player", jsonObject, this)
-                            println(responseJson)
+                            databaseRef = FirebaseDatabase.getInstance().getReference("players")
+                            // create a json object with the data
+                            val playerDataJson = JSONObject()
+                            playerDataJson.put("bestGame", 0)
+                            playerDataJson.put("country", "Unknown")
+                            playerDataJson.put("email", email)
+                            playerDataJson.put("imageAvatarUrl", "https://cdn.pixabay.com/photo/2013/07/13/10/44/man-157699_960_720.png")
+                            playerDataJson.put("moyenne", 0)
+                            playerDataJson.put("name", name)
+                            playerDataJson.put("numberGamePlayed", 0)
+
+                            databaseRef.child(firebaseAuth.currentUser!!.email!!).setValue(playerDataJson)
+
                             firebaseAuth.currentUser!!.sendEmailVerification()
                             val intent = Intent(this, SignInActivity::class.java)
                             startActivity(intent)
                         } else {
-                            Toast.makeText(this,it.exception.toString(),Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this, it.exception.toString(),Toast.LENGTH_SHORT).show()
                         }
                     }
                 } else {
