@@ -16,6 +16,7 @@ import com.example.myapplication.databinding.GameBinding
 import com.example.myapplication.databinding.LoginBinding
 import com.example.myapplication.objets.ProfilModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserInfo
 import com.google.firebase.database.*
 import java.io.File
 import java.io.FileReader
@@ -29,15 +30,6 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 class MainActivity : AppCompatActivity() {
-
-    // Timer variables
-    enum class TimerState{
-        Stopped,Paused,Running
-    }
-    private lateinit var timer : CountDownTimer
-    private var timerLenghtSeconds = 0L
-    private var timerState = TimerState.Stopped
-    private var secondsRemaining = 0L
 
     private lateinit var binding: GameBinding
     private lateinit var firebaseAuth: FirebaseAuth
@@ -63,7 +55,15 @@ class MainActivity : AppCompatActivity() {
             // + reset de timer / new game
         }
 
+        binding.imageProfil.setOnClickListener {
+            val intent = Intent(this,ProfilActivity::class.java)
+            startActivity(intent)
+        }
+
         // Changement de l'image du profil
+
+
+
 
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             override fun onCancelled(p0: DatabaseError) {}
         })
     }
-        val sauvegarde = mutableListOf<String>()
+    val sauvegarde = mutableListOf<String>()
 
     @SuppressLint("SetTextI18n")
     fun scannerEtAjout(){
