@@ -51,6 +51,12 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}' // ???
         }
     }
+    buildscript {
+        repositories {
+            google()
+            mavenCentral()
+        }
+    }
 
 
 }
@@ -67,6 +73,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx:20.0.5'
     implementation 'com.google.firebase:firebase-auth-ktx:21.0.7'
     implementation("com.opencsv:opencsv:5.6")
+    implementation 'com.google.android.gms:play-services-ads:21.1.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -74,5 +81,8 @@ dependencies {
     implementation("io.ktor:ktor-client-core:2.0.1")
     implementation("io.ktor:ktor-client-apache:2.0.1")
     implementation("io.ktor:ktor-client-cio:2.0.1")
+    implementation ('com.google.android.material:material:1.7.0-beta01')
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.pixplicity.sharp:library:1.1.0'
 
 }
