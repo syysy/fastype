@@ -32,7 +32,7 @@ import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.util.*
 
-class ProfilActivity : AppCompatActivity(){
+open class ProfilActivity : AppCompatActivity(){
 
     private lateinit var binding: ProfilBinding
     private lateinit var firebaseAuth: FirebaseAuth
@@ -82,7 +82,7 @@ class ProfilActivity : AppCompatActivity(){
             override fun onCancelled(p0: DatabaseError) {}
         })
     }
-    private fun loadJSONFromAsset(): String {
+    open fun loadJSONFromAsset(): String {
         val json: String?
         try {
             val inputStream = assets.open("country.json")

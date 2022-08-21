@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.LoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserInfo
@@ -42,8 +43,8 @@ class SignInActivity : AppCompatActivity() {
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
                         if (firebaseAuth.currentUser!!.isEmailVerified) {
-                            val intent = Intent(this, MainActivity::class.java)
-                            startActivity(intent)
+                            //lancement de la MainActivity + update du ladder
+                            StatsRepository().updateDate { startActivity(Intent(this,MainActivity::class.java)) }
                         }else{
                             val intent = Intent(this, VerifyEmailActivity::class.java)
                             startActivity(intent)
@@ -61,8 +62,8 @@ class SignInActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         if (firebaseAuth.currentUser != null){
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            StatsRepository().updateDate { startActivity(Intent(this,MainActivity::class.java)) }
+        }else{
             firebaseAuth.signOut()
         }
     }

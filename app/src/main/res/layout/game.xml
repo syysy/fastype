@@ -13,80 +13,76 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/imageProfil"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/back"
+            app:layout_constraintBottom_toTopOf="@+id/text_game"
+            app:layout_constraintStart_toStartOf="@+id/text_game" />
 
-    <View
-        android:id="@+id/view"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#818181"
-        android:layout_marginTop="100dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/text_player_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="name"
+            app:layout_constraintStart_toEndOf="@+id/imageProfil"
+            app:layout_constraintTop_toTopOf="@+id/imageProfil" />
 
-    <ImageView
-        android:id="@+id/imageBurger"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:src="@drawable/ic_burger"
-        android:layout_marginStart = "20dp"
-        app:layout_constraintBottom_toTopOf="@+id/view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/image_player_country"
+            android:layout_width="25dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintStart_toEndOf="@+id/text_player_name"
+            app:layout_constraintTop_toTopOf="@+id/imageProfil" />
 
-    <TextView
-        android:id="@+id/textFastype"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fastype"
-        android:textSize="25sp"
-        android:layout_marginLeft = "20dp"
-        app:layout_constraintBottom_toTopOf="@+id/view"
-        app:layout_constraintStart_toEndOf="@+id/imageBurger"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageProfil"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/text_player_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Rank :"
+            app:layout_constraintStart_toEndOf="@+id/imageProfil"
+            app:layout_constraintTop_toBottomOf="@+id/text_player_name" />
 
 
     <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
+        android:id="@+id/adViewBottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         ads:adSize="BANNER"
         ads:adUnitId="@string/banner_ad_unit_id"
-        android:layout_marginBottom = "60dp"
+        android:layout_marginBottom = "70dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/leaderboardButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Leaderboard"
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adViewTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_id"
+            app:layout_constraintBottom_toTopOf="@+id/image_player_country"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        app:layout_constraintBottom_toTopOf="@+id/adView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="HardcodedText" />
 
-    <TextView
+        <TextView
         android:id="@+id/text_game"
         android:layout_width="350dp"
         android:layout_height="150dp"
         android:background="@drawable/back"
         android:justificationMode="inter_word"
-        app:layout_constraintBottom_toTopOf="@+id/adView"
+        app:layout_constraintBottom_toTopOf="@+id/adViewBottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -149,7 +145,6 @@
         android:fitsSystemWindows="true"
         android:layout_gravity="start"
         app:headerLayout="@layout/burger_layout"
-        app:menu="@menu/nav_header_menu"
-        />
+        app:menu="@menu/nav_header_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
