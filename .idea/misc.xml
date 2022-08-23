@@ -3,9 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/mathieu/StudioProjects/fastype/app/src/main/res/drawable/back.xml" value="0.127" />
+        <entry key="..\:/Users/mathieu/StudioProjects/fastype/app/src/main/res/drawable/backGreen.xml" value="0.1" />
+        <entry key="..\:/Users/mathieu/StudioProjects/fastype/app/src/main/res/drawable/backRed.xml" value="0.1" />
         <entry key="..\:/Users/mathieu/StudioProjects/fastype/app/src/main/res/layout/activity_main.xml" value="0.35185185185185186" />
         <entry key="..\:/Users/mathieu/StudioProjects/fastype/app/src/main/res/layout/forgotpassword.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/mathieu/StudioProjects/fastype/app/src/main/res/layout/fragment_home.xml" value="0.29375" />
+        <entry key="..\:/Users/mathieu/StudioProjects/fastype/app/src/main/res/layout/game.xml" value="0.2490566037735849" />
         <entry key="..\:/Users/mathieu/StudioProjects/fastype/app/src/main/res/layout/leaderboard.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/mathieu/StudioProjects/fastype/app/src/main/res/layout/leaderboard_vertical_profiles.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/mathieu/StudioProjects/fastype/app/src/main/res/layout/login.xml" value="0.29375" />

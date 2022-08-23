@@ -4,9 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.InputType
 import android.text.Layout
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -19,6 +23,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.addTextChangedListener
 import com.bumptech.glide.Glide
 import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.GameBinding
@@ -35,6 +40,7 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.util.*
+import kotlin.properties.Delegates
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,9 +50,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var databaseRef : DatabaseReference
     private lateinit var headerLayout : HeaderLayoutBinding
+    private val sauvegarde = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         binding = GameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -55,14 +65,16 @@ class MainActivity : AppCompatActivity() {
         binding.buttonRefresh.setOnClickListener{
             scannerEtAjout()
             // + reset de timer / new game
+            this.binding.textInputGame
         }
 
         binding.imageProfil.setOnClickListener {
             val intent = Intent(this,ProfilActivity::class.java)
             startActivity(intent)
         }
+
         // header changements
-        val inflater: LayoutInflater = this@MainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val inflater : LayoutInflater = this@MainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewGroup : ViewGroup = findViewById (R.id.nav_view)
         val view = inflater.inflate(R.layout.header_layout, viewGroup)
         val name : TextView = view.findViewById(R.id.text_username)
@@ -78,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(p0: DataSnapshot) {
                 // recolter la liste
-                for(i in p0.children){
+                for (i in p0.children){
                     val user = i.getValue(ProfilModel::class.java)
                     if ((user != null) && (user.email == firebaseAuth.currentUser!!.email)){
                         // header layout
@@ -94,10 +106,10 @@ class MainActivity : AppCompatActivity() {
                             val obj = JSONObject(loadJSONFromAsset())
                             if (user.country == "Unknown"){
                                 Glide.with(binding.root).load(Uri.parse(obj[user.country].toString())).into(binding.imagePlayerCountry)
-                            }else{
+                            } else {
                                 ProfilActivity.Utils().fetchSVG(this@MainActivity,obj[user.country].toString(),binding.imagePlayerCountry)
                             }
-                        }catch (e: JSONException) {
+                        } catch (e: JSONException) {
                             e.printStackTrace()
                         }
                     }
@@ -137,7 +149,46 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+        // jeu
+
+        this.binding.textInputGame.addTextChangedListener(object : TextWatcher {
+            private var score = 0
+
+
+            fun newGame() {
+                this.score = 0
+            }
+
+            @SuppressLint("UseCompatLoadingForDrawables")
+            override fun afterTextChanged(s: Editable?) {
+                val text = s.toString().strip()
+                if (text == sauvegarde[0]) {
+                    this.score++ // aujout d'un point dans le score
+                    sauvegarde.removeAt(0) // suppression du premier élément de la liste, qui viens d'être trouvé
+                    binding.textInputGame.setText("") // reset du champ de texte
+                    updateListWords() // mise à jour de la liste des mots non trouvés
+                } else if (text == "") {
+                    binding.textGame.background = getDrawable(R.drawable.back) // si le champ de texte est vide, on change la couleur de fond en blanc
+                } else if (sauvegarde[0].startsWith(text)) {
+                    binding.textGame.background = getDrawable(R.drawable.backgreen) // si le mot commence par le mot tapé, on change la couleur de fond en vert
+                } else {
+                    binding.textGame.background = getDrawable(R.drawable.backred) // sinon on change la couleur de fond en rouge car il y a une erreur
+                }
+            }
+
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+
+            }
+
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            }
+        })
     }
+
 
     // Dialog box disconnect
     fun dialog(context : Context){
@@ -163,7 +214,7 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    val sauvegarde = mutableListOf<String>()
+
 
     @SuppressLint("SetTextI18n")
     fun scannerEtAjout(){
@@ -180,6 +231,14 @@ class MainActivity : AppCompatActivity() {
         for (j in 0 until 200){
             displayData += listeMots[j] + " "
             sauvegarde.add(listeMots[j])
+        }
+        binding.textGame.text = displayData
+    }
+
+    fun updateListWords() {
+        var displayData = ""
+        for (word in sauvegarde) {
+            displayData += "$word "
         }
         binding.textGame.text = displayData
     }
