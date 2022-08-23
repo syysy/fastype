@@ -1,16 +1,28 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Layout
+import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.GameBinding
+import com.example.myapplication.databinding.HeaderLayoutBinding
 import com.example.myapplication.objets.ProfilModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -31,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: GameBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var databaseRef : DatabaseReference
+    private lateinit var headerLayout : HeaderLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +61,13 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,ProfilActivity::class.java)
             startActivity(intent)
         }
-
+        // header changements
+        val inflater: LayoutInflater = this@MainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val viewGroup : ViewGroup = findViewById (R.id.nav_view)
+        val view = inflater.inflate(R.layout.header_layout, viewGroup)
+        val name : TextView = view.findViewById(R.id.text_username)
+        val email : TextView = view.findViewById(R.id.text_user_mail)
+        val image : ImageView = view.findViewById(R.id.image_user)
         // Changement de l'image du profil
 
         firebaseAuth = FirebaseAuth.getInstance()
@@ -60,6 +79,12 @@ class MainActivity : AppCompatActivity() {
                 for(i in p0.children){
                     val user = i.getValue(ProfilModel::class.java)
                     if ((user != null) && (user.email == firebaseAuth.currentUser!!.email)){
+                        // header layout
+                        Glide.with(headerLayout.root).load(Uri.parse(user.imageAvatarUrl)).into(image)
+                        email.text = firebaseAuth.currentUser!!.email
+                        name.text = user.name
+
+                        // Profil
                         Glide.with(binding.root).load(Uri.parse(user.imageAvatarUrl)).into(binding.imageProfil)
                         binding.textPlayerName.text = user.name
                         binding.textPlayerRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(user) + 1).toString()
@@ -80,6 +105,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         // Pubs
+
         val mAdViewBottom : AdView = binding.adViewBottom
         val adRequestBottom: AdRequest = AdRequest.Builder().build()
         mAdViewBottom.loadAd(adRequestBottom)
@@ -96,16 +122,37 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 
+
         binding.navView.setNavigationItemSelectedListener {
             when(it.itemId){
-                R.id.item1 -> startActivity(Intent(this,ProfilActivity::class.java))
-                R.id.item2 -> StatsRepository().updateDate { startActivity(Intent(this,LeaderBoardActivity::class.java)) }
-                R.id.item3 -> startActivity(Intent(this,MainActivity::class.java))
+                R.id.item_profil -> startActivity(Intent(this,ProfilActivity::class.java))
+                R.id.item_leaderboard -> StatsRepository().updateDate { startActivity(Intent(this,LeaderBoardActivity::class.java)) }
+                R.id.item_home -> startActivity(Intent(this,MainActivity::class.java))
+                R.id.item_logout -> dialog(this)
+                //R.id.item_settings ->
+                //R.id.item_rate ->
+                //R.id.item_share ->
             }
             true
         }
     }
 
+    // Dialog box disconnect
+    fun dialog(context : Context){
+        val dialogBuilder = AlertDialog.Builder(context)
+        dialogBuilder.setMessage("Do you want to disconnect ?")
+            .setCancelable(false)
+            .setPositiveButton("Yes",DialogInterface.OnClickListener{ _, _ -> disconnect()})
+            .setNegativeButton("Cancel",DialogInterface.OnClickListener { dialog, _ -> dialog.cancel() })
+        val alert = dialogBuilder.create()
+        alert.setTitle("Disconnect ?")
+        alert.show()
+    }
+
+    fun disconnect(){
+        firebaseAuth.signOut()
+        startActivity(Intent(this,SignInActivity::class.java))
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)){
