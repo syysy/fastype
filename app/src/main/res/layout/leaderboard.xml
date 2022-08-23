@@ -6,32 +6,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id = "@+id/drawerLayout"
-    tools:context=".MainActivity"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    tools:context=".LeaderBoardActivity"
     >
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/text_leaderboard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Leaderboard"
-        android:layout_marginLeft="@dimen/default_margin"
+        <TextView
+            android:id="@+id/text_leaderboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Leaderboard"
+            android:layout_marginLeft="@dimen/default_margin"
 
-        android:textColor="#000000"
-        android:textSize="38sp"
-        android:layout_marginTop="75dp"/>
+            android:textColor="#000000"
+            android:textSize="38sp"
+            android:layout_marginTop="75dp"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/vertical_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/vertical_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            />
 
     </LinearLayout>
 

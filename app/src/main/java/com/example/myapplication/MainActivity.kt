@@ -68,6 +68,7 @@ class MainActivity : AppCompatActivity() {
             this.binding.textInputGame
         }
 
+
         binding.imageProfil.setOnClickListener {
             val intent = Intent(this,ProfilActivity::class.java)
             startActivity(intent)
@@ -135,16 +136,14 @@ class MainActivity : AppCompatActivity() {
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
-
         binding.navView.setNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.item_profil -> startActivity(Intent(this,ProfilActivity::class.java))
                 R.id.item_leaderboard -> StatsRepository().updateDate { startActivity(Intent(this,LeaderBoardActivity::class.java)) }
-                R.id.item_home -> startActivity(Intent(this,MainActivity::class.java))
+                R.id.item_home -> StatsRepository().updateDate {  startActivity(Intent(this,MainActivity::class.java)) }
                 R.id.item_logout -> dialog(this)
-                R.id.item_settings -> startActivity(Intent(this,WaitingActivity::class.java))
-                //R.id.item_rate ->
+                //R.id.item_settings ->
+                R.id.item_rate -> startActivity(Intent(this,WaitingActivity::class.java))
                 //R.id.item_share ->
             }
             true
@@ -259,6 +258,13 @@ class MainActivity : AppCompatActivity() {
             return ""
         }
         return json
+    }
+
+    override fun onStart() {
+        super.onStart()
+        StatsRepository().updateDate {
+
+        }
     }
 }
 

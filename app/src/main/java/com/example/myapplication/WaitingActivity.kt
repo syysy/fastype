@@ -23,13 +23,11 @@ class WaitingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
-
-        Handler().postDelayed({
-            if (firebaseAuth.currentUser != null){
-                StatsRepository().updateDate { startActivity(Intent(this,MainActivity::class.java)) }
-            }else{
-                startActivity(Intent(this,SignInActivity::class.java))
-            }
-        }, splash_time)
+        startActivity(Intent(this,MainActivity::class.java))
+        /*if (firebaseAuth.currentUser != null){
+            StatsRepository().updateDate { startActivity(Intent(this,MainActivity::class.java)) }
+        }else{
+            startActivity(Intent(this,SignInActivity::class.java))
+        }*/
     }
 }

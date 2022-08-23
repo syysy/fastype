@@ -5,9 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View.inflate
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -15,6 +18,7 @@ import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.ForgotyourpasswordBinding.bind
 import com.example.myapplication.databinding.ForgotyourpasswordBinding.inflate
 import com.example.myapplication.databinding.GameBinding
+import com.example.myapplication.databinding.HeaderLayoutBinding
 import com.example.myapplication.databinding.ProfilBinding
 import com.example.myapplication.objets.ProfilModel
 import com.google.firebase.auth.FirebaseAuth
@@ -40,6 +44,7 @@ open class ProfilActivity : AppCompatActivity(){
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var databaseRef : DatabaseReference
     private lateinit var toggle : ActionBarDrawerToggle
+    private lateinit var headerLayout : HeaderLayoutBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -47,6 +52,15 @@ open class ProfilActivity : AppCompatActivity(){
         binding = ProfilBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        // header changements
+        val inflater: LayoutInflater = this@ProfilActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val viewGroup : ViewGroup = findViewById (R.id.nav_view)
+        val view = inflater.inflate(R.layout.header_layout, viewGroup)
+        val name : TextView = view.findViewById(R.id.text_username)
+        val email : TextView = view.findViewById(R.id.text_user_mail)
+        val image : ImageView = view.findViewById(R.id.image_user)
+        headerLayout = HeaderLayoutBinding.inflate(layoutInflater)
 
         // Changement de l'image du profil
 
@@ -63,6 +77,12 @@ open class ProfilActivity : AppCompatActivity(){
                 for(i in p0.children){
                     val user = i.getValue(ProfilModel::class.java)
                     if (user != null && user.email == firebaseAuth.currentUser!!.email){
+
+                        Glide.with(headerLayout.root).load(Uri.parse(user.imageAvatarUrl)).into(image)
+                        email.text = firebaseAuth.currentUser!!.email
+                        name.text = user.name
+
+
                         Glide.with(binding.root).load(Uri.parse(user.imageAvatarUrl)).into(binding.imageProfil)
                         binding.textRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(user) + 1).toString()
                         binding.textMoyenne.text = "Mean : " + user.moyenne
