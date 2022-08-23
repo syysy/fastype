@@ -59,14 +59,6 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (firebaseAuth.currentUser != null){
-            StatsRepository().updateDate { startActivity(Intent(this,MainActivity::class.java)) }
-        }else{
-            firebaseAuth.signOut()
-        }
-    }
 
     fun emailFill(email : String) {
         binding = LoginBinding.inflate(layoutInflater)

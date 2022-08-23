@@ -68,6 +68,8 @@ class MainActivity : AppCompatActivity() {
         val name : TextView = view.findViewById(R.id.text_username)
         val email : TextView = view.findViewById(R.id.text_user_mail)
         val image : ImageView = view.findViewById(R.id.image_user)
+        headerLayout = HeaderLayoutBinding.inflate(layoutInflater)
+
         // Changement de l'image du profil
 
         firebaseAuth = FirebaseAuth.getInstance()
@@ -129,7 +131,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.item_leaderboard -> StatsRepository().updateDate { startActivity(Intent(this,LeaderBoardActivity::class.java)) }
                 R.id.item_home -> startActivity(Intent(this,MainActivity::class.java))
                 R.id.item_logout -> dialog(this)
-                //R.id.item_settings ->
+                R.id.item_settings -> startActivity(Intent(this,WaitingActivity::class.java))
                 //R.id.item_rate ->
                 //R.id.item_share ->
             }

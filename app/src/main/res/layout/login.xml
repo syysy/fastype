@@ -26,12 +26,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_marginStart="60dp"
+        android:layout_marginTop="50dp"
         android:text="Mail"
         android:textColor="#171717"
         android:textSize="22sp"
-        android:layout_marginTop="50dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayout_email"
         app:layout_constraintTop_toBottomOf="@+id/text_welcome"
         tools:ignore="HardcodedText" />
 
@@ -44,7 +43,8 @@
 
         android:hint="Enter your mail"
         app:boxBackgroundColor="#F4F4F4"
-        app:layout_constraintStart_toStartOf="@+id/text_pseudo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_pseudo"
         tools:ignore="HardcodedText">
 
@@ -52,7 +52,7 @@
             android:id="@+id/textInput_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"/>
+            android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -99,8 +99,7 @@
         android:id="@+id/button_login"
         android:text="LOG IN"
         android:backgroundTint="@android:color/black"
-        android:onClick="buttongotoGame"
-
+        android:textColor="@android:color/white"
 
         android:layout_marginTop = "20dp"
         android:layout_width="300dp"
