@@ -96,7 +96,9 @@ class MainActivity : AppCompatActivity() {
                         Glide.with(headerLayout.root).load(Uri.parse(user.imageAvatarUrl)).into(image)
                         email.text = firebaseAuth.currentUser!!.email
                         name.text = user.name
+
                         // Profil
+
                         Glide.with(binding.root).load(Uri.parse(user.imageAvatarUrl)).into(binding.imageProfil)
                         binding.textPlayerName.text = user.name
                         StatsRepository().updateDate { binding.textPlayerRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(user) + 1) }
