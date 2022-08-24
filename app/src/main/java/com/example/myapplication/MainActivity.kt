@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
             override fun onDataChange(p0: DataSnapshot) {
                 // recolter la liste
                 for (i in p0.children){
-                    val user = i.getValue(ProfilModel::class.java)
+                    val user = i.getValue(ProfilModel::class.java) // transfo de chaque user en objet Profil Model
                     if ((user != null) && (user.email == firebaseAuth.currentUser!!.email)){
                         // header layout
                         Glide.with(headerLayout.root).load(Uri.parse(user.imageAvatarUrl)).into(image)

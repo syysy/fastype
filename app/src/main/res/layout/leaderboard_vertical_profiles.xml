@@ -3,12 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:id = "@+id/item_leaderboard"
+    android:background ="@drawable/backwhite"
+    android:left="8dp" android:right="8dp" android:top="8dp" android:bottom="8dp">
+
+
+    <TextView
+        android:id="@+id/player_leaderboard_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00."
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cardView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_marginStart = "40dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"

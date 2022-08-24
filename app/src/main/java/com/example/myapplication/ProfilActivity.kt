@@ -84,7 +84,7 @@ open class ProfilActivity : AppCompatActivity(){
 
 
                         Glide.with(binding.root).load(Uri.parse(user.imageAvatarUrl)).into(binding.imageProfil)
-                        binding.textRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(user) + 1).toString()
+                        binding.textRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(user) + 1)
                         binding.textMoyenne.text = "Mean : " + user.moyenne
                         binding.textPseudo.text = user.name
                         binding.textNbGameJouees.text = "Game Played : " + user.numberGamePlayed.toString()

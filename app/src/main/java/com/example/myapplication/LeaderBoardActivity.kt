@@ -42,12 +42,10 @@ class LeaderBoardActivity :AppCompatActivity() {
         val verticalRecyclerView =
             binding.root.findViewById<RecyclerView>(R.id.vertical_recyclerView)
         verticalRecyclerView.adapter = LeaderBoardAdapter(
-            this,
-            StatsRepository.Singleton.listPlayer,
-            R.layout.leaderboard_vertical_profiles
+            StatsRepository.Singleton.listPlayer
         )
         verticalRecyclerView.addItemDecoration(ItemDecoration())
-        /*
+
         // header changements
         val inflater: LayoutInflater = this@LeaderBoardActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewGroup : ViewGroup = findViewById (R.id.nav_view)
@@ -100,6 +98,6 @@ class LeaderBoardActivity :AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-*/
-    }
+
+
 }
