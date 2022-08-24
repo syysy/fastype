@@ -69,7 +69,7 @@ open class ProfilActivity : AppCompatActivity(){
 
         val userDate = firebaseAuth.currentUser
         val date = Date(userDate!!.metadata!!.creationTimestamp)
-
+        println(">"+StatsRepository.Singleton.listPlayer+"<")
         databaseRef.addValueEventListener( object : ValueEventListener {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(p0: DataSnapshot) {
@@ -81,7 +81,6 @@ open class ProfilActivity : AppCompatActivity(){
                         Glide.with(headerLayout.root).load(Uri.parse(user.imageAvatarUrl)).into(image)
                         email.text = firebaseAuth.currentUser!!.email
                         name.text = user.name
-
 
                         Glide.with(binding.root).load(Uri.parse(user.imageAvatarUrl)).into(binding.imageProfil)
                         binding.textRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(user) + 1)
