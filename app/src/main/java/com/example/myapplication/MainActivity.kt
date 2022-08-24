@@ -4,26 +4,19 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
-import android.text.InputType
-import android.text.Layout
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.widget.addTextChangedListener
 import com.bumptech.glide.Glide
 import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.GameBinding
@@ -39,8 +32,6 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.nio.charset.Charset
-import java.util.*
-import kotlin.properties.Delegates
 
 
 class MainActivity : AppCompatActivity() {
@@ -51,6 +42,64 @@ class MainActivity : AppCompatActivity() {
     private lateinit var databaseRef : DatabaseReference
     private lateinit var headerLayout : HeaderLayoutBinding
     private val sauvegarde = mutableListOf<String>()
+
+    private val Timer = object : CountDownTimer(60000, 1000) {
+        var run = false
+
+        @SuppressLint("SetTextI18n")
+        override fun onTick(millisUntilFinished: Long) {
+            val seconds = millisUntilFinished / 1000
+            binding.timer.text = "${seconds / 60}:${if (seconds < 10) "0$seconds" else seconds}"
+        }
+
+        override fun onFinish() {
+            this.run = false
+
+            popupEndGame()
+        }
+    }
+
+    private val Jeu = object : TextWatcher {
+        var score = 0
+
+
+        fun newGame() {
+            this.score = 0
+        }
+
+        @SuppressLint("UseCompatLoadingForDrawables")
+        override fun afterTextChanged(s: Editable?) {
+            if (!Timer.run) { // commence une nouvelle partie
+                Timer.start()
+                Timer.run = true
+                this.score = 0
+            }
+
+            val text = s.toString().strip()
+            if (text == sauvegarde[0]) {
+                this.score++ // aujout d'un point dans le score
+                sauvegarde.removeAt(0) // suppression du premier élément de la liste, qui viens d'être trouvé
+                binding.textInputGame.setText("") // reset du champ de texte
+                updateListWords() // mise à jour de la liste des mots non trouvés
+            } else if (text == "") {
+                binding.textGame.background = getDrawable(R.drawable.back) // si le champ de texte est vide, on change la couleur de fond en blanc
+            } else if (sauvegarde[0].startsWith(text)) {
+                binding.textGame.background = getDrawable(R.drawable.backgreen) // si le mot commence par le mot tapé, on change la couleur de fond en vert
+            } else {
+                binding.textGame.background = getDrawable(R.drawable.backred) // sinon on change la couleur de fond en rouge car il y a une erreur
+            }
+        }
+
+
+        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+
+        }
+
+
+        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,7 +157,7 @@ class MainActivity : AppCompatActivity() {
                             if (user.country == "Unknown"){
                                 Glide.with(binding.root).load(Uri.parse(obj[user.country].toString())).into(binding.imagePlayerCountry)
                             } else {
-                                ProfilActivity.Utils().fetchSVG(this@MainActivity,obj[user.country].toString(),binding.imagePlayerCountry)
+                                ProfilActivity.Utils().fetchSVG(this@MainActivity, obj[user.country].toString(),binding.imagePlayerCountry)
                             }
                         } catch (e: JSONException) {
                             e.printStackTrace()
@@ -141,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.item_profil -> startActivity(Intent(this,ProfilActivity::class.java))
                 R.id.item_leaderboard -> StatsRepository().updateDate { startActivity(Intent(this,LeaderBoardActivity::class.java)) }
                 R.id.item_home -> StatsRepository().updateDate {  startActivity(Intent(this,MainActivity::class.java)) }
-                R.id.item_logout -> dialog(this)
+                R.id.item_logout -> dialog()
                 //R.id.item_settings ->
                 R.id.item_rate -> startActivity(Intent(this,WaitingActivity::class.java))
                 //R.id.item_share ->
@@ -151,53 +200,33 @@ class MainActivity : AppCompatActivity() {
 
         // jeu
 
-        this.binding.textInputGame.addTextChangedListener(object : TextWatcher {
-            private var score = 0
+        this.binding.textInputGame.addTextChangedListener(this.Jeu)
 
 
-            fun newGame() {
-                this.score = 0
-            }
-
-            @SuppressLint("UseCompatLoadingForDrawables")
-            override fun afterTextChanged(s: Editable?) {
-                val text = s.toString().strip()
-                if (text == sauvegarde[0]) {
-                    this.score++ // aujout d'un point dans le score
-                    sauvegarde.removeAt(0) // suppression du premier élément de la liste, qui viens d'être trouvé
-                    binding.textInputGame.setText("") // reset du champ de texte
-                    updateListWords() // mise à jour de la liste des mots non trouvés
-                } else if (text == "") {
-                    binding.textGame.background = getDrawable(R.drawable.back) // si le champ de texte est vide, on change la couleur de fond en blanc
-                } else if (sauvegarde[0].startsWith(text)) {
-                    binding.textGame.background = getDrawable(R.drawable.backgreen) // si le mot commence par le mot tapé, on change la couleur de fond en vert
-                } else {
-                    binding.textGame.background = getDrawable(R.drawable.backred) // sinon on change la couleur de fond en rouge car il y a une erreur
-                }
-            }
-
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-
-            }
-
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-            }
-        })
     }
 
 
     // Dialog box disconnect
-    fun dialog(context : Context){
-        val dialogBuilder = AlertDialog.Builder(context)
+    fun dialog() {
+        val dialogBuilder = AlertDialog.Builder(this)
         dialogBuilder.setMessage("Do you want to disconnect ?")
             .setCancelable(false)
-            .setPositiveButton("Yes",DialogInterface.OnClickListener{ _, _ -> disconnect()})
-            .setNegativeButton("Cancel",DialogInterface.OnClickListener { dialog, _ -> dialog.cancel() })
+            .setPositiveButton("Yes", DialogInterface.OnClickListener{ _, _ -> disconnect()})
+            .setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, _ -> dialog.cancel() })
         val alert = dialogBuilder.create()
         alert.setTitle("Disconnect ?")
+        alert.show()
+    }
+
+
+    fun popupEndGame() {
+        val popupBuilder = AlertDialog.Builder(this)
+        popupBuilder.setMessage("recap:" + "score: ${Jeu.score}\n" + "      " + "rank: ")
+            .setCancelable(false)
+            .setPositiveButton("ok", DialogInterface.OnClickListener{ popup, _ -> popup.cancel() })
+            .setNegativeButton("see leaderboard", DialogInterface.OnClickListener { _, _ -> StatsRepository().updateDate { startActivity(Intent(this,LeaderBoardActivity::class.java)) } })
+        val alert = popupBuilder.create()
+        alert.setTitle("Game finished !")
         alert.show()
     }
 
