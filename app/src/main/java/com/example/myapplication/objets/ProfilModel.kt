@@ -8,8 +8,8 @@ class ProfilModel (
     var imageAvatarUrl : String = "https://cdn.pixabay.com/photo/2013/07/13/10/44/man-157699_960_720.png",
     var numberGamePlayed : Int = 0,
     var country : String = "Unknown"
-){
-    // --- mise à jour des données a chaque partie
+) {
+    /* mise à jour des données a chaque partie */
     fun newGame(score: Int) {
         this.moyenne = ((this.moyenne * this.numberGamePlayed) + score ) / this.numberGamePlayed++
         if (score > this.bestGame) {

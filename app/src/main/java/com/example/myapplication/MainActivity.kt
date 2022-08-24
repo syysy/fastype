@@ -42,6 +42,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var databaseRef : DatabaseReference
     private lateinit var headerLayout : HeaderLayoutBinding
     private val sauvegarde = mutableListOf<String>()
+    private lateinit var userModel : ProfilModel
+    private var scoreOfGame = 0
 
     private val Timer = object : CountDownTimer(60000, 1000) {
         var run = false
@@ -52,32 +54,33 @@ class MainActivity : AppCompatActivity() {
             binding.timer.text = "${seconds / 60}:${if (seconds < 10) "0$seconds" else seconds}"
         }
 
+        @SuppressLint("SetTextI18n")
         override fun onFinish() {
             this.run = false
-
-            popupEndGame()
+            userModel.newGame(scoreOfGame)
+            databaseRef.child(userModel.email).child("bestGame").setValue(userModel.bestGame)
+            databaseRef.child(userModel.email).child("moyenne").setValue(userModel.moyenne)
+            databaseRef.child(userModel.email).child("nbJeu").setValue(userModel.numberGamePlayed)
+            binding.timer.text = "01:00"
+            val oldRank = StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1
+            StatsRepository().updateDate { popupEndGame(oldRank) }
+            stopGame()
         }
     }
 
     private val Jeu = object : TextWatcher {
-        var score = 0
-
-
-        fun newGame() {
-            this.score = 0
-        }
 
         @SuppressLint("UseCompatLoadingForDrawables")
         override fun afterTextChanged(s: Editable?) {
             if (!Timer.run) { // commence une nouvelle partie
                 Timer.start()
                 Timer.run = true
-                this.score = 0
+                scoreOfGame = 0
             }
 
             val text = s.toString().strip()
             if (text == sauvegarde[0]) {
-                this.score++ // aujout d'un point dans le score
+                scoreOfGame++ // aujout d'un point dans le score
                 sauvegarde.removeAt(0) // suppression du premier élément de la liste, qui viens d'être trouvé
                 binding.textInputGame.setText("") // reset du champ de texte
                 updateListWords() // mise à jour de la liste des mots non trouvés
@@ -101,18 +104,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    @SuppressLint("SetTextI18n")
+    fun stopGame() {
+        this.Timer.cancel()
+        this.scoreOfGame = 0
+        this.binding.timer.text = "01:00"
+        this.scannerEtAjout()
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = GameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        scannerEtAjout()
+        this.scannerEtAjout()
 
-        binding.buttonRefresh.setOnClickListener{
-            scannerEtAjout()
-            // + reset de timer / new game
-            this.binding.textInputGame
+        binding.buttonRefresh.setOnClickListener {
+            this.stopGame()
         }
 
 
@@ -140,7 +151,8 @@ class MainActivity : AppCompatActivity() {
                 // recolter la liste
                 for (i in p0.children){
                     val user = i.getValue(ProfilModel::class.java) // transfo de chaque user en objet Profil Model
-                    if ((user != null) && (user.email == firebaseAuth.currentUser!!.email)){
+                    if ((user != null) && (user.email == firebaseAuth.currentUser!!.email)) {
+                        userModel = user
                         // header layout
                         Glide.with(headerLayout.root).load(Uri.parse(user.imageAvatarUrl)).into(image)
                         email.text = firebaseAuth.currentUser!!.email
@@ -159,6 +171,7 @@ class MainActivity : AppCompatActivity() {
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }
+                        break
                     }
                 }
             }
@@ -216,12 +229,13 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun popupEndGame() {
+    fun popupEndGame(oldRank: Int) {
         val popupBuilder = AlertDialog.Builder(this)
-        popupBuilder.setMessage("recap:" + "score: ${Jeu.score}\n" + "      " + "rank: ")
+        val actualRank = StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1
+        popupBuilder.setMessage("recap:" + "score: ${this.scoreOfGame}}\n" + "      " + "rank: $actualRank" + if (oldRank > actualRank) "▲ ${oldRank - actualRank}" else "")
             .setCancelable(false)
             .setPositiveButton("ok", DialogInterface.OnClickListener{ popup, _ -> popup.cancel() })
-            .setNegativeButton("see leaderboard", DialogInterface.OnClickListener { _, _ -> StatsRepository().updateDate { startActivity(Intent(this,LeaderBoardActivity::class.java)) } })
+            .setNegativeButton("see leaderboard", DialogInterface.OnClickListener { _, _ -> StatsRepository().updateDate { startActivity(Intent(this, LeaderBoardActivity::class.java)) } })
         val alert = popupBuilder.create()
         alert.setTitle("Game finished !")
         alert.show()
