@@ -33,6 +33,7 @@ class LeaderBoardActivity :AppCompatActivity() {
     private lateinit var databaseRef : DatabaseReference
     private lateinit var toggle : ActionBarDrawerToggle
     private lateinit var headerLayout : HeaderLayoutBinding
+    private lateinit var userModel : ProfilModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,15 +65,19 @@ class LeaderBoardActivity :AppCompatActivity() {
                 for(i in p0.children){
                     val user = i.getValue(ProfilModel::class.java)
                     if ((user != null) && (user.email == firebaseAuth.currentUser!!.email)){
-                        // header layout
-                        Glide.with(headerLayout.root).load(Uri.parse(user.imageAvatarUrl)).into(image)
-                        email.text = firebaseAuth.currentUser!!.email
-                        name.text = user.name
+                        userModel = user
+                        break
                     }
                 }
             }
             override fun onCancelled(p0: DatabaseError) {}
         })
+        // header layout
+        Glide.with(headerLayout.root).load(Uri.parse(userModel.imageAvatarUrl)).into(image)
+        email.text = firebaseAuth.currentUser!!.email
+        name.text = userModel.name
+
+        // toggle view
         toggle = ActionBarDrawerToggle(this,binding.drawerLayout,R.string.open,R.string.close)
         binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
         toggle.syncState()

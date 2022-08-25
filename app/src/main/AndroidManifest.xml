@@ -18,42 +18,42 @@
         <activity
                 android:name=".MainActivity"
                 android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-        </activity>
-        <activity android:name=".SignInActivity"
-                android:exported="false">
+            <!--  <intent-filter>
+                 <action android:name="android.intent.action.MAIN"/>
+                 <category android:name="android.intent.category.LAUNCHER"/>
+             </intent-filter>-->
+         </activity>
+         <activity android:name=".SignInActivity"
+                 android:exported="false">
 
-        </activity>
+         </activity>
 
-        <activity android:name=".SignUpActivity"
-            android:exported="false">
-        </activity>
+         <activity android:name=".SignUpActivity"
+             android:exported="false">
+         </activity>
 
-        <activity android:name=".ForgotPasswordActivity"
-            android:exported="false">
-        </activity>
+         <activity android:name=".ForgotPasswordActivity"
+             android:exported="false">
+         </activity>
 
-        <activity android:name=".VerifyEmailActivity"
-            android:exported="false">
-        </activity>
+         <activity android:name=".VerifyEmailActivity"
+             android:exported="false">
+         </activity>
 
-        <activity android:name=".LeaderBoardActivity"
-            android:exported="false">
-        </activity>
+         <activity android:name=".LeaderBoardActivity"
+             android:exported="false">
+         </activity>
 
-        <activity android:name=".ProfilActivity"
-            android:exported="false">
-        </activity>
+         <activity android:name=".ProfilActivity"
+             android:exported="false">
+         </activity>
 
-        <activity android:name=".WaitingActivity"
-            android:exported="true">
-            <!-- <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter> -->
+         <activity android:name=".WaitingActivity"
+             android:exported="true">
+           <intent-filter>
+                 <action android:name="android.intent.action.MAIN"/>
+                 <category android:name="android.intent.category.LAUNCHER"/>
+             </intent-filter>
         </activity>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

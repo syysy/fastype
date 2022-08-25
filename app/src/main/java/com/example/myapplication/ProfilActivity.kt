@@ -45,7 +45,9 @@ open class ProfilActivity : AppCompatActivity(){
     private lateinit var databaseRef : DatabaseReference
     private lateinit var toggle : ActionBarDrawerToggle
     private lateinit var headerLayout : HeaderLayoutBinding
+    private lateinit var userModel : ProfilModel
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -77,32 +79,44 @@ open class ProfilActivity : AppCompatActivity(){
                 for(i in p0.children){
                     val user = i.getValue(ProfilModel::class.java)
                     if (user != null && user.email == firebaseAuth.currentUser!!.email){
-
-                        Glide.with(headerLayout.root).load(Uri.parse(user.imageAvatarUrl)).into(image)
-                        email.text = firebaseAuth.currentUser!!.email
-                        name.text = user.name
-
-                        Glide.with(binding.root).load(Uri.parse(user.imageAvatarUrl)).into(binding.imageProfil)
-                        binding.textRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(user) + 1)
-                        binding.textMoyenne.text = "Mean : " + user.moyenne
-                        binding.textPseudo.text = user.name
-                        binding.textNbGameJouees.text = "Game Played : " + user.numberGamePlayed.toString()
-                        binding.textCompteCreationDate.text = "Account Created : \n$date"
-                        try {
-                            val obj = JSONObject(loadJSONFromAsset())
-                            if (user.country == "Unknown"){
-                                Glide.with(binding.root).load(Uri.parse(obj[user.country].toString())).into(binding.imageCountry)
-                            }else{
-                                Utils().fetchSVG(this@ProfilActivity,obj[user.country].toString(),binding.imageCountry)
-                            }
-                        }catch (e: JSONException) {
-                            e.printStackTrace()
-                        }
+                        userModel = user
+                        break
                     }
                 }
             }
             override fun onCancelled(p0: DatabaseError) {}
         })
+
+        Glide.with(headerLayout.root).load(Uri.parse(userModel.imageAvatarUrl)).into(image)
+        email.text = firebaseAuth.currentUser!!.email
+        name.text = userModel.name
+
+        val imageProfil : ImageView = findViewById(R.id.image_user)
+        val textRank : TextView = findViewById(R.id.text_rank)
+        val textMoyenne : TextView = findViewById(R.id.textMoyenne)
+        val textPseudo : TextView = findViewById(R.id.text_pseudo)
+        val textNbGameJouees : TextView = findViewById(R.id.textNbGameJouees)
+        val textCompteCreationDate : TextView = findViewById(R.id.textCompteCreationDate)
+        val imageCountry : ImageView = findViewById(R.id.imageCountry)
+
+        Glide.with(binding.root).load(Uri.parse(userModel.imageAvatarUrl)).into(imageProfil)
+        textRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1)
+        textMoyenne.text = "Mean : " + userModel.moyenne
+        textPseudo.text = userModel.name
+        textNbGameJouees.text = "Game Played : " + userModel.numberGamePlayed.toString()
+        textCompteCreationDate.text = "Account Created : \n$date"
+        try {
+            val obj = JSONObject(loadJSONFromAsset())
+            if (userModel.country == "Unknown"){
+                Glide.with(binding.root).load(Uri.parse(obj[userModel.country].toString())).into(imageCountry)
+            }else{
+                Utils().fetchSVG(this@ProfilActivity,obj[userModel.country].toString(),imageCountry)
+            }
+        }catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+        // toggle menu
 
         toggle = ActionBarDrawerToggle(this,binding.drawerLayout,R.string.open,R.string.close)
         binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout

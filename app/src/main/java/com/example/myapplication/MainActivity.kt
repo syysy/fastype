@@ -58,12 +58,12 @@ class MainActivity : AppCompatActivity() {
         override fun onFinish() {
             this.run = false
             userModel.newGame(scoreOfGame)
-            databaseRef.child(userModel.email).child("bestGame").setValue(userModel.bestGame)
-            databaseRef.child(userModel.email).child("moyenne").setValue(userModel.moyenne)
-            databaseRef.child(userModel.email).child("nbJeu").setValue(userModel.numberGamePlayed)
+            databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").setValue(userModel.bestGame)
+            databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").setValue(userModel.moyenne)
+            databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").setValue(userModel.numberGamePlayed)
             binding.timer.text = "01:00"
             val oldRank = StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1
-            StatsRepository().updateDate { popupEndGame(oldRank) }
+            popupEndGame(oldRank)
             stopGame()
         }
     }
@@ -108,12 +108,14 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     fun stopGame() {
         this.Timer.cancel()
+        this.Timer.run = false
         this.scoreOfGame = 0
         this.binding.timer.text = "01:00"
         this.scannerEtAjout()
     }
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -125,8 +127,6 @@ class MainActivity : AppCompatActivity() {
         binding.buttonRefresh.setOnClickListener {
             this.stopGame()
         }
-
-
         binding.imageProfil.setOnClickListener {
             val intent = Intent(this,ProfilActivity::class.java)
             startActivity(intent)
@@ -141,10 +141,26 @@ class MainActivity : AppCompatActivity() {
         val image : ImageView = view.findViewById(R.id.image_user)
         headerLayout = HeaderLayoutBinding.inflate(layoutInflater)
 
-        // Changement de l'image du profil
+        // récup du currentUser
+        userModel = ProfilModel("","",10,0,"")
 
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
+        println(">"+firebaseAuth.currentUser!!.uid+"<")
+        databaseRef.child(firebaseAuth.currentUser!!.uid).addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {}
+            override fun onDataChange(p0: DataSnapshot) {
+                userModel.email = p0.child("email").value.toString()
+                userModel.name = p0.child("name").value.toString()
+                userModel.numberGamePlayed = p0.child("numberGamePlayed").value.toString().toInt()
+                userModel.bestGame = p0.child("bestGame").value.toString().toInt()
+                userModel.moyenne = p0.child("moyenne").value.toString().toInt()
+                name.text = userModel.name
+                email.text = userModel.email
+                Glide.with(this@MainActivity).load(p0.child("image").value.toString()).into(image)
+            }
+        })
+
         databaseRef.addValueEventListener( object : ValueEventListener {
             @SuppressLint("SetTextI18n")
             override fun onDataChange(p0: DataSnapshot) {
@@ -153,32 +169,36 @@ class MainActivity : AppCompatActivity() {
                     val user = i.getValue(ProfilModel::class.java) // transfo de chaque user en objet Profil Model
                     if ((user != null) && (user.email == firebaseAuth.currentUser!!.email)) {
                         userModel = user
-                        // header layout
-                        Glide.with(headerLayout.root).load(Uri.parse(user.imageAvatarUrl)).into(image)
-                        email.text = firebaseAuth.currentUser!!.email
-                        name.text = user.name
-
-                        // Profil
-
-                        Glide.with(binding.root).load(Uri.parse(user.imageAvatarUrl)).into(binding.imageProfil)
-                        binding.textPlayerName.text = user.name
-                        StatsRepository().updateDate { binding.textPlayerRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(user) + 1) }
-                        try {
-                            val obj = JSONObject(loadJSONFromAsset())
-                            if (user.country == "Unknown"){
-                                Glide.with(binding.root).load(Uri.parse(obj[user.country].toString())).into(binding.imagePlayerCountry)
-                            } else {
-                                ProfilActivity.Utils().fetchSVG(this@MainActivity, obj[user.country].toString(),binding.imagePlayerCountry)
-                            }
-                        } catch (e: JSONException) {
-                            e.printStackTrace()
-                        }
-                        break
                     }
                 }
             }
             override fun onCancelled(p0: DatabaseError) {}
         })
+
+        // réinit des valeurs users
+        Glide.with(headerLayout.root).load(Uri.parse(userModel.imageAvatarUrl)).into(image)
+        email.text = firebaseAuth.currentUser!!.email
+        name.text = userModel.name
+
+        // Profil
+        val imageProfil : ImageView = findViewById(R.id.imageProfil)
+        val textPlayerName : TextView = findViewById(R.id.text_player_name)
+        val textPlayerRank : TextView = findViewById(R.id.text_player_rank)
+        val imageCountry : ImageView = findViewById(R.id.image_player_country)
+
+        Glide.with(binding.root).load(Uri.parse(userModel.imageAvatarUrl)).into(imageProfil)
+        textPlayerName.text = userModel.name
+        StatsRepository().updateDate { textPlayerRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1) }
+        try {
+            val obj = JSONObject(loadJSONFromAsset())
+            if (userModel.country == "Unknown"){
+                Glide.with(binding.root).load(Uri.parse(obj[userModel.country].toString())).into(imageCountry)
+            } else {
+                ProfilActivity.Utils().fetchSVG(this@MainActivity, obj[userModel.country].toString(),imageCountry)
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
 
         // Pubs
 
@@ -216,7 +236,6 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-
 
     // Dialog box disconnect
     fun dialog() {

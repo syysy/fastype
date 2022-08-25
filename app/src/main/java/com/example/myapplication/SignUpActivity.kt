@@ -39,28 +39,24 @@ class SignUpActivity : AppCompatActivity() {
                         if (it.isSuccessful) {
                             // requête au serveur
                             databaseRef = FirebaseDatabase.getInstance().getReference("players")
-                            // create a json object with the data
-                            val playerDataJson = JSONObject()
-                            playerDataJson.put("bestGame", 0)
-                            playerDataJson.put("country", "Unknown")
-                            playerDataJson.put("email", email)
-                            playerDataJson.put("imageAvatarUrl", "https://cdn.pixabay.com/photo/2013/07/13/10/44/man-157699_960_720.png")
-                            playerDataJson.put("moyenne", 0)
-                            playerDataJson.put("name", name)
-                            playerDataJson.put("numberGamePlayed", 0)
-
-                            databaseRef.child(firebaseAuth.currentUser!!.email!!).setValue(playerDataJson)
+                            // creation des données du joueur dans la base de données firebase
+                            databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").setValue(0)
+                            databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").setValue("Unknown")
+                            databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").setValue(email)
+                            databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").setValue("https://cdn.pixabay.com/photo/2013/07/13/10/44/man-157699_960_720.png")
+                            databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").setValue(0)
+                            databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").setValue(name)
+                            databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").setValue(0)
 
                             firebaseAuth.currentUser!!.sendEmailVerification()
                             val intent = Intent(this, SignInActivity::class.java)
                             startActivity(intent)
-                        } else {
+                        }else {
                             Toast.makeText(this, it.exception.toString(),Toast.LENGTH_SHORT).show()
                         }
                     }
                 } else {
-                    Toast.makeText(this, "$password, $confirmPassword",Toast.LENGTH_SHORT).show()
-                    // Toast.makeText(this,"Password is not matching !",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,"Password is not matching !",Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Toast.makeText(this,"Empty fields are not allowed",Toast.LENGTH_SHORT).show()
