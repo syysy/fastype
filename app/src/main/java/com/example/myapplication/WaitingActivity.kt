@@ -14,7 +14,6 @@ class WaitingActivity : AppCompatActivity() {
 
     private lateinit var binding : WaitingScreenBinding
     private lateinit var firebaseAuth: FirebaseAuth
-    private val splash_time : Long = 3000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

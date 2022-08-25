@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
@@ -141,64 +142,55 @@ class MainActivity : AppCompatActivity() {
         val image : ImageView = view.findViewById(R.id.image_user)
         headerLayout = HeaderLayoutBinding.inflate(layoutInflater)
 
-        // récup du currentUser
-        userModel = ProfilModel("","",10,0,"")
-
-        firebaseAuth = FirebaseAuth.getInstance()
-        databaseRef = FirebaseDatabase.getInstance().getReference("players")
-        println(">"+firebaseAuth.currentUser!!.uid+"<")
-        databaseRef.child(firebaseAuth.currentUser!!.uid).addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {}
-            override fun onDataChange(p0: DataSnapshot) {
-                userModel.email = p0.child("email").value.toString()
-                userModel.name = p0.child("name").value.toString()
-                userModel.numberGamePlayed = p0.child("numberGamePlayed").value.toString().toInt()
-                userModel.bestGame = p0.child("bestGame").value.toString().toInt()
-                userModel.moyenne = p0.child("moyenne").value.toString().toInt()
-                name.text = userModel.name
-                email.text = userModel.email
-                Glide.with(this@MainActivity).load(p0.child("image").value.toString()).into(image)
-            }
-        })
-
-        databaseRef.addValueEventListener( object : ValueEventListener {
-            @SuppressLint("SetTextI18n")
-            override fun onDataChange(p0: DataSnapshot) {
-                // recolter la liste
-                for (i in p0.children){
-                    val user = i.getValue(ProfilModel::class.java) // transfo de chaque user en objet Profil Model
-                    if ((user != null) && (user.email == firebaseAuth.currentUser!!.email)) {
-                        userModel = user
-                    }
-                }
-            }
-            override fun onCancelled(p0: DatabaseError) {}
-        })
-
-        // réinit des valeurs users
-        Glide.with(headerLayout.root).load(Uri.parse(userModel.imageAvatarUrl)).into(image)
-        email.text = firebaseAuth.currentUser!!.email
-        name.text = userModel.name
-
-        // Profil
         val imageProfil : ImageView = findViewById(R.id.imageProfil)
         val textPlayerName : TextView = findViewById(R.id.text_player_name)
         val textPlayerRank : TextView = findViewById(R.id.text_player_rank)
         val imageCountry : ImageView = findViewById(R.id.image_player_country)
 
-        Glide.with(binding.root).load(Uri.parse(userModel.imageAvatarUrl)).into(imageProfil)
-        textPlayerName.text = userModel.name
-        StatsRepository().updateDate { textPlayerRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1) }
-        try {
-            val obj = JSONObject(loadJSONFromAsset())
-            if (userModel.country == "Unknown"){
-                Glide.with(binding.root).load(Uri.parse(obj[userModel.country].toString())).into(imageCountry)
-            } else {
-                ProfilActivity.Utils().fetchSVG(this@MainActivity, obj[userModel.country].toString(),imageCountry)
-            }
-        } catch (e: JSONException) {
-            e.printStackTrace()
+        // récup du currentUser
+        userModel = ProfilModel("","",10,0,"")
+
+        firebaseAuth = FirebaseAuth.getInstance()
+        databaseRef = FirebaseDatabase.getInstance().getReference("players")
+
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
+            userModel.name = it.value.toString()
+            textPlayerName.text = userModel.name
+            name.text = userModel.name
         }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").get().addOnSuccessListener {
+            userModel.email = it.value.toString()
+            textPlayerRank.text = userModel.email
+            email.text = userModel.email
+        }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").get().addOnSuccessListener {
+            userModel.country = it.value.toString()
+            try {
+                val obj = JSONObject(loadJSONFromAsset())
+                if (it.value.toString() == "Unknown"){
+                    Glide.with(binding.root).load(Uri.parse(obj[it.value.toString()].toString())).into(imageCountry)
+                } else {
+                    ProfilActivity.Utils().fetchSVG(binding.root.context, obj[it.value.toString()].toString(),imageCountry)
+                }
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+        }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
+            println(">!"+it.value+"!<")
+            userModel.imageAvatarUrl = it.value.toString()
+            Glide.with(headerLayout.root).load(Uri.parse(it.value.toString())).into(image)
+            Glide.with(binding.root).load(Uri.parse(it.value.toString())).into(imageProfil)
+        }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").get().addOnSuccessListener {
+            println(">"+it.value+"<")
+            userModel.bestGame = it.value.toString().toInt()
+        }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
+            userModel.numberGamePlayed = it.value.toString().toInt()
+        }
+        StatsRepository().updateDate { textPlayerRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1) }
+
 
         // Pubs
 

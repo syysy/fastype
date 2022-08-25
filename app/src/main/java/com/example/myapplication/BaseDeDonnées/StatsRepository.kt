@@ -22,7 +22,7 @@ class StatsRepository {
     fun updateDate(callback:() -> Unit){
         listPlayer.clear()
         // absorber les données
-        databaseRef.addValueEventListener( object : ValueEventListener{
+        databaseRef.addListenerForSingleValueEvent( object : ValueEventListener{
             override fun onDataChange(p0: DataSnapshot) {
                 // recolter la liste
                 for(i in p0.children){

@@ -41,9 +41,9 @@ class LeaderBoardActivity :AppCompatActivity() {
         setContentView(binding.root)
 
         val verticalRecyclerView =
-            binding.root.findViewById<RecyclerView>(R.id.vertical_recyclerView)
-        verticalRecyclerView.adapter = LeaderBoardAdapter(
-            StatsRepository.Singleton.listPlayer
+           this.findViewById<RecyclerView>(R.id.vertical_recyclerView)
+        verticalRecyclerView.adapter = LeaderBoardAdapter(this,
+            StatsRepository.Singleton.listPlayer,R.layout.leaderboard_vertical_profiles
         )
         verticalRecyclerView.addItemDecoration(ItemDecoration())
 
@@ -58,24 +58,17 @@ class LeaderBoardActivity :AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
-        databaseRef.addValueEventListener( object : ValueEventListener {
-            @SuppressLint("SetTextI18n")
-            override fun onDataChange(p0: DataSnapshot) {
-                // recolter la liste
-                for(i in p0.children){
-                    val user = i.getValue(ProfilModel::class.java)
-                    if ((user != null) && (user.email == firebaseAuth.currentUser!!.email)){
-                        userModel = user
-                        break
-                    }
-                }
-            }
-            override fun onCancelled(p0: DatabaseError) {}
-        })
-        // header layout
-        Glide.with(headerLayout.root).load(Uri.parse(userModel.imageAvatarUrl)).into(image)
-        email.text = firebaseAuth.currentUser!!.email
-        name.text = userModel.name
+
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
+            name.text = it.value.toString()
+        }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").get().addOnSuccessListener {
+            email.text = it.value.toString()
+        }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
+            Glide.with(headerLayout.root).load(it.value.toString()).into(image)
+        }
+
 
         // toggle view
         toggle = ActionBarDrawerToggle(this,binding.drawerLayout,R.string.open,R.string.close)

@@ -65,56 +65,65 @@ open class ProfilActivity : AppCompatActivity(){
         headerLayout = HeaderLayoutBinding.inflate(layoutInflater)
 
         // Changement de l'image du profil
-
+        userModel = ProfilModel("","",10,0,"")
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
 
         val userDate = firebaseAuth.currentUser
         val date = Date(userDate!!.metadata!!.creationTimestamp)
-        println(">"+StatsRepository.Singleton.listPlayer+"<")
-        databaseRef.addValueEventListener( object : ValueEventListener {
-            @SuppressLint("SetTextI18n")
-            override fun onDataChange(p0: DataSnapshot) {
-                // recolter la liste
-                for(i in p0.children){
-                    val user = i.getValue(ProfilModel::class.java)
-                    if (user != null && user.email == firebaseAuth.currentUser!!.email){
-                        userModel = user
-                        break
-                    }
-                }
-            }
-            override fun onCancelled(p0: DatabaseError) {}
-        })
+        val formatter = java.text.SimpleDateFormat("dd/MM/yyyy")
+        val formattedDate = formatter.format(date)
 
-        Glide.with(headerLayout.root).load(Uri.parse(userModel.imageAvatarUrl)).into(image)
-        email.text = firebaseAuth.currentUser!!.email
-        name.text = userModel.name
-
-        val imageProfil : ImageView = findViewById(R.id.image_user)
+        val imageProfil : ImageView = findViewById(R.id.imageProfil)
         val textRank : TextView = findViewById(R.id.text_rank)
         val textMoyenne : TextView = findViewById(R.id.textMoyenne)
-        val textPseudo : TextView = findViewById(R.id.text_pseudo)
+        val textPseudo : TextView = findViewById(R.id.textPseudo)
         val textNbGameJouees : TextView = findViewById(R.id.textNbGameJouees)
         val textCompteCreationDate : TextView = findViewById(R.id.textCompteCreationDate)
         val imageCountry : ImageView = findViewById(R.id.imageCountry)
 
-        Glide.with(binding.root).load(Uri.parse(userModel.imageAvatarUrl)).into(imageProfil)
-        textRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1)
-        textMoyenne.text = "Mean : " + userModel.moyenne
-        textPseudo.text = userModel.name
-        textNbGameJouees.text = "Game Played : " + userModel.numberGamePlayed.toString()
-        textCompteCreationDate.text = "Account Created : \n$date"
-        try {
-            val obj = JSONObject(loadJSONFromAsset())
-            if (userModel.country == "Unknown"){
-                Glide.with(binding.root).load(Uri.parse(obj[userModel.country].toString())).into(imageCountry)
-            }else{
-                Utils().fetchSVG(this@ProfilActivity,obj[userModel.country].toString(),imageCountry)
-            }
-        }catch (e: JSONException) {
-            e.printStackTrace()
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
+            userModel.name = it.value.toString()
+            textPseudo.text = userModel.name
+            name.text = userModel.name
         }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").get().addOnSuccessListener {
+            userModel.email = it.value.toString()
+            email.text = userModel.email
+        }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").get().addOnSuccessListener {
+            userModel.country = it.value.toString()
+            try {
+                val obj = JSONObject(loadJSONFromAsset())
+                if (it.value.toString() == "Unknown"){
+                    Glide.with(binding.root).load(Uri.parse(obj[it.value.toString()].toString())).into(imageCountry)
+                } else {
+                    Utils().fetchSVG(binding.root.context, obj[it.value.toString()].toString(),imageCountry)
+                }
+            } catch (e: JSONException) {
+                e.printStackTrace()
+            }
+        }
+
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").get().addOnSuccessListener {
+            userModel.moyenne = it.value.toString().toInt()
+            textMoyenne.text = "Mean : " + userModel.moyenne.toString()
+        }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
+            userModel.imageAvatarUrl = it.value.toString()
+            Glide.with(headerLayout.root).load(Uri.parse(it.value.toString())).into(image)
+            Glide.with(binding.root).load(Uri.parse(it.value.toString())).into(imageProfil)
+        }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").get().addOnSuccessListener {
+            userModel.bestGame = it.value.toString().toInt()
+        }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
+            userModel.numberGamePlayed = it.value.toString().toInt()
+            textNbGameJouees.text = "Game Played : " + userModel.numberGamePlayed.toString()
+        }
+        StatsRepository().updateDate { textRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1) }
+
+        textCompteCreationDate.text = "Account created on : $formattedDate"
 
         // toggle menu
 
