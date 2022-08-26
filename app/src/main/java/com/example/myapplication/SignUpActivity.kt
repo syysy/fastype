@@ -44,7 +44,7 @@ class SignUpActivity : AppCompatActivity() {
                             databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").setValue("Unknown")
                             databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").setValue(email)
                             databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").setValue("https://cdn.pixabay.com/photo/2013/07/13/10/44/man-157699_960_720.png")
-                            databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").setValue(0)
+                            databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").setValue(0.0)
                             databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").setValue(name)
                             databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").setValue(0)
 

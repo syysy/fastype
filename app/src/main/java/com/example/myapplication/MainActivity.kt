@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 
     private val Jeu = object : TextWatcher {
 
-        @SuppressLint("UseCompatLoadingForDrawables")
+        @SuppressLint("UseCompatLoadingForDrawables", "SetTextI18n")
         override fun afterTextChanged(s: Editable?) {
             if (!Timer.run) { // commence une nouvelle partie
                 Timer.start()
@@ -85,6 +85,7 @@ class MainActivity : AppCompatActivity() {
                 sauvegarde.removeAt(0) // suppression du premier élément de la liste, qui viens d'être trouvé
                 binding.textInputGame.setText("") // reset du champ de texte
                 updateListWords() // mise à jour de la liste des mots non trouvés
+                binding.textPlayerScore.text = "$scoreOfGame mots"
             } else if (text == "") {
                 binding.textGame.background = getDrawable(R.drawable.back) // si le champ de texte est vide, on change la couleur de fond en blanc
             } else if (sauvegarde[0].startsWith(text)) {
@@ -108,6 +109,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     fun stopGame() {
+        this.binding.textInputGame.setText("")
         this.Timer.cancel()
         this.Timer.run = false
         this.scoreOfGame = 0
@@ -132,6 +134,8 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,ProfilActivity::class.java)
             startActivity(intent)
         }
+        // bind le nombre de mots trouvés par le joueur durant le jeu en temps réel dans le textPlayerScore sans firebase
+
 
         // header changements
         val inflater : LayoutInflater = this@MainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -148,7 +152,7 @@ class MainActivity : AppCompatActivity() {
         val imageCountry : ImageView = findViewById(R.id.image_player_country)
 
         // récup du currentUser
-        userModel = ProfilModel("","",10,0,"")
+        userModel = ProfilModel("","",0.0,0,"")
 
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
@@ -160,7 +164,6 @@ class MainActivity : AppCompatActivity() {
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").get().addOnSuccessListener {
             userModel.email = it.value.toString()
-            textPlayerRank.text = userModel.email
             email.text = userModel.email
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").get().addOnSuccessListener {
@@ -177,20 +180,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
-            println(">!"+it.value+"!<")
             userModel.imageAvatarUrl = it.value.toString()
             Glide.with(headerLayout.root).load(Uri.parse(it.value.toString())).into(image)
             Glide.with(binding.root).load(Uri.parse(it.value.toString())).into(imageProfil)
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").get().addOnSuccessListener {
-            println(">"+it.value+"<")
             userModel.bestGame = it.value.toString().toInt()
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
             userModel.numberGamePlayed = it.value.toString().toInt()
         }
-        StatsRepository().updateDate { textPlayerRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1) }
+        //afficher les players de la listPlayer du singleton statsrepository
 
+        textPlayerRank.text = "Rank : " + getRank()
 
         // Pubs
 
@@ -243,9 +245,10 @@ class MainActivity : AppCompatActivity() {
 
 
     fun popupEndGame(oldRank: Int) {
+        StatsRepository().updateDate {  }
         val popupBuilder = AlertDialog.Builder(this)
-        val actualRank = StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1
-        popupBuilder.setMessage("recap:" + "score: ${this.scoreOfGame}}\n" + "      " + "rank: $actualRank" + if (oldRank > actualRank) "▲ ${oldRank - actualRank}" else "")
+        val newRank = StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1
+        popupBuilder.setMessage("Recap:      \n"+ "score: ${this.scoreOfGame}\n" + "        " + "rank: $newRank" + if (oldRank > newRank){ " ▲ ${oldRank - newRank}"} else{""})
             .setCancelable(false)
             .setPositiveButton("ok", DialogInterface.OnClickListener{ popup, _ -> popup.cancel() })
             .setNegativeButton("see leaderboard", DialogInterface.OnClickListener { _, _ -> StatsRepository().updateDate { startActivity(Intent(this, LeaderBoardActivity::class.java)) } })
@@ -267,6 +270,18 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    fun getRank() : Int{
+        firebaseAuth = FirebaseAuth.getInstance()
+        val rank : Int
+        val listPlayer = StatsRepository.Singleton.listPlayer
+        for ((index,i) in listPlayer.withIndex()){
+            if (i.email == firebaseAuth.currentUser!!.email){
+               rank = index + 1
+                return rank
+            }
+        }
+        return -1
+    }
 
     @SuppressLint("SetTextI18n")
     fun scannerEtAjout(){
@@ -276,8 +291,10 @@ class MainActivity : AppCompatActivity() {
         val reader = BufferedReader(minput)
         var line : String?
         var displayData = ""
-        while (reader.readLine().also { line = it } != null){
-            listeMots.add(line!!)
+        if (listeMots.size == 0){
+            while (reader.readLine().also { line = it } != null){
+                listeMots.add(line!!)
+            }
         }
         listeMots.shuffle()
         for (j in 0 until 200){
@@ -285,6 +302,7 @@ class MainActivity : AppCompatActivity() {
             sauvegarde.add(listeMots[j])
         }
         binding.textGame.text = displayData
+        //assets.close()
     }
 
     fun updateListWords() {

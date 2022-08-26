@@ -17,10 +17,10 @@
             android:id="@+id/imageProfil"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginBottom="40dp"
             android:background="@drawable/back"
-            app:layout_constraintBottom_toTopOf="@+id/text_game"
-            app:layout_constraintStart_toStartOf="@+id/text_game" />
+            android:layout_marginTop="@dimen/default_margin"
+            app:layout_constraintStart_toStartOf="@+id/text_game"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_game" />
 
         <TextView
             android:id="@+id/text_player_name"
@@ -30,6 +30,16 @@
             android:text="name"
             app:layout_constraintStart_toEndOf="@+id/imageProfil"
             app:layout_constraintTop_toTopOf="@+id/imageProfil" />
+
+        <TextView
+            android:id="@+id/text_player_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0 mots"
+            android:layout_marginBottom="25dp"
+            app:layout_constraintBottom_toTopOf="@+id/text_game"
+            app:layout_constraintEnd_toEndOf="@+id/text_game" />
+
 
         <ImageView
             android:id="@+id/image_player_country"
@@ -66,7 +76,7 @@
             android:layout_height="wrap_content"
             ads:adSize="BANNER"
             ads:adUnitId="@string/banner_ad_unit_id"
-            app:layout_constraintBottom_toTopOf="@+id/image_player_country"
+            app:layout_constraintBottom_toTopOf="@+id/timer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -79,6 +89,7 @@
             android:background="@drawable/back"
             android:gravity="center"
             android:textSize="20sp"
+            android:layout_marginBottom="50dp"
             app:layout_constraintBottom_toTopOf="@+id/adViewBottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -116,24 +127,25 @@
         app:layout_constraintStart_toEndOf="@+id/textInputLayout_game"
         app:layout_constraintTop_toTopOf="@+id/textInputLayout_game" />
 
-    <ImageView
-        android:id="@+id/imageTimer"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="20dp"
-        android:src="@drawable/ic_clock"
-        app:layout_constraintStart_toStartOf="@+id/textInputLayout_game"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_game" />
+        <ImageView
+            android:id="@+id/imageTimer"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_clock"
+            app:layout_constraintBottom_toTopOf="@+id/text_game"
+            app:layout_constraintStart_toStartOf="@+id/text_game" />
 
     <TextView
         android:id="@+id/timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="01:00"
-        android:layout_marginLeft = "10dp"
+        android:layout_marginStart = "10dp"
         app:layout_constraintBottom_toBottomOf="@+id/imageTimer"
         app:layout_constraintStart_toEndOf="@+id/imageTimer"
-        app:layout_constraintTop_toTopOf="@+id/imageTimer" />
+        app:layout_constraintTop_toTopOf="@+id/imageTimer"
+        tools:ignore="HardcodedText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -3,7 +3,7 @@ package com.example.myapplication.objets
 class ProfilModel (
     var name : String = "",
     var email : String = "",
-    var moyenne : Int = 0,
+    var moyenne : Double = 0.0,
     var bestGame: Int = 0,
     var imageAvatarUrl : String = "https://cdn.pixabay.com/photo/2013/07/13/10/44/man-157699_960_720.png",
     var numberGamePlayed : Int = 0,
@@ -11,7 +11,8 @@ class ProfilModel (
 ) {
     /* mise à jour des données a chaque partie */
     fun newGame(score: Int) {
-        this.moyenne = ((this.moyenne * this.numberGamePlayed) + score ) / this.numberGamePlayed++
+        this.numberGamePlayed++
+        this.moyenne = ((this.moyenne * this.numberGamePlayed) + score ) / this.numberGamePlayed
         if (score > this.bestGame) {
             this.bestGame = score
         }

@@ -58,7 +58,6 @@ class LeaderBoardActivity :AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
-
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
             name.text = it.value.toString()
         }
@@ -80,10 +79,10 @@ class LeaderBoardActivity :AppCompatActivity() {
             when(it.itemId){
                 R.id.item_profil -> startActivity(Intent(this,ProfilActivity::class.java))
                 R.id.item_leaderboard -> StatsRepository().updateDate { startActivity(Intent(this,LeaderBoardActivity::class.java)) }
-                R.id.item_home -> startActivity(Intent(this,MainActivity::class.java))
-                //R.id.item_logout ->
-                //R.id.item_rate ->
+                R.id.item_home -> StatsRepository().updateDate {  startActivity(Intent(this,MainActivity::class.java)) }
+                R.id.item_logout -> MainActivity().dialog()
                 //R.id.item_settings ->
+                R.id.item_rate -> startActivity(Intent(this,WaitingActivity::class.java))
                 //R.id.item_share ->
             }
             true

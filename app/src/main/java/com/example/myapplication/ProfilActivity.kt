@@ -65,7 +65,7 @@ open class ProfilActivity : AppCompatActivity(){
         headerLayout = HeaderLayoutBinding.inflate(layoutInflater)
 
         // Changement de l'image du profil
-        userModel = ProfilModel("","",10,0,"")
+        userModel = ProfilModel("","",0.0,0,"")
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
 
@@ -106,7 +106,7 @@ open class ProfilActivity : AppCompatActivity(){
         }
 
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").get().addOnSuccessListener {
-            userModel.moyenne = it.value.toString().toInt()
+            userModel.moyenne = it.value.toString().toDouble()
             textMoyenne.text = "Mean : " + userModel.moyenne.toString()
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
@@ -121,7 +121,7 @@ open class ProfilActivity : AppCompatActivity(){
             userModel.numberGamePlayed = it.value.toString().toInt()
             textNbGameJouees.text = "Game Played : " + userModel.numberGamePlayed.toString()
         }
-        StatsRepository().updateDate { textRank.text = "Rank : " + (StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1) }
+        textRank.text = "Rank : " + MainActivity().getRank()
 
         textCompteCreationDate.text = "Account created on : $formattedDate"
 
@@ -136,10 +136,10 @@ open class ProfilActivity : AppCompatActivity(){
             when(it.itemId){
                 R.id.item_profil -> startActivity(Intent(this,ProfilActivity::class.java))
                 R.id.item_leaderboard -> StatsRepository().updateDate { startActivity(Intent(this,LeaderBoardActivity::class.java)) }
-                R.id.item_home -> startActivity(Intent(this,MainActivity::class.java))
-                //R.id.item_logout ->
-                //R.id.item_rate ->
+                R.id.item_home -> StatsRepository().updateDate {  startActivity(Intent(this,MainActivity::class.java)) }
+                R.id.item_logout -> MainActivity().dialog()
                 //R.id.item_settings ->
+                R.id.item_rate -> startActivity(Intent(this,WaitingActivity::class.java))
                 //R.id.item_share ->
             }
             true
