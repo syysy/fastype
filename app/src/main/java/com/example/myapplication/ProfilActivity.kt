@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
-import android.view.View.inflate
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,28 +14,25 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.myapplication.BaseDeDonnées.StatsRepository
-import com.example.myapplication.databinding.ForgotyourpasswordBinding.bind
-import com.example.myapplication.databinding.ForgotyourpasswordBinding.inflate
-import com.example.myapplication.databinding.GameBinding
 import com.example.myapplication.databinding.HeaderLayoutBinding
 import com.example.myapplication.databinding.ProfilBinding
 import com.example.myapplication.objets.ProfilModel
+import com.google.android.ads.nativetemplates.NativeTemplateStyle
+import com.google.android.ads.nativetemplates.TemplateView
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.annotations.SerializedName
-import com.google.gson.reflect.TypeToken
 import com.pixplicity.sharp.Sharp
 import okhttp3.*
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.FileReader
 import java.io.IOException
 import java.io.InputStream
-import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.util.*
+
 
 open class ProfilActivity : AppCompatActivity(){
 
@@ -80,6 +76,7 @@ open class ProfilActivity : AppCompatActivity(){
         val textPseudo : TextView = findViewById(R.id.textPseudo)
         val textNbGameJouees : TextView = findViewById(R.id.textNbGameJouees)
         val textCompteCreationDate : TextView = findViewById(R.id.textCompteCreationDate)
+        val textBestGame : TextView = findViewById(R.id.text_bestScore)
         val imageCountry : ImageView = findViewById(R.id.imageCountry)
 
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
@@ -116,6 +113,7 @@ open class ProfilActivity : AppCompatActivity(){
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").get().addOnSuccessListener {
             userModel.bestGame = it.value.toString().toInt()
+            textBestGame.text = "Best score : " + it.value.toString().toInt()
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
             userModel.numberGamePlayed = it.value.toString().toInt()
@@ -145,9 +143,22 @@ open class ProfilActivity : AppCompatActivity(){
             true
         }
 
+        val mAdViewTop : AdView = binding.adViewTop
+        val adRequestTop: AdRequest = AdRequest.Builder().build()
+        mAdViewTop.loadAd(adRequestTop)
 
+        MobileAds.initialize(this)
+        val adLoader = AdLoader.Builder(this, "ca-app-pub-6513418938502245/2879336559")
+            .forNativeAd { nativeAd ->
+                val styles =
+                    NativeTemplateStyle.Builder().build()
+                val template = findViewById<TemplateView>(R.id.nativeAds)
+                template.setStyles(styles)
+                template.setNativeAd(nativeAd)
+            }
+            .build()
 
-
+        adLoader.loadAd(AdRequest.Builder().build())
     }
 
 

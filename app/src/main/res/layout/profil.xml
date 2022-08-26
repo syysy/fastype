@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -11,28 +10,56 @@
     >
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ProfilActivity">
-
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/imageProfil"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginStart="30dp"
-            android:src="@drawable/avatar"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="40dp"
             ads:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/textProfil" />
 
         <ImageView
             android:id="@+id/imageCountry"
             android:layout_width="70dp"
             android:layout_height="40dp"
-            android:src="@drawable/avatar"
             android:layout_marginStart = "20dp"
             ads:layout_constraintStart_toEndOf="@+id/imageProfil"
             ads:layout_constraintTop_toTopOf="@+id/imageProfil" />
+
+        <TextView
+            android:id="@+id/textProfil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Profil"
+            android:textSize="25sp"
+            android:layout_marginTop="60dp"
+            app:layout_constraintBottom_toTopOf="@+id/imageProfil"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adViewTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/banner_ad_unit_id"
+            app:layout_constraintBottom_toTopOf="@+id/textProfil"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.ads.nativetemplates.TemplateView
+            android:id="@+id/nativeAds"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:gnt_template_type="@layout/gnt_small_template_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textCompteCreationDate" />
 
         <TextView
             android:id="@+id/text_rank"
@@ -66,15 +93,53 @@
             ads:layout_constraintStart_toEndOf="@+id/textPseudo"
             ads:layout_constraintTop_toTopOf="@+id/textPseudo" />
 
+
+        <TextView
+            android:id="@+id/textStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:text="Stats Fastype"
+            android:textSize="25sp"
+            ads:layout_constraintStart_toEndOf="@+id/imageProfil"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textPseudo" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:background="#878787"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toBottomOf="@+id/imageProfil"
+            />
+
+
+        <TextView
+            android:id="@+id/text_bestScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Best Score :"
+            android:layout_marginTop = "20dp"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@+id/imageProfil"
+            app:layout_constraintTop_toBottomOf="@+id/textStats" />
+
+
         <TextView
             android:id="@+id/textMoyenne"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
             android:text="Mean : "
-            android:layout_marginTop = "20dp"
             android:textSize="20sp"
-            ads:layout_constraintStart_toStartOf="@+id/imageProfil"
-            ads:layout_constraintTop_toBottomOf="@+id/imageProfil"
+            android:layout_marginTop = "20dp"
+            app:layout_constraintEnd_toStartOf="@+id/imageBrush"
+            app:layout_constraintTop_toBottomOf="@+id/textStats"
             tools:ignore="HardcodedText" />
 
         <TextView
@@ -85,7 +150,7 @@
             android:textSize="20sp"
             android:layout_marginTop = "20dp"
             ads:layout_constraintStart_toStartOf="@+id/imageProfil"
-            ads:layout_constraintTop_toBottomOf="@+id/textMoyenne"
+            app:layout_constraintTop_toBottomOf="@+id/text_bestScore"
             tools:ignore="HardcodedText" />
 
         <TextView

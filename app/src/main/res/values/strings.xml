@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Fastype</string>
     <string name="banner_ad_unit_id">ca-app-pub-6513418938502245/7916069061</string>
+    <string name="profil_bottom_ad_unit_id">ca-app-pub-6513418938502245/2879336559</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
 </resources>
