@@ -47,6 +47,9 @@
          <activity android:name=".ProfilActivity"
              android:exported="false">
          </activity>
+        <activity android:name=".EditProfilActivity"
+            android:exported="false">
+        </activity>
 
          <activity android:name=".WaitingActivity"
              android:exported="true">

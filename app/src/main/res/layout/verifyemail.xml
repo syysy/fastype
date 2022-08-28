@@ -35,9 +35,8 @@
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginTop = "20dp"
-
+        android:textColor="@android:color/white"
         android:backgroundTint="@android:color/black"
-        android:onClick="buttongotoGame"
         android:text="RESEND ME THE EMAIL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,9 +48,8 @@
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginTop = "10dp"
-
+        android:textColor="@android:color/white"
         android:backgroundTint="@android:color/black"
-        android:onClick="buttongotoGame"
         android:text="I HAVE VERIFIED MY EMAIL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

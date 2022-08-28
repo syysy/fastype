@@ -13,6 +13,7 @@ class ProfilModel (
     fun newGame(score: Int) {
         this.numberGamePlayed++
         this.moyenne = ((this.moyenne * this.numberGamePlayed) + score ) / this.numberGamePlayed
+        this.moyenne = Math.round(this.moyenne * 100.0) / 100.0
         if (score > this.bestGame) {
             this.bestGame = score
         }

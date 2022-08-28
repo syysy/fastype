@@ -8,35 +8,32 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.myapplication.BaseDeDonnées.StatsRepository
+import com.example.myapplication.databinding.EditProfilBinding
 import com.example.myapplication.databinding.HeaderLayoutBinding
-import com.example.myapplication.databinding.ProfilBinding
 import com.example.myapplication.objets.ProfilModel
-import com.google.android.ads.nativetemplates.NativeTemplateStyle
-import com.google.android.ads.nativetemplates.TemplateView
-import com.google.android.gms.ads.*
-import com.google.android.gms.ads.nativead.NativeAd
-import com.google.android.gms.ads.nativead.NativeAdOptions
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
-import com.pixplicity.sharp.Sharp
-import okhttp3.*
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
-import java.io.InputStream
 import java.nio.charset.Charset
 import java.util.*
 
+class EditProfilActivity : AppCompatActivity() {
 
-open class ProfilActivity : AppCompatActivity(){
-
-    private lateinit var binding: ProfilBinding
+    lateinit var binding: EditProfilBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var databaseRef : DatabaseReference
     private lateinit var toggle : ActionBarDrawerToggle
@@ -45,14 +42,11 @@ open class ProfilActivity : AppCompatActivity(){
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-        binding = ProfilBinding.inflate(layoutInflater)
+        binding = EditProfilBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
         // header changements
-        val inflater: LayoutInflater = this@ProfilActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val inflater: LayoutInflater = this@EditProfilActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewGroup : ViewGroup = findViewById (R.id.nav_view)
         val view = inflater.inflate(R.layout.header_layout, viewGroup)
         val name : TextView = view.findViewById(R.id.text_username)
@@ -73,33 +67,52 @@ open class ProfilActivity : AppCompatActivity(){
         val imageProfil : ImageView = findViewById(R.id.imageProfil)
         val textRank : TextView = findViewById(R.id.text_rank)
         val textMoyenne : TextView = findViewById(R.id.textMoyenne)
-        val textPseudo : TextView = findViewById(R.id.textPseudo)
+        val textPseudo : TextInputEditText = findViewById(R.id.textInput_Editpseudo)
         val textNbGameJouees : TextView = findViewById(R.id.textNbGameJouees)
         val textCompteCreationDate : TextView = findViewById(R.id.textCompteCreationDate)
         val textBestGame : TextView = findViewById(R.id.text_bestScore)
         val imageCountry : ImageView = findViewById(R.id.imageCountry)
+        val spinnerCountry : Spinner = findViewById(R.id.spinnerCountry)
 
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
             userModel.name = it.value.toString()
-            textPseudo.text = userModel.name
-            name.text = userModel.name
+            textPseudo.hint = it.value.toString()
+            name.text = it.value.toString()
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").get().addOnSuccessListener {
             userModel.email = it.value.toString()
-            email.text = userModel.email
+            email.text = it.value.toString()
         }
+
+        val obj = JSONObject(loadJSONFromAsset())
+        val arrayList: ArrayList<String> = ArrayList()
+        for (i in 0 until obj.length()) {
+            arrayList.add(iterate(obj.keys()).toString())
+        }
+        for (j in arrayList){
+            if (j == userModel.country){
+                spinnerCountry.setSelection(arrayList.indexOf(j))
+            }
+        }
+        println("----->"+arrayList[0]+"<----")
+        val arrayAdapter: ArrayAdapter<String> =
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrayList)
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerCountry.setAdapter(arrayAdapter)
+
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").get().addOnSuccessListener {
             userModel.country = it.value.toString()
+
             try {
-                val obj = JSONObject(loadJSONFromAsset())
                 if (it.value.toString() == "Unknown"){
                     Glide.with(binding.root).load(Uri.parse(obj[it.value.toString()].toString())).into(imageCountry)
                 } else {
-                    Utils().fetchSVG(binding.root.context, obj[it.value.toString()].toString(),imageCountry)
+                    ProfilActivity.Utils().fetchSVG(binding.root.context, obj[it.value.toString()].toString(),imageCountry)
                 }
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
+
         }
 
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").get().addOnSuccessListener {
@@ -122,10 +135,6 @@ open class ProfilActivity : AppCompatActivity(){
         textRank.text = "Rank : " + MainActivity().getRank()
 
         textCompteCreationDate.text = "Account created on : $formattedDate"
-
-        binding.imageBrush.setOnClickListener {
-            startActivity(Intent(this, EditProfilActivity::class.java))
-        }
 
         // toggle menu
 
@@ -151,18 +160,6 @@ open class ProfilActivity : AppCompatActivity(){
         val adRequestTop: AdRequest = AdRequest.Builder().build()
         mAdViewTop.loadAd(adRequestTop)
 
-        MobileAds.initialize(this)
-        val adLoader = AdLoader.Builder(this, "ca-app-pub-6513418938502245/2879336559")
-            .forNativeAd { nativeAd ->
-                val styles =
-                    NativeTemplateStyle.Builder().build()
-                val template = findViewById<TemplateView>(R.id.nativeAds)
-                template.setStyles(styles)
-                template.setNativeAd(nativeAd)
-            }
-            .build()
-
-        adLoader.loadAd(AdRequest.Builder().build())
     }
 
 
@@ -189,47 +186,11 @@ open class ProfilActivity : AppCompatActivity(){
         }
         return json
     }
-    class Utils {
-
-        // on below line we are creating a variable for http client.
-        private var httpClient: OkHttpClient? = null
-
-        // on below line we are creating a function to load the svg from the url.
-        // in below method we are specifying parameters as context,
-        // url for the image and image view.
-        fun fetchSVG(context: Context, url: String, target: ImageView) {
-            // on below line we are checking
-            // if http client is null
-            if (httpClient == null) {
-                // if it is null on below line
-                // we are initializing our http client.
-                httpClient =
-                    OkHttpClient.Builder().cache(Cache(context.cacheDir, 5 * 1024 * 1014) as Cache)
-                        .build() as OkHttpClient
+    private fun <T> iterate(i: Iterator<T>): Iterable<T>? {
+        return object : Iterable<T> {
+            override fun iterator(): Iterator<T> {
+                return i
             }
-
-            // on below line we are creating a variable for our request and initialing it.
-            var request: Request = Request.Builder().url(url).build()
-
-            // on below line we are making a call to the http request on below lnie.
-            httpClient!!.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call?, e: IOException?) {
-                    // we are adding a default image if we gets any
-                    // error while loading image from url.
-                    target.setImageResource(R.drawable.avatar)
-                }
-
-                @Throws(IOException::class)
-                override fun onResponse(call: Call?, response: Response) {
-                    // sharp is a library which will load stream which we generated
-                    // from url in our target image view.
-                    val stream: InputStream = response.body()!!.byteStream()
-                    Sharp.loadInputStream(stream).into(target)
-                    stream.close()
-                }
-            })
         }
-
     }
-
 }
