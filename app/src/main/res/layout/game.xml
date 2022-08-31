@@ -17,6 +17,7 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:background="@drawable/back"
+            android:scaleType="centerCrop"
             android:layout_marginTop="@dimen/default_margin"
             app:layout_constraintStart_toStartOf="@+id/text_game"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout_game" />

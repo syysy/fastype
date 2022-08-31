@@ -16,6 +16,7 @@
             android:id="@+id/imageProfil"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:scaleType="centerCrop"
             android:layout_marginStart="30dp"
             android:layout_marginTop="175dp"
             app:layout_constraintStart_toStartOf="parent"

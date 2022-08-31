@@ -1,17 +1,17 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
+import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -86,23 +86,9 @@ class EditProfilActivity : AppCompatActivity() {
 
         val obj = JSONObject(loadJSONFromAsset())
         val arrayList: ArrayList<String> = ArrayList()
-        for (i in 0 until obj.length()) {
-            arrayList.add(iterate(obj.keys()).toString())
-        }
-        for (j in arrayList){
-            if (j == userModel.country){
-                spinnerCountry.setSelection(arrayList.indexOf(j))
-            }
-        }
-        println("----->"+arrayList[0]+"<----")
-        val arrayAdapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrayList)
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerCountry.setAdapter(arrayAdapter)
-
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").get().addOnSuccessListener {
-            userModel.country = it.value.toString()
 
+            userModel.country = it.value.toString()
             try {
                 if (it.value.toString() == "Unknown"){
                     Glide.with(binding.root).load(Uri.parse(obj[it.value.toString()].toString())).into(imageCountry)
@@ -112,8 +98,34 @@ class EditProfilActivity : AppCompatActivity() {
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
-
+            for (key in obj.keys()) {
+                arrayList.add(key.toString())
+            }
+            val arrayAdapter: ArrayAdapter<String> =
+                ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrayList)
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerCountry.setAdapter(arrayAdapter)
+            spinnerCountry.setSelection(arrayList.indexOf(it.value.toString()))
         }
+
+        spinnerCountry.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                userModel.country = spinnerCountry.selectedItem.toString()
+                try {
+                    if (arrayList[position] == "Unknown"){
+                        Glide.with(binding.root).load(Uri.parse(obj[arrayList[position]].toString())).into(imageCountry)
+                    } else {
+                        ProfilActivity.Utils().fetchSVG(binding.root.context, obj[arrayList[position]].toString(),imageCountry)
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Another interface callback
+            }
+        }
+
 
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").get().addOnSuccessListener {
             userModel.moyenne = it.value.toString().toDouble()
@@ -160,6 +172,26 @@ class EditProfilActivity : AppCompatActivity() {
         val adRequestTop: AdRequest = AdRequest.Builder().build()
         mAdViewTop.loadAd(adRequestTop)
 
+        binding.imageProfil.setOnClickListener { pickImage() }
+
+
+    }
+
+    private fun pickImage() {
+        val intent = Intent()
+        intent.type = "image/"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 11)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 11 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+            val uri = data.data
+            println("uri : $uri")
+            binding.imageProfil.setImageURI(uri)
+            databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").setValue(uri.toString())
+        }
     }
 
 
