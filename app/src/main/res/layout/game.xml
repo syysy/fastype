@@ -35,8 +35,8 @@
             android:id="@+id/text_player_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 mots"
             android:layout_marginBottom="25dp"
+            android:text="0 words"
             app:layout_constraintBottom_toTopOf="@+id/text_game"
             app:layout_constraintEnd_toEndOf="@+id/text_game" />
 
@@ -88,7 +88,7 @@
             android:layout_height="150dp"
             android:background="@drawable/back"
             android:gravity="center"
-            android:textSize="20sp"
+            android:textSize="25sp"
             android:layout_marginBottom="50dp"
             app:layout_constraintBottom_toTopOf="@+id/adViewBottom"
             app:layout_constraintEnd_toEndOf="parent"
@@ -117,15 +117,17 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <ImageButton
-        android:id = "@+id/button_refresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_retry_button"
-        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout_game"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textInputLayout_game"
-        app:layout_constraintTop_toTopOf="@+id/textInputLayout_game" />
+        <ImageButton
+            android:id="@+id/button_refresh"
+            android:layout_width="64dp"
+            android:layout_height="67dp"
+            android:src="@drawable/ic_retry_button"
+            app:layout_constraintBottom_toBottomOf="@+id/textInputLayout_game"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.318"
+            app:layout_constraintStart_toEndOf="@+id/textInputLayout_game"
+            app:layout_constraintTop_toTopOf="@+id/textInputLayout_game"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageView
             android:id="@+id/imageTimer"

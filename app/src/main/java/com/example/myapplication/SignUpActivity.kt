@@ -51,7 +51,7 @@ class SignUpActivity : AppCompatActivity() {
                             firebaseAuth.currentUser!!.sendEmailVerification()
                             val intent = Intent(this, SignInActivity::class.java)
                             startActivity(intent)
-                        }else {
+                        } else {
                             Toast.makeText(this, it.exception.toString(),Toast.LENGTH_SHORT).show()
                         }
                     }
@@ -64,4 +64,3 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 }
-
