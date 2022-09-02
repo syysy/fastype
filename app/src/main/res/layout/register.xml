@@ -34,11 +34,10 @@
             android:layout_height="wrap_content"
 
             android:layout_marginTop="48dp"
-            android:layout_marginStart="60dp"
             android:text="Pseudo"
             android:textColor="#171717"
             android:textSize="22sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayout_pseudo"
             app:layout_constraintTop_toBottomOf="@+id/text_welcome" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -46,9 +45,10 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            app:boxBackgroundColor="#F4F4F4"
             android:hint="Enter your pseudo"
-            app:layout_constraintStart_toStartOf="@+id/text_pseudo"
+            app:boxBackgroundColor="#F4F4F4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_pseudo">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -68,12 +68,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_marginStart="60dp"
             android:layout_marginTop="20dp"
             android:text="Mail"
             android:textColor="#171717"
             android:textSize="22sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_pseudo"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout_pseudo" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -104,12 +103,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_marginStart="60dp"
             android:layout_marginTop="20dp"
             android:text="Password"
             android:textColor="#171717"
             android:textSize="22sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_pseudo"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout_mail"
             tools:ignore="HardcodedText" />
 
@@ -143,12 +141,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:layout_marginStart="60dp"
-            android:text="Confirm your password"
             android:layout_marginTop="20dp"
+            android:text="Confirm your password"
             android:textColor="#171717"
             android:textSize="22sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/text_pseudo"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout_password"
             tools:ignore="HardcodedText" />
 

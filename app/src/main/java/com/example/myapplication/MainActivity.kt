@@ -1,9 +1,11 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -12,12 +14,14 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.GameBinding
 import com.example.myapplication.databinding.HeaderLayoutBinding
@@ -26,6 +30,9 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import org.json.JSONException
+import org.json.JSONObject
+import org.w3c.dom.Text
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -66,9 +73,10 @@ class MainActivity : AppCompatActivity() {
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").setValue(userModel.moyenne)
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").setValue(userModel.numberGamePlayed)
             binding.timer.text = "01:00"
-            val oldRank = StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1
-            popupEndGame(oldRank)
-            stopGame()
+            val oldRank = getRank()
+            StatsRepository().updateDate { popupEndGame(oldRank)
+                stopGame()
+            }
         }
     }
 
@@ -130,7 +138,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
 
-
         binding = GameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -144,7 +151,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,ProfilActivity::class.java)
             startActivity(intent)
         }
-        // bind le nombre de mots trouvés par le joueur durant le jeu en temps réel dans le textPlayerScore sans firebase
 
 
         // header changements
@@ -167,7 +173,7 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
 
-       /* databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
+       databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
             userModel.name = it.value.toString()
             textPlayerName.text = userModel.name
             name.text = userModel.name
@@ -199,7 +205,7 @@ class MainActivity : AppCompatActivity() {
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
             userModel.numberGamePlayed = it.value.toString().toInt()
-        }*/
+        }
         //afficher les players de la listPlayer du singleton statsrepository
 
         textPlayerRank.text = "Rank : " + getRank()
@@ -254,17 +260,39 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("SetTextI18n")
     fun popupEndGame(oldRank: Int) {
-        StatsRepository().updateDate {  }
-        val popupBuilder = AlertDialog.Builder(this)
-        val newRank = StatsRepository.Singleton.listPlayer.indexOf(userModel) + 1
-        popupBuilder.setMessage("Recap:      \n"+ "score: ${this.scoreOfGame}\n" + "          " + "rank: $newRank" + if (oldRank > newRank){ " ▲ ${oldRank - newRank}"} else{""})
-            .setCancelable(false)
-            .setPositiveButton("ok", DialogInterface.OnClickListener{ popup, _ -> popup.cancel() })
-            .setNegativeButton("see leaderboard", DialogInterface.OnClickListener { _, _ -> StatsRepository().updateDate { startActivity(Intent(this, LeaderBoardActivity::class.java)) } })
-        val alert = popupBuilder.create()
-        alert.setTitle("Game finished !")
-        alert.show()
+        val newRank = getRank()
+        val popupBuilder = Dialog(this)
+        popupBuilder.setContentView(R.layout.custom_dialog_endgame)
+        // all components of the popup
+        val score = popupBuilder.findViewById<TextView>(R.id.popup_score)
+        val bestScore = popupBuilder.findViewById<TextView>(R.id.popup_best_score)
+        val mean  = popupBuilder.findViewById<TextView>(R.id.popup_mean)
+        val rank  = popupBuilder.findViewById<TextView>(R.id.popup_rank)
+
+        score.text = "Score : $scoreOfGame"
+        bestScore.text = "Best score : ${userModel.bestGame}"
+        mean.text = "Mean : ${userModel.moyenne}"
+        if (oldRank > newRank) {
+            val up : Int = oldRank - newRank
+            rank.text = "Rank : $newRank (▲ $up)"
+        } else {
+            rank.text = "Rank : $oldRank"
+        }
+
+        val buttonRestart = popupBuilder.findViewById<Button>(R.id.popup_button_restart)
+        val buttonLeaderBoard = popupBuilder.findViewById<Button>(R.id.popup_button_leaderboard)
+
+        buttonRestart.setOnClickListener {
+            popupBuilder.dismiss()
+        }
+        buttonLeaderBoard.setOnClickListener {
+            popupBuilder.dismiss()
+            startActivity(Intent(this,LeaderBoardActivity::class.java))
+        }
+
+        popupBuilder.show()
     }
 
     fun disconnect(){
@@ -362,6 +390,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
 
 
 

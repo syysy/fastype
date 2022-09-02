@@ -179,18 +179,13 @@ class EditProfilActivity : AppCompatActivity() {
             true
         }
 
-        val mAdViewTop : AdView = binding.adViewTop
-        val adRequestTop: AdRequest = AdRequest.Builder().build()
-        mAdViewTop.loadAd(adRequestTop)
 
         binding.imageProfil.setOnClickListener { pickImage() }
 
         binding.Save.setOnClickListener {
             if (file != null  && file.toString() != userModel.imageAvatarUrl) {
                 uploadImage(file!!){
-
                     val newCountry = spinnerCountry.selectedItem.toString()
-                    val country = userModel.country
                     if (textPseudo.text.toString() != userModel.name){
                         databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").setValue(textPseudo.text.toString())
                         userModel.name = textPseudo.text.toString()
