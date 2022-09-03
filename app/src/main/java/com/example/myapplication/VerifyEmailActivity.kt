@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.myapplication.databinding.ForgotyourpasswordBinding
 import com.example.myapplication.databinding.LoginBinding
 import com.example.myapplication.databinding.VerifyemailBinding
@@ -19,6 +20,7 @@ class VerifyEmailActivity : AppCompatActivity() {
         supportActionBar?.hide()
         super.onCreate(savedInstanceState)
         binding = VerifyemailBinding.inflate(layoutInflater)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()

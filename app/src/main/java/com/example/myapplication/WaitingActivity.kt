@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.GameBinding
 import com.example.myapplication.databinding.WaitingScreenBinding
@@ -19,12 +20,13 @@ class WaitingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         binding = WaitingScreenBinding.inflate(layoutInflater)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
         if (firebaseAuth.currentUser != null){
             StatsRepository().updateDate { startActivity(Intent(this,MainActivity::class.java)) }
-        }else{
+        }else {
             startActivity(Intent(this,SignInActivity::class.java))
         }
     }

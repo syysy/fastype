@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.LoginBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -20,6 +21,7 @@ class SignInActivity : AppCompatActivity() {
         supportActionBar?.hide()
         super.onCreate(savedInstanceState)
         binding = LoginBinding.inflate(layoutInflater)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()

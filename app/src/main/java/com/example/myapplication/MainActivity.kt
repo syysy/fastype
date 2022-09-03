@@ -21,6 +21,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
 import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.GameBinding
@@ -139,6 +140,7 @@ class MainActivity : AppCompatActivity() {
 
 
         binding = GameBinding.inflate(layoutInflater)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
 
         this.listStringWordsCsv = loadWordsCSV()
@@ -264,6 +266,7 @@ class MainActivity : AppCompatActivity() {
     fun popupEndGame(oldRank: Int) {
         val newRank = getRank()
         val popupBuilder = Dialog(this)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         popupBuilder.setContentView(R.layout.custom_dialog_endgame)
         // all components of the popup
         val score = popupBuilder.findViewById<TextView>(R.id.popup_score)
