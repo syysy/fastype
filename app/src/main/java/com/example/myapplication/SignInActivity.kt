@@ -47,7 +47,7 @@ class SignInActivity : AppCompatActivity() {
                         if (firebaseAuth.currentUser!!.isEmailVerified) {
                             //lancement de la MainActivity + update du ladder
                             StatsRepository().updateDate { startActivity(Intent(this,MainActivity::class.java)) }
-                        }else{
+                        } else {
                             val intent = Intent(this, VerifyEmailActivity::class.java)
                             startActivity(intent)
                         }
@@ -67,7 +67,7 @@ class SignInActivity : AppCompatActivity() {
             if (firebaseAuth.currentUser!!.isEmailVerified) {
                 StatsRepository().updateDate { startActivity(Intent(this, MainActivity::class.java)) }
             }
-        }else{
+        } else {
             firebaseAuth.signOut()
         }
     }

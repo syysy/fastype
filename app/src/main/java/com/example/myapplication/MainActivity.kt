@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity() {
         val imageCountry : ImageView = findViewById(R.id.image_player_country)
 
         // récup du currentUser
-        userModel = ProfilModel("","",0.0,0,"")
+        /*userModel = ProfilModel("","",0.0,0,"")
 
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity() {
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
             userModel.numberGamePlayed = it.value.toString().toInt()
-        }
+        }*/
         //afficher les players de la listPlayer du singleton statsrepository
 
         textPlayerRank.text = "Rank : " + getRank()
@@ -231,12 +231,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.navView.setNavigationItemSelectedListener {
             when(it.itemId){
-                R.id.item_profil -> startActivity(Intent(this,ProfilActivity::class.java))
-                R.id.item_leaderboard -> StatsRepository().updateDate { startActivity(Intent(this,LeaderBoardActivity::class.java)) }
-                R.id.item_home -> StatsRepository().updateDate {  startActivity(Intent(this,MainActivity::class.java)) }
+                R.id.item_profil -> startActivity(Intent(this, ProfilActivity::class.java))
+                R.id.item_leaderboard -> StatsRepository().updateDate { startActivity(Intent(this, LeaderBoardActivity::class.java)) }
+                R.id.item_home -> StatsRepository().updateDate {  startActivity(Intent(this, MainActivity::class.java)) }
                 R.id.item_logout -> dialog()
-                //R.id.item_settings ->
-                R.id.item_rate -> startActivity(Intent(this,WaitingActivity::class.java))
+                R.id.item_settings -> startActivity(Intent(this, SettingsActivity::class.java))
+                R.id.item_rate -> startActivity(Intent(this, WaitingActivity::class.java))
                 //R.id.item_share ->
             }
             true

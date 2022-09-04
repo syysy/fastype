@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
@@ -15,6 +16,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
     private lateinit var binding: ForgotyourpasswordBinding
     private lateinit var firebaseAuth: FirebaseAuth
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         supportActionBar?.hide()
         super.onCreate(savedInstanceState)
@@ -24,10 +26,18 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance()
 
-
-        binding.textBackToLogin.setOnClickListener {
-            val intent = Intent(this, SignInActivity::class.java)
-            startActivity(intent)
+        if (firebaseAuth.currentUser != null) {
+            binding.textInputEmail.setText(firebaseAuth.currentUser?.email)
+            binding.textBackToLogin.text = "Back to settings"
+            binding.textBackToLogin.setOnClickListener {
+                startActivity(Intent(this, SettingsActivity::class.java))
+                finish()
+            }
+        } else {
+            binding.textBackToLogin.setOnClickListener {
+                val intent = Intent(this, SignInActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         binding.buttonSubmit.setOnClickListener {
@@ -40,8 +50,8 @@ class ForgotPasswordActivity : AppCompatActivity() {
                     }
                     Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
                 }
-            }else{
-                Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Empty Field Are not Allowed !!", Toast.LENGTH_SHORT).show()
             }
         }
     }
