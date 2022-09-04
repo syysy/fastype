@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity() {
         val imageCountry : ImageView = findViewById(R.id.image_player_country)
 
         // récup du currentUser
-        /*userModel = ProfilModel("","",0.0,0,"")
+        userModel = ProfilModel("","",0.0,0,"")
 
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity() {
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
             userModel.numberGamePlayed = it.value.toString().toInt()
-        }*/
+        }
         //afficher les players de la listPlayer du singleton statsrepository
 
         textPlayerRank.text = "Rank : " + getRank()
@@ -237,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.item_logout -> dialog()
                 R.id.item_settings -> startActivity(Intent(this, SettingsActivity::class.java))
                 R.id.item_rate -> startActivity(Intent(this, WaitingActivity::class.java))
-                //R.id.item_share ->
+                R.id.item_share -> sendEmailToggle()
             }
             true
         }
@@ -302,6 +302,14 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth.signOut()
         startActivity(Intent(this,SignInActivity::class.java))
     }
+
+    private fun sendEmailToggle(){
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "plain/text"
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("fastype.app@gmail.com"))
+        startActivity(Intent.createChooser(intent, ""))
+    }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)){

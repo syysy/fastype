@@ -6,9 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.text.Editable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -17,27 +14,20 @@ import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.EditProfilBinding
 import com.example.myapplication.databinding.HeaderLayoutBinding
 import com.example.myapplication.objets.ProfilModel
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.tasks.Continuation
-import com.google.android.gms.tasks.Task
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.UploadTask
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
-import java.net.URI
 import java.nio.charset.Charset
 import java.util.*
 
@@ -67,6 +57,8 @@ class EditProfilActivity : AppCompatActivity() {
         val email : TextView = view.findViewById(R.id.text_user_mail)
         val image : ImageView = view.findViewById(R.id.image_user)
         headerLayout = HeaderLayoutBinding.inflate(layoutInflater)
+
+
         // Changement de l'image du profil
         userModel = ProfilModel("","",0.0,0,"")
         firebaseAuth = FirebaseAuth.getInstance()
@@ -185,6 +177,9 @@ class EditProfilActivity : AppCompatActivity() {
         binding.imageProfil.setOnClickListener { pickImage() }
 
         binding.Save.setOnClickListener {
+            // visibilty on de la progress bar
+            binding.progressBar.visibility = View.VISIBLE
+
             if (file != null  && file.toString() != userModel.imageAvatarUrl) {
                 uploadImage(file!!){
                     val newCountry = spinnerCountry.selectedItem.toString()
