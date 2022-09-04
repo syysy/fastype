@@ -45,7 +45,7 @@ class SignInActivity : AppCompatActivity() {
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
                         if (firebaseAuth.currentUser!!.isEmailVerified) {
-                            //lancement de la MainActivity + update du ladder
+                            // lancement de la MainActivity + update du ladder
                             StatsRepository().updateDate { startActivity(Intent(this,MainActivity::class.java)) }
                         } else {
                             val intent = Intent(this, VerifyEmailActivity::class.java)

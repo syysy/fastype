@@ -143,6 +143,12 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
 
+        toggle = ActionBarDrawerToggle(this,binding.drawerLayout,R.string.open,R.string.close)
+        binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
+        toggle.syncState()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        NavBar(this)
+
         this.listStringWordsCsv = loadWordsCSV()
         this.setWordsText()
 
@@ -169,13 +175,14 @@ class MainActivity : AppCompatActivity() {
         val textPlayerRank : TextView = findViewById(R.id.text_player_rank)
         val imageCountry : ImageView = findViewById(R.id.image_player_country)
 
+
         // récup du currentUser
         userModel = ProfilModel("","",0.0,0,"")
 
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
 
-       databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
+       /*databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
             userModel.name = it.value.toString()
             textPlayerName.text = userModel.name
             name.text = userModel.name
@@ -207,7 +214,7 @@ class MainActivity : AppCompatActivity() {
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
             userModel.numberGamePlayed = it.value.toString().toInt()
-        }
+        }*/
         //afficher les players de la listPlayer du singleton statsrepository
 
         textPlayerRank.text = "Rank : " + getRank()
@@ -222,44 +229,13 @@ class MainActivity : AppCompatActivity() {
         val adRequestTop: AdRequest = AdRequest.Builder().build()
         mAdViewTop.loadAd(adRequestTop)
 
-        // toggle en haut à gauche
-
-        toggle = ActionBarDrawerToggle(this,binding.drawerLayout,R.string.open,R.string.close)
-        binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
-        toggle.syncState()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        binding.navView.setNavigationItemSelectedListener {
-            when(it.itemId){
-                R.id.item_profil -> startActivity(Intent(this, ProfilActivity::class.java))
-                R.id.item_leaderboard -> StatsRepository().updateDate { startActivity(Intent(this, LeaderBoardActivity::class.java)) }
-                R.id.item_home -> StatsRepository().updateDate {  startActivity(Intent(this, MainActivity::class.java)) }
-                R.id.item_logout -> dialog()
-                R.id.item_settings -> startActivity(Intent(this, SettingsActivity::class.java))
-                R.id.item_rate -> startActivity(Intent(this, WaitingActivity::class.java))
-                R.id.item_share -> sendEmailToggle()
-            }
-            true
-        }
-
         // jeu
-
         this.binding.textInputGame.addTextChangedListener(this.Jeu)
 
 
     }
 
-    // Dialog box disconnect
-    fun dialog() {
-        val dialogBuilder = AlertDialog.Builder(this)
-        dialogBuilder.setMessage("Do you want to disconnect ?")
-            .setCancelable(false)
-            .setPositiveButton("Yes", DialogInterface.OnClickListener{ _, _ -> disconnect()})
-            .setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, _ -> dialog.cancel() })
-        val alert = dialogBuilder.create()
-        alert.setTitle("Disconnect ?")
-        alert.show()
-    }
+
 
 
     @SuppressLint("SetTextI18n")
@@ -298,10 +274,7 @@ class MainActivity : AppCompatActivity() {
         popupBuilder.show()
     }
 
-    fun disconnect(){
-        firebaseAuth.signOut()
-        startActivity(Intent(this,SignInActivity::class.java))
-    }
+
 
     private fun sendEmailToggle(){
         val intent = Intent(Intent.ACTION_SEND)

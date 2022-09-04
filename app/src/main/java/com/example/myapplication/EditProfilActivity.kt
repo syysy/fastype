@@ -50,8 +50,15 @@ class EditProfilActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
 
+        toggle = ActionBarDrawerToggle(this, binding.drawerLayout,R.string.open,R.string.close)
+        binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
+        toggle.syncState()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        NavBar(this)
+
         val inflater: LayoutInflater = this@EditProfilActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val viewGroup : ViewGroup = findViewById (R.id.nav_view)
+        val viewGroup : ViewGroup = findViewById(R.id.nav_view)
         val view = inflater.inflate(R.layout.header_layout, viewGroup)
         val name : TextView = view.findViewById(R.id.text_username)
         val email : TextView = view.findViewById(R.id.text_user_mail)
@@ -159,19 +166,6 @@ class EditProfilActivity : AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        binding.navView.setNavigationItemSelectedListener {
-            when(it.itemId){
-                R.id.item_profil -> startActivity(Intent(this,ProfilActivity::class.java))
-                R.id.item_leaderboard -> StatsRepository().updateDate { startActivity(Intent(this,LeaderBoardActivity::class.java)) }
-                R.id.item_home -> StatsRepository().updateDate {  startActivity(Intent(this,MainActivity::class.java)) }
-                R.id.item_logout -> MainActivity().dialog()
-                //R.id.item_settings ->
-                R.id.item_rate -> startActivity(Intent(this,WaitingActivity::class.java))
-                //R.id.item_share ->
-            }
-            true
-        }
 
 
         binding.imageProfil.setOnClickListener { pickImage() }

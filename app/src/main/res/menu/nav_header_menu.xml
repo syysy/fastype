@@ -40,15 +40,16 @@
                 android:title="Share"
                 android:icon ="@drawable/ic_share"/>
             <item
-                android:id="@+id/item_rate"
-                android:title="Rate us"
+                android:id="@+id/item_sendEmail"
+                android:title="Contact us"
                 android:icon="@drawable/ic_rate"/>
         </menu>
 
     </item>
 
     <item
-        android:title="Fastype">
+        android:id="@+id/item_fastypeVersion"
+        android:title="">
         <menu>
             <item
                 android:title=""

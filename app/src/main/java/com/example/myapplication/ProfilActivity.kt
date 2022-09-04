@@ -50,6 +50,11 @@ open class ProfilActivity : AppCompatActivity(){
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
 
+        toggle = ActionBarDrawerToggle(this,binding.drawerLayout,R.string.open,R.string.close)
+        binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
+        toggle.syncState()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        NavBar(this)
 
         // header changements
         val inflater: LayoutInflater = this@ProfilActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -127,25 +132,6 @@ open class ProfilActivity : AppCompatActivity(){
             startActivity(Intent(this, EditProfilActivity::class.java))
         }
 
-        // toggle menu
-
-        toggle = ActionBarDrawerToggle(this,binding.drawerLayout,R.string.open,R.string.close)
-        binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
-        toggle.syncState()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        binding.navView.setNavigationItemSelectedListener {
-            when(it.itemId){
-                R.id.item_profil -> startActivity(Intent(this,ProfilActivity::class.java))
-                R.id.item_leaderboard -> StatsRepository().updateDate { startActivity(Intent(this,LeaderBoardActivity::class.java)) }
-                R.id.item_home -> StatsRepository().updateDate {  startActivity(Intent(this,MainActivity::class.java)) }
-                R.id.item_logout -> MainActivity().dialog()
-                //R.id.item_settings ->
-                R.id.item_rate -> startActivity(Intent(this,WaitingActivity::class.java))
-                //R.id.item_share ->
-            }
-            true
-        }
 
         val mAdViewTop : AdView = binding.adViewTop
         val adRequestTop: AdRequest = AdRequest.Builder().build()
