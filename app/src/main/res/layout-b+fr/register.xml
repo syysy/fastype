@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignUpActivity"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/text_welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bienvenue"
+
+            android:textColor="#000000"
+            android:textSize="38sp"
+            android:layout_marginTop="75dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="HardcodedText,MissingConstraints" />
+
+        <!-- pseudo -->
+        <TextView
+            android:id="@+id/text_pseudo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="48dp"
+            android:text="Pseudo"
+            android:textColor="#171717"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayout_pseudo"
+            app:layout_constraintTop_toBottomOf="@+id/text_welcome" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_pseudo"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:hint="Entrez votre pseudo"
+            app:boxBackgroundColor="#F4F4F4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_pseudo">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInput_pseudo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+        <!-- mail -->
+
+        <TextView
+            android:id="@+id/text_mail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+            android:text="Mail"
+            android:textColor="#171717"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="@+id/text_pseudo"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_pseudo" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_mail"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="300dp"
+            app:boxBackgroundColor="#F4F4F4"
+            android:layout_height="wrap_content"
+            android:hint="Entrez votre mail"
+            app:layout_constraintStart_toStartOf="@+id/text_mail"
+            app:layout_constraintTop_toBottomOf="@+id/text_mail">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInput_mail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <!-- Password -->
+
+
+        <TextView
+            android:id="@+id/text_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+            android:text="Password"
+            android:textColor="#171717"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="@+id/text_pseudo"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_mail"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_password"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="300dp"
+            app:boxBackgroundColor="#F4F4F4"
+            android:layout_height="wrap_content"
+            android:hint="Entrez votre mot de passe"
+            app:layout_constraintStart_toStartOf="@+id/text_pseudo"
+            app:layout_constraintTop_toBottomOf="@+id/text_password"
+            tools:ignore="HardcodedText"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInput_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        <!-- Password confirm -->
+
+        <TextView
+            android:id="@+id/text_passwordConfirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+            android:text="Confirm your password"
+            android:textColor="#171717"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="@+id/text_pseudo"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_password"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout_passwordConfirm"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="300dp"
+            app:boxBackgroundColor="#F4F4F4"
+            android:layout_height="wrap_content"
+            android:hint="Confirmez votre mot de passe"
+            app:layout_constraintStart_toStartOf="@+id/text_pseudo"
+            app:layout_constraintTop_toBottomOf="@+id/text_passwordConfirm"
+            tools:ignore="HardcodedText"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInput_passwordConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/button_createAccount"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@android:color/black"
+            android:text="Créer mon compte"
+            app:layout_constraintStart_toStartOf="@+id/textInputLayout_passwordConfirm"
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout_passwordConfirm"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/text_backToLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retour à la page de connexion"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintEnd_toEndOf="@+id/button_createAccount"
+            app:layout_constraintTop_toBottomOf="@+id/button_createAccount"
+            tools:ignore="HardcodedText" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

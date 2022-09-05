@@ -5,43 +5,43 @@
 
     <item
         android:id="@+id/item_home"
-        android:title="Game"
+        android:title="Jeu"
         android:icon="@drawable/ic_controller_foreground"/>
     <item
         android:id="@+id/item_profil"
-        android:title="Profile"
+        android:title="Profil"
         android:icon="@drawable/ic_profil"/>
     <item
         android:id="@+id/item_leaderboard"
-        android:title="Leaderboard"
+        android:title="Classement"
         android:icon="@drawable/ic_leaderboard"/>
 
 
-    <item android:title="Profile">
+    <item android:title="Profil">
 
         <menu>
             <item
                 android:id="@+id/item_logout"
-                android:title="Logout"
+                android:title="Déconnexion"
                 android:icon="@drawable/ic_logout"
                 />
             <item
                 android:id="@+id/item_settings"
-                android:title="Settings"
+                android:title="Paramètres"
                 android:icon="@drawable/ic_settings"/>
         </menu>
 
     </item>
 
-    <item android:title="Help us !">
+    <item android:title="Aidez nous !">
         <menu>
             <item
                 android:id="@+id/item_share"
-                android:title="Share"
+                android:title="Partagez"
                 android:icon ="@drawable/ic_share"/>
             <item
                 android:id="@+id/item_sendEmail"
-                android:title="Contact us"
+                android:title="Nous contacter"
                 android:icon="@drawable/ic_rate"/>
         </menu>
 
