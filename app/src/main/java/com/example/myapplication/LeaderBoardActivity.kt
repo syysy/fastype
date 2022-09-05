@@ -46,7 +46,7 @@ class LeaderBoardActivity :AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        NavBar(this)
+        NavBar(this).navItems(binding.navView)
 
         val verticalRecyclerView =
            this.findViewById<RecyclerView>(R.id.vertical_recyclerView)

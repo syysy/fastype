@@ -11,18 +11,25 @@ import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.LeaderBoardActivity
 import com.example.myapplication.MainActivity
 import com.example.myapplication.objets.ProfilModel
 import com.example.myapplication.R
 import com.example.myapplication.databinding.LeaderboardBinding
 import com.example.myapplication.databinding.LeaderboardVerticalProfilesBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 
 class LeaderBoardAdapter(
     private val context: LeaderBoardActivity,
     private val listPlayer : List<ProfilModel>,
     private val layoutId : Int
     ) : RecyclerView.Adapter<LeaderBoardAdapter.ViewHolder>(){
+
+
+    private lateinit var databaseRef : DatabaseReference
+    private lateinit var firebaseAuth : FirebaseAuth
 
     //boite pour ranger tout les composants à controler
 
@@ -57,12 +64,34 @@ class LeaderBoardAdapter(
             )  // si le joueur est le troisième on lui donne une couleur de fond différente
         }
 
+        // mettre à jour les players en fonction des potentiels changements de nom/ image de profils
+
+        firebaseAuth = FirebaseAuth.getInstance()
+        databaseRef = FirebaseDatabase.getInstance().getReference("players")
+        databaseRef.addListenerForSingleValueEvent( object :
+            ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                // recolter la liste
+                for (i in p0.children) {
+                    val user = i.getValue(ProfilModel::class.java)
+                    if (user != null) {
+                        if (user.email == currentProfil.email){
+                            // si l'email du joueur est le même que celui de la liste
+                            // on met à jour les données
+                            holder.profilName.text = user.name
+                            Glide.with(context).load(user.imageAvatarUrl).into(holder.profilImage)
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {}
+        })
+
         // récuperer l'image à partir de son lien avec la librairie glide
         // le context contient toutes les informations de l'appli
-        Glide.with(context).load(Uri.parse(currentProfil.imageAvatarUrl)).into(holder.profilImage)
-
         // modif les valeurs de base par les valeurs du profil
-        holder.profilName?.text = currentProfil.name
+
         holder.profilBestGame?.text = currentProfil.bestGame.toString() + " mots/minutes"
         holder.profilRank?.text = (position + 1).toString() + "."
 

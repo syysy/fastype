@@ -147,7 +147,7 @@ class MainActivity : AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        NavBar(this)
+        NavBar(this).navItems(binding.navView)
 
         this.listStringWordsCsv = loadWordsCSV()
         this.setWordsText()
@@ -182,7 +182,7 @@ class MainActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
 
-       /*databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
+       databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
             userModel.name = it.value.toString()
             textPlayerName.text = userModel.name
             name.text = userModel.name
@@ -214,7 +214,7 @@ class MainActivity : AppCompatActivity() {
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
             userModel.numberGamePlayed = it.value.toString().toInt()
-        }*/
+        }
         //afficher les players de la listPlayer du singleton statsrepository
 
         textPlayerRank.text = "Rank : " + getRank()

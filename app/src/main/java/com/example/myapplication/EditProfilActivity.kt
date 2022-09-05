@@ -55,7 +55,7 @@ class EditProfilActivity : AppCompatActivity() {
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        NavBar(this)
+        NavBar(this).navItems(binding.navView)
 
         val inflater: LayoutInflater = this@EditProfilActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewGroup : ViewGroup = findViewById(R.id.nav_view)
