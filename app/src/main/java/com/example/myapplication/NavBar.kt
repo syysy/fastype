@@ -26,6 +26,7 @@ class NavBar(private val context: Context): AppCompatActivity() {
     private val version = "1.0.0"
 
     fun navItems(navBar: NavigationView) {
+
         navBar.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.item_profil -> context.startActivity(Intent(this.context, ProfilActivity::class.java))
