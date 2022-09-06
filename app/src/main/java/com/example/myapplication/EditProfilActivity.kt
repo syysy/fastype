@@ -19,6 +19,8 @@ import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.EditProfilBinding
 import com.example.myapplication.databinding.HeaderLayoutBinding
 import com.example.myapplication.objets.ProfilModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -169,6 +171,7 @@ class EditProfilActivity : AppCompatActivity() {
 
 
         binding.imageProfil.setOnClickListener { pickImage() }
+
 
         binding.Save.setOnClickListener {
             // visibilty on de la progress bar

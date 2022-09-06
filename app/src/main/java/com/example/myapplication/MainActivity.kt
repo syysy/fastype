@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity() {
 
 
         binding = GameBinding.inflate(layoutInflater)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(binding.root)
 
         toggle = ActionBarDrawerToggle(this,binding.drawerLayout,R.string.open,R.string.close)
@@ -202,11 +202,11 @@ class MainActivity : AppCompatActivity() {
         // récup du currentUser
         userModel = ProfilModel("","",0.0,0,"")
 
-        /*firebaseAuth = FirebaseAuth.getInstance()
+        firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
 
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
-            userModel.name = it.value.toString()
+       databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
+            userModel.name = it.value.toString ()
             textPlayerName.text = userModel.name
             name.text = userModel.name
         }
@@ -237,7 +237,7 @@ class MainActivity : AppCompatActivity() {
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
             userModel.numberGamePlayed = it.value.toString().toInt()
-        }*/
+        }
         //afficher les players de la listPlayer du singleton statsrepository
         when(deviceLanguage) {
             "en" -> {
@@ -274,7 +274,7 @@ class MainActivity : AppCompatActivity() {
     fun popupEndGame(oldRank: Int) {
         val newRank = getRank()
         val popupBuilder = Dialog(this)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         popupBuilder.setContentView(R.layout.custom_dialog_endgame)
         // all components of the popup
         val score = popupBuilder.findViewById<TextView>(R.id.popup_score)
@@ -306,14 +306,6 @@ class MainActivity : AppCompatActivity() {
         popupBuilder.show()
     }
 
-
-
-    private fun sendEmailToggle(){
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.type = "plain/text"
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("fastype.app@gmail.com"))
-        startActivity(Intent.createChooser(intent, ""))
-    }
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

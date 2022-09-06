@@ -1,28 +1,36 @@
 package com.example.myapplication
 
-import android.R
-import android.app.LocaleManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.LocaleList
+import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.annotation.RequiresApi
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
+import com.example.myapplication.databinding.HeaderLayoutBinding
 import com.example.myapplication.databinding.SettingsBinding
-import org.json.JSONException
-import java.util.*
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: SettingsBinding
     private lateinit var toggle: ActionBarDrawerToggle
+    private lateinit var headerLayout : HeaderLayoutBinding
+    private lateinit var databaseRef : DatabaseReference
+    private lateinit var firebaseAuth: FirebaseAuth
     private val languages = arrayListOf<String>("Français", "English")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +39,7 @@ class SettingsActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
 
-        toggle = ActionBarDrawerToggle(this, binding.drawerLayout, com.example.myapplication.R.string.open, com.example.myapplication.R.string.close)
+        toggle = ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open, R.string.close)
         binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -41,15 +49,48 @@ class SettingsActivity : AppCompatActivity() {
             resetPassword()
         }
 
+        firebaseAuth = FirebaseAuth.getInstance()
+        databaseRef = FirebaseDatabase.getInstance().getReference("players")
+
+        val inflater: LayoutInflater = this@SettingsActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val viewGroup : ViewGroup = findViewById(R.id.nav_view)
+        val view = inflater.inflate(R.layout.header_layout, viewGroup)
+        val name : TextView = view.findViewById(R.id.text_username)
+        val email : TextView = view.findViewById(R.id.text_user_mail)
+        val image : ImageView = view.findViewById(R.id.image_user)
+        headerLayout = HeaderLayoutBinding.inflate(layoutInflater)
+
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
+            name.text = it.value.toString()
+        }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").get().addOnSuccessListener {
+            email.text = it.value.toString()
+        }
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
+            Glide.with(headerLayout.root).load(Uri.parse(it.value.toString())).into(image)
+        }
+
+        // Pubs
+
+        val mAdViewBottom : AdView = binding.adViewBotSettings
+        val adRequestBottom: AdRequest = AdRequest.Builder().build()
+        mAdViewBottom.loadAd(adRequestBottom)
+
+        val mAdViewTop : AdView = binding.adViewTopSettings
+        val adRequestTop: AdRequest = AdRequest.Builder().build()
+        mAdViewTop.loadAd(adRequestTop)
+
+
+        val languages = arrayListOf<String>("Français", "English")
 
         val arrayAdapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(this, R.layout.simple_spinner_item, languages)
+            ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, languages)
 
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerLanguages.setAdapter(arrayAdapter)
         binding.spinnerLanguages.setSelection(0)
 
-        binding.spinnerLanguages.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        /*binding.spinnerLanguages.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val language = parent.getItemAtPosition(position).toString()
                 if (language == "Français") {
@@ -61,7 +102,15 @@ class SettingsActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>) {
                 // Another interface callback
             }
+        }*/
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (toggle.onOptionsItemSelected(item)){
+            return true
         }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onStart() {
@@ -71,5 +120,4 @@ class SettingsActivity : AppCompatActivity() {
     fun resetPassword() {
         startActivity(Intent(this, ForgotPasswordActivity::class.java))
     }
-
 }
