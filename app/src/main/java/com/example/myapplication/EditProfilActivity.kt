@@ -50,7 +50,7 @@ class EditProfilActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
 
-        toggle = ActionBarDrawerToggle(this, binding.drawerLayout,R.string.open,R.string.close)
+        toggle = ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open, R.string.close)
         binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

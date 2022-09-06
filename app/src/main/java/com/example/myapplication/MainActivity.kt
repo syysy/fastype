@@ -39,6 +39,7 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.time.LocalDateTime
+import java.util.*
 import kotlin.random.Random
 import kotlin.streams.toList
 
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     private var listStringWordsCsv: MutableList<String>? = null
     private lateinit var userModel : ProfilModel
     private var scoreOfGame = 0
+    private val deviceLanguage = Locale.getDefault().getLanguage()
 
     private val Timer = object : CountDownTimer(60000, 1000) {
         var run = false
@@ -68,12 +70,10 @@ class MainActivity : AppCompatActivity() {
         @RequiresApi(Build.VERSION_CODES.N)
         @SuppressLint("SetTextI18n")
         override fun onFinish() {
-            this.run = false
             userModel.newGame(scoreOfGame)
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").setValue(userModel.bestGame)
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").setValue(userModel.moyenne)
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").setValue(userModel.numberGamePlayed)
-            binding.timer.text = "01:00"
             val oldRank = getRank()
             StatsRepository().updateDate { popupEndGame(oldRank)
                 stopGame()
@@ -99,7 +99,18 @@ class MainActivity : AppCompatActivity() {
                 this@MainActivity.listWordsCsvGame.removeAt(0) // suppression du premier élément de la liste, qui viens d'être trouvé
                 binding.textInputGame.setText("") // reset du champ de texte
                 setWordsText() // mise à jour de la liste des mots non trouvés
-                binding.textPlayerScore.text = "$scoreOfGame words" // mise à jour du score
+                when(deviceLanguage) {
+                    "en" -> {
+                        binding.textPlayerScore.text = "$scoreOfGame words"
+                    }
+                    "fr" -> {
+                        binding.textPlayerScore.text = "$scoreOfGame mots"
+                    }
+                    else -> {
+                        binding.textPlayerScore.text = "$scoreOfGame words"
+                    }
+                }
+                 // mise à jour du score
             } else if (text == "") {
                 binding.textGame.background = getDrawable(R.drawable.back) // si le champ de texte est vide, on change la couleur de fond en blanc
             } else if (this@MainActivity.listWordsCsvGame[0].startsWith(text)) {
@@ -129,7 +140,19 @@ class MainActivity : AppCompatActivity() {
         this.Timer.run = false
         this.scoreOfGame = 0
         this.binding.timer.text = "01:00"
+        when(deviceLanguage) {
+            "en" -> {
+                binding.textPlayerScore.text = "0 words"
+            }
+            "fr" -> {
+                binding.textPlayerScore.text = "0 mots"
+            }
+            else -> {
+                binding.textPlayerScore.text = "0 words"
+            }
+        }
         this.loadWordsCSV()
+        this.setWordsText()
     }
 
 
@@ -149,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         NavBar(this).navItems(binding.navView)
 
-        this.listStringWordsCsv = loadWordsCSV()
+        this.loadWordsCSV()
         this.setWordsText()
 
         binding.buttonRefresh.setOnClickListener {
@@ -179,10 +202,10 @@ class MainActivity : AppCompatActivity() {
         // récup du currentUser
         userModel = ProfilModel("","",0.0,0,"")
 
-        firebaseAuth = FirebaseAuth.getInstance()
+        /*firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
 
-       databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
             userModel.name = it.value.toString()
             textPlayerName.text = userModel.name
             name.text = userModel.name
@@ -214,13 +237,22 @@ class MainActivity : AppCompatActivity() {
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
             userModel.numberGamePlayed = it.value.toString().toInt()
-        }
+        }*/
         //afficher les players de la listPlayer du singleton statsrepository
+        when(deviceLanguage) {
+            "en" -> {
+                binding.textPlayerRank.text = "Rank : " + getRank()
+            }
+            "fr" -> {
+                binding.textPlayerRank.text = "Rang : " + getRank()
+            }
+            else -> {
+                binding.textPlayerRank.text = "Rank : " + getRank()
+            }
+        }
 
-        textPlayerRank.text = "Rank : " + getRank()
 
         // Pubs
-
         val mAdViewBottom : AdView = binding.adViewBottom
         val adRequestBottom: AdRequest = AdRequest.Builder().build()
         mAdViewBottom.loadAd(adRequestBottom)
@@ -307,7 +339,7 @@ class MainActivity : AppCompatActivity() {
 
 
     @RequiresApi(Build.VERSION_CODES.N)
-    fun loadWordsCSV(): MutableList<String> {
+    fun loadWordsCSV() {
         this.listWordsCsvGame.clear()
 
         // ouvre le fichier words.csv
@@ -340,14 +372,14 @@ class MainActivity : AppCompatActivity() {
 
             listWordsString.add(line)
         }
-        return listWordsString
+
+        this.listStringWordsCsv = listWordsString
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun setWordsText() {
         binding.textGame.text = this.listStringWordsCsv!!.joinToString("")
     }
-
 
     fun loadJSONFromAsset(): String {
         val json: String?
