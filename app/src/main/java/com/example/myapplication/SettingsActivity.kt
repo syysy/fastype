@@ -23,6 +23,7 @@ import com.google.android.gms.ads.AdView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import java.util.*
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -31,7 +32,8 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var headerLayout : HeaderLayoutBinding
     private lateinit var databaseRef : DatabaseReference
     private lateinit var firebaseAuth: FirebaseAuth
-    private val languages = arrayListOf<String>("Français", "English")
+
+    override fun onBackPressed() {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,28 +83,43 @@ class SettingsActivity : AppCompatActivity() {
         mAdViewTop.loadAd(adRequestTop)
 
 
-        val languages = arrayListOf<String>("Français", "English")
+        val languages = arrayListOf<String>("Select a language","Français", "English")
 
         val arrayAdapter: ArrayAdapter<String> =
             ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, languages)
 
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerLanguages.setAdapter(arrayAdapter)
-        binding.spinnerLanguages.setSelection(0)
 
-        /*binding.spinnerLanguages.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+        var context : Context
+        binding.spinnerLanguages.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val language = parent.getItemAtPosition(position).toString()
                 if (language == "Français") {
-                    TODO("francais")
-                } else {
-                    TODO("anglais")
+                    context = LocaleHelper.setLocale(this@SettingsActivity, "fr")
+                    resources.updateConfiguration(context.resources.configuration, context.resources.displayMetrics)
+                    // condition si la langue change de celle par défaut
+                    if (LocaleHelper.SELECTED_LANGUAGE != "fr") {
+                        val intent = Intent(this@SettingsActivity, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+                if(language == "English") {
+                    context = LocaleHelper.setLocale(this@SettingsActivity, "en")
+                    resources.updateConfiguration(context.resources.configuration, context.resources.displayMetrics)
+                    if (LocaleHelper.SELECTED_LANGUAGE != "en") {
+                        val intent = Intent(this@SettingsActivity, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>) {
                 // Another interface callback
             }
-        }*/
+        }
     }
 
 
@@ -119,5 +136,6 @@ class SettingsActivity : AppCompatActivity() {
 
     fun resetPassword() {
         startActivity(Intent(this, ForgotPasswordActivity::class.java))
+        finish()
     }
 }

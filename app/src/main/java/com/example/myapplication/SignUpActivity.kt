@@ -17,6 +17,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var databaseRef: DatabaseReference
 
+    override fun onBackPressed() {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +54,7 @@ class SignUpActivity : AppCompatActivity() {
                             firebaseAuth.currentUser!!.sendEmailVerification()
                             val intent = Intent(this, SignInActivity::class.java)
                             startActivity(intent)
+                            finish()
                         } else {
                             Toast.makeText(this, it.exception.toString(),Toast.LENGTH_SHORT).show()
                         }

@@ -25,15 +25,39 @@ class NavBar(private val context: Context): AppCompatActivity() {
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val version = "1.0.0"
 
+
+
     fun navItems(navBar: NavigationView) {
+
+        if (context is MainActivity) {
+            navBar.menu.findItem(R.id.item_home).isChecked = true
+            navBar.menu.findItem(R.id.item_home).isEnabled = false
+        }
+        if (context is ProfilActivity) {
+            navBar.menu.findItem(R.id.item_profil).isChecked = true
+            navBar.menu.findItem(R.id.item_profil).isEnabled = false
+        }
+        if (context is LeaderBoardActivity) {
+            navBar.menu.findItem(R.id.item_leaderboard).isChecked = true
+            navBar.menu.findItem(R.id.item_leaderboard).isEnabled = false
+        }
+        if (context is SettingsActivity) {
+            navBar.menu.findItem(R.id.item_settings).isChecked = true
+            navBar.menu.findItem(R.id.item_settings).isEnabled = false
+        }
+
 
         navBar.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.item_profil -> context.startActivity(Intent(this.context, ProfilActivity::class.java))
-                R.id.item_leaderboard -> StatsRepository().updateDate { context.startActivity(Intent(this.context, LeaderBoardActivity::class.java)) }
-                R.id.item_home -> StatsRepository().updateDate {  context.startActivity(Intent(this.context, MainActivity::class.java)) }
+                R.id.item_profil -> { context.startActivity(Intent(this.context, ProfilActivity::class.java))
+                    finish()}
+                R.id.item_leaderboard ->  { StatsRepository().updateDate { context.startActivity(Intent(this.context, LeaderBoardActivity::class.java)) }
+                    finish()}
+                R.id.item_home -> { StatsRepository().updateDate { context.startActivity(Intent(this.context, MainActivity::class.java)) }
+                    finish()}
                 R.id.item_logout -> dialog()
-                R.id.item_settings -> context.startActivity(Intent(this.context, SettingsActivity::class.java))
+                R.id.item_settings -> {context.startActivity(Intent(this.context, SettingsActivity::class.java))
+                finish()}
                 R.id.item_sendEmail -> sendEmailToggle()
                 //R.id.item_share ->
             }
@@ -57,6 +81,7 @@ class NavBar(private val context: Context): AppCompatActivity() {
     private fun disconnect() {
         firebaseAuth.signOut()
         context.startActivity(Intent(this.context, SignInActivity::class.java))
+        finish()
     }
 
     private fun sendEmailToggle(){
@@ -64,5 +89,6 @@ class NavBar(private val context: Context): AppCompatActivity() {
         intent.type = "plain/text"
         intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("fastype.app@gmail.com"))
         context.startActivity(Intent.createChooser(intent, ""))
+        finish()
     }
 }

@@ -16,6 +16,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var binding: LoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
 
+    override fun onBackPressed() {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportActionBar?.hide()
@@ -29,11 +30,13 @@ class SignInActivity : AppCompatActivity() {
         binding.textCreateAccount.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         binding.textForgotPassword.setOnClickListener {
             val intent = Intent(this, ForgotPasswordActivity::class.java)
             startActivity(intent)
+            finish()
             firebaseAuth.signOut()
         }
 
@@ -47,9 +50,11 @@ class SignInActivity : AppCompatActivity() {
                         if (firebaseAuth.currentUser!!.isEmailVerified) {
                             // lancement de la MainActivity + update du ladder
                             StatsRepository().updateDate { startActivity(Intent(this,MainActivity::class.java)) }
+                            finish()
                         } else {
                             val intent = Intent(this, VerifyEmailActivity::class.java)
                             startActivity(intent)
+                            finish()
                         }
                     } else {
                         Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
@@ -66,6 +71,7 @@ class SignInActivity : AppCompatActivity() {
         if (firebaseAuth.currentUser != null) {
             if (firebaseAuth.currentUser!!.isEmailVerified) {
                 StatsRepository().updateDate { startActivity(Intent(this, MainActivity::class.java)) }
+                finish()
             }
         } else {
             firebaseAuth.signOut()

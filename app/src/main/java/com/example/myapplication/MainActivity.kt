@@ -155,12 +155,13 @@ class MainActivity : AppCompatActivity() {
         this.setWordsText()
     }
 
+    override fun onBackPressed() {
+    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         binding = GameBinding.inflate(layoutInflater)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -181,6 +182,7 @@ class MainActivity : AppCompatActivity() {
         binding.imageProfil.setOnClickListener {
             val intent = Intent(this,ProfilActivity::class.java)
             startActivity(intent)
+            //finish()
         }
 
 
@@ -229,8 +231,8 @@ class MainActivity : AppCompatActivity() {
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
             userModel.imageAvatarUrl = it.value.toString()
-            Glide.with(headerLayout.root).load(Uri.parse(it.value.toString())).into(image)
-            Glide.with(binding.root).load(Uri.parse(it.value.toString())).into(imageProfil)
+            Glide.with(applicationContext).load(Uri.parse(it.value.toString())).into(image)
+            Glide.with(applicationContext).load(Uri.parse(it.value.toString())).into(imageProfil)
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").get().addOnSuccessListener {
             userModel.bestGame = it.value.toString().toInt()
@@ -238,16 +240,16 @@ class MainActivity : AppCompatActivity() {
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
             userModel.numberGamePlayed = it.value.toString().toInt()
         }
-        //afficher les players de la listPlayer du singleton statsrepository
+
         when(deviceLanguage) {
             "en" -> {
-                binding.textPlayerRank.text = "Rank : " + getRank()
+               StatsRepository().updateDate {  binding.textPlayerRank.text = "Rank : " + getRank() }
             }
             "fr" -> {
-                binding.textPlayerRank.text = "Rang : " + getRank()
+                StatsRepository().updateDate {  binding.textPlayerRank.text = "Rang : " + getRank() }
             }
             else -> {
-                binding.textPlayerRank.text = "Rank : " + getRank()
+                StatsRepository().updateDate {  binding.textPlayerRank.text = "Rank : " + getRank() }
             }
         }
 
@@ -263,8 +265,6 @@ class MainActivity : AppCompatActivity() {
 
         // jeu
         this.binding.textInputGame.addTextChangedListener(this.Jeu)
-
-
     }
 
 
@@ -301,6 +301,7 @@ class MainActivity : AppCompatActivity() {
         buttonLeaderBoard.setOnClickListener {
             popupBuilder.dismiss()
             startActivity(Intent(this,LeaderBoardActivity::class.java))
+            finish()
         }
 
         popupBuilder.show()

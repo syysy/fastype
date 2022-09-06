@@ -16,6 +16,8 @@ class ForgotPasswordActivity : AppCompatActivity() {
     private lateinit var binding: ForgotyourpasswordBinding
     private lateinit var firebaseAuth: FirebaseAuth
 
+    override fun onBackPressed() {}
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         supportActionBar?.hide()
@@ -37,6 +39,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
             binding.textBackToLogin.setOnClickListener {
                 val intent = Intent(this, SignInActivity::class.java)
                 startActivity(intent)
+                finish()
             }
         }
 
@@ -47,6 +50,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
                     if (it.isSuccessful){
                         val intent = Intent(this, SignInActivity::class.java)
                         startActivity(intent)
+                        finish()
                     }
                     Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
                 }
