@@ -100,9 +100,6 @@ class MainActivity : AppCompatActivity() {
                 binding.textInputGame.setText("") // reset du champ de texte
                 setWordsText() // mise à jour de la liste des mots non trouvés
                 when(deviceLanguage) {
-                    "en" -> {
-                        binding.textPlayerScore.text = "$scoreOfGame words"
-                    }
                     "fr" -> {
                         binding.textPlayerScore.text = "$scoreOfGame mots"
                     }
@@ -141,9 +138,6 @@ class MainActivity : AppCompatActivity() {
         this.scoreOfGame = 0
         this.binding.timer.text = "01:00"
         when(deviceLanguage) {
-            "en" -> {
-                binding.textPlayerScore.text = "0 words"
-            }
             "fr" -> {
                 binding.textPlayerScore.text = "0 mots"
             }
@@ -238,11 +232,8 @@ class MainActivity : AppCompatActivity() {
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
             userModel.numberGamePlayed = it.value.toString().toInt()
         }
-        //afficher les players de la listPlayer du singleton statsrepository
-        when(deviceLanguage) {
-            "en" -> {
-                binding.textPlayerRank.text = "Rank : " + getRank()
-            }
+        // afficher les players de la listPlayer du singleton statsrepository
+        when(this.deviceLanguage) {
             "fr" -> {
                 binding.textPlayerRank.text = "Rang : " + getRank()
             }
@@ -263,11 +254,7 @@ class MainActivity : AppCompatActivity() {
 
         // jeu
         this.binding.textInputGame.addTextChangedListener(this.Jeu)
-
-
     }
-
-
 
 
     @SuppressLint("SetTextI18n")
@@ -307,7 +294,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (toggle.onOptionsItemSelected(item)){
             return true
@@ -335,7 +321,11 @@ class MainActivity : AppCompatActivity() {
         this.listWordsCsvGame.clear()
 
         // ouvre le fichier words.csv
-        val minput = InputStreamReader(assets.open("listWords.csv"))
+        val minput = when(this.deviceLanguage) {
+            "fr" -> InputStreamReader(assets.open("mots_fr.csv"))
+            else -> InputStreamReader(assets.open("mots_en.csv"))
+        }
+
         val reader = BufferedReader(minput)
 
         // créer une liste des 200 premiers mots tirés au hasard
