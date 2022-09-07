@@ -42,6 +42,8 @@ open class ProfilActivity : AppCompatActivity(){
     private lateinit var headerLayout : HeaderLayoutBinding
     private lateinit var userModel : ProfilModel
 
+    override fun onBackPressed() {}
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -130,6 +132,7 @@ open class ProfilActivity : AppCompatActivity(){
 
         binding.imageBrush.setOnClickListener {
             startActivity(Intent(this, EditProfilActivity::class.java))
+            finish()
         }
 
 

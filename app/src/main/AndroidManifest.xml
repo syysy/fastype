@@ -16,6 +16,7 @@
             android:theme="@style/Theme.MyApplication"
         tools:targetApi="m">
         <activity
+                android:screenOrientation="portrait"
                 android:name=".MainActivity"
                 android:exported="true">
             <intent-filter>
@@ -24,35 +25,44 @@
             </intent-filter>
 
          </activity>
-         <activity android:name=".SignInActivity"
+         <activity
+             android:screenOrientation="portrait"
+             android:name=".SignInActivity"
                  android:exported="false">
 
          </activity>
 
          <activity android:name=".SignUpActivity"
+             android:screenOrientation="portrait"
              android:exported="false">
          </activity>
 
          <activity android:name=".ForgotPasswordActivity"
+             android:screenOrientation="portrait"
              android:exported="false">
          </activity>
 
          <activity android:name=".VerifyEmailActivity"
+             android:screenOrientation="portrait"
              android:exported="false">
          </activity>
 
          <activity android:name=".LeaderBoardActivity"
+             android:screenOrientation="portrait"
              android:exported="false">
          </activity>
 
          <activity android:name=".ProfilActivity"
+             android:screenOrientation="portrait"
              android:exported="false">
          </activity>
         <activity android:name=".EditProfilActivity"
+            android:screenOrientation="portrait"
             android:exported="false">
         </activity>
 
          <activity android:name=".WaitingActivity"
+             android:screenOrientation="portrait"
              android:exported="true">
              <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -60,6 +70,7 @@
             </intent-filter>-->
         </activity>
         <activity android:name=".SettingsActivity"
+            android:screenOrientation="portrait"
             android:exported="false">
         </activity>
         <meta-data

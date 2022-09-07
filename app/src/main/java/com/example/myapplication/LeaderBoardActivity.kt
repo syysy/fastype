@@ -36,6 +36,8 @@ class LeaderBoardActivity :AppCompatActivity() {
     private lateinit var headerLayout : HeaderLayoutBinding
     private lateinit var userModel : ProfilModel
 
+    override fun onBackPressed() {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = LeaderboardBinding.inflate(layoutInflater)

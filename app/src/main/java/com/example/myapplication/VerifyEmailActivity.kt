@@ -16,6 +16,8 @@ class VerifyEmailActivity : AppCompatActivity() {
     private lateinit var binding: VerifyemailBinding
     private lateinit var firebaseAuth: FirebaseAuth
 
+    override fun onBackPressed() {}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         supportActionBar?.hide()
         super.onCreate(savedInstanceState)
@@ -30,6 +32,7 @@ class VerifyEmailActivity : AppCompatActivity() {
             act.emailFill(firebaseAuth.currentUser!!.email!!)
             val intent = Intent(this,SignInActivity::class.java)
             startActivity(intent)
+            finish()
         }
         binding.buttonSendEmail.setOnClickListener {
             firebaseAuth.currentUser!!.sendEmailVerification().addOnCompleteListener {
@@ -43,6 +46,7 @@ class VerifyEmailActivity : AppCompatActivity() {
         binding.buttonBackToLogin.setOnClickListener {
             val intent = Intent(this,LoginBinding::class.java)
             startActivity(intent)
+            finish()
         }
     }
 

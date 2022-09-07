@@ -45,6 +45,9 @@ class EditProfilActivity : AppCompatActivity() {
     private var file : Uri? = null
     // header changements
 
+    override fun onBackPressed() {
+    }
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -162,13 +165,6 @@ class EditProfilActivity : AppCompatActivity() {
 
         textCompteCreationDate.text = "Account created on : $formattedDate"
 
-        // toggle menu
-
-        toggle = ActionBarDrawerToggle(this,binding.drawerLayout,R.string.open,R.string.close)
-        binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
-        toggle.syncState()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
 
         binding.imageProfil.setOnClickListener { pickImage() }
 
@@ -189,6 +185,7 @@ class EditProfilActivity : AppCompatActivity() {
                         userModel.country = newCountry
                     }
                     startActivity(Intent(this,ProfilActivity::class.java))
+                    finish()
                 }
             }else{
                 if (textPseudo.text.toString() != userModel.name){
@@ -199,6 +196,7 @@ class EditProfilActivity : AppCompatActivity() {
                     databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").setValue(spinnerCountry.selectedItem.toString())
                 }
                 startActivity(Intent(this,ProfilActivity::class.java))
+                finish()
             }
         }
 
