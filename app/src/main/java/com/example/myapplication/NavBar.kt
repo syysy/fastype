@@ -46,6 +46,8 @@ class NavBar(private val context: Context): AppCompatActivity() {
             navBar.menu.findItem(R.id.item_settings).isEnabled = false
         }
 
+        navBar.menu.findItem(R.id.item_fastypeVersion).title = "Fastype version: $version"
+
 
         navBar.setNavigationItemSelectedListener {
             when (it.itemId) {
