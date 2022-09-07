@@ -43,6 +43,11 @@
                 android:id="@+id/item_sendEmail"
                 android:title="Nous contacter"
                 android:icon="@drawable/ic_rate"/>
+
+            <item
+                android:id="@+id/item_pub"
+                android:title="View ads"
+                android:icon="@drawable/ic_play_button"/>
         </menu>
 
     </item>

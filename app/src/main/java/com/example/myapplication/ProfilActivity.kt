@@ -42,7 +42,8 @@ open class ProfilActivity : AppCompatActivity(){
     private lateinit var headerLayout : HeaderLayoutBinding
     private lateinit var userModel : ProfilModel
 
-    override fun onBackPressed() {}
+    override fun onBackPressed() {
+    }
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {

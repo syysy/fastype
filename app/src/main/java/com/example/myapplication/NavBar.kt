@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewbinding.ViewBinding
 import com.example.myapplication.BaseDeDonnées.StatsRepository
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -62,6 +63,7 @@ class NavBar(private val context: Context): AppCompatActivity() {
                 finish()}
                 R.id.item_sendEmail -> sendEmailToggle()
                 //R.id.item_share ->
+                R.id.item_pub -> { TODO("mettre une pub longue") }
             }
             true
         }
