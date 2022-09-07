@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     private var listStringWordsCsv: MutableList<String>? = null
     private lateinit var userModel : ProfilModel
     private var scoreOfGame = 0
-    private val deviceLanguage = Locale.getDefault().getLanguage()
+    private val deviceLanguage = LocaleHelper.SELECTED_LANGUAGE
 
     private val Timer = object : CountDownTimer(60000, 1000) {
         var run = false
@@ -196,7 +196,7 @@ class MainActivity : AppCompatActivity() {
 
 
         // récup du currentUser
-        userModel = ProfilModel("","",0.0,0,"")
+        userModel = ProfilModel("", "", 0.0, 0, "")
 
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")

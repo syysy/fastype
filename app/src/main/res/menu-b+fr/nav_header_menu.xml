@@ -46,7 +46,7 @@
 
             <item
                 android:id="@+id/item_pub"
-                android:title="View ads"
+                android:title="Regardez des pubs"
                 android:icon="@drawable/ic_play_button"/>
         </menu>
 
