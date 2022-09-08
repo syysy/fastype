@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
 import com.example.myapplication.BaseDeDonnées.StatsRepository
+import com.example.myapplication.adapter.LeaderBoardAdapter
 import com.example.myapplication.databinding.HeaderLayoutBinding
 import com.example.myapplication.databinding.ProfilBinding
 import com.example.myapplication.objets.ProfilModel
@@ -99,7 +100,7 @@ open class ProfilActivity : AppCompatActivity(){
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").get().addOnSuccessListener {
             userModel.country = it.value.toString()
             try {
-                val obj = JSONObject(loadJSONFromAsset())
+                val obj = JSONObject(LeaderBoardAdapter.OpenAsset().loadJsonFromRaw(this))
                 if (it.value.toString() == "Unknown"){
                     Glide.with(binding.root).load(Uri.parse(obj[it.value.toString()].toString())).into(imageCountry)
                 } else {

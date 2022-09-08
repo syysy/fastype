@@ -26,12 +26,14 @@ class WaitingActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
-        if (firebaseAuth.currentUser != null && firebaseAuth.currentUser!!.isEmailVerified){
-            StatsRepository().updateDate { startActivity(Intent(this,MainActivity::class.java))
-                finish() }
-        }else if (firebaseAuth.currentUser != null && !firebaseAuth.currentUser!!.isEmailVerified) {
-            startActivity(Intent(this, VerifyEmailActivity::class.java))
-            finish()
+        if (firebaseAuth.currentUser != null){
+            if(firebaseAuth.currentUser!!.isEmailVerified){
+                StatsRepository().updateDate { startActivity(Intent(this,MainActivity::class.java))
+                    finish() }
+            }else{
+                startActivity(Intent(this,VerifyEmailActivity::class.java))
+                finish()
+            }
         }else {
             startActivity(Intent(this,SignInActivity::class.java))
             finish()

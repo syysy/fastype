@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
 import com.example.myapplication.BaseDeDonnées.StatsRepository
+import com.example.myapplication.adapter.LeaderBoardAdapter
 import com.example.myapplication.databinding.EditProfilBinding
 import com.example.myapplication.databinding.HeaderLayoutBinding
 import com.example.myapplication.objets.ProfilModel
@@ -54,6 +56,9 @@ class EditProfilActivity : AppCompatActivity() {
         binding = EditProfilBinding.inflate(layoutInflater)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
+
+        // set max length for pseudo
+        binding.textInputEditpseudo.filters = arrayOf(InputFilter.LengthFilter(10))
 
         toggle = ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open, R.string.close)
         binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
@@ -102,7 +107,7 @@ class EditProfilActivity : AppCompatActivity() {
             email.text = it.value.toString()
         }
 
-        val obj = JSONObject(loadJSONFromAsset())
+        val obj = JSONObject(LeaderBoardAdapter.OpenAsset().loadJsonFromRaw(this))
         val arrayList: ArrayList<String> = ArrayList()
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").get().addOnSuccessListener {
 
@@ -198,6 +203,11 @@ class EditProfilActivity : AppCompatActivity() {
                 startActivity(Intent(this,ProfilActivity::class.java))
                 finish()
             }
+        }
+
+        binding.Cancel.setOnClickListener {
+            startActivity(Intent(this,ProfilActivity::class.java))
+            finish()
         }
 
 

@@ -4,4 +4,13 @@
     <string name="profil_bottom_ad_unit_id">ca-app-pub-6513418938502245/2879336559</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="title_activity_reward_acivity">RewardAcivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

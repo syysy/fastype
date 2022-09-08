@@ -78,9 +78,4 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-    fun emailFill(email : String) {
-        binding = LoginBinding.inflate(layoutInflater)
-        binding.textInputEmail.setText(email)
-    }
-
 }

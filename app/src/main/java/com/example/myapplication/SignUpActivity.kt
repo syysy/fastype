@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputFilter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -27,6 +28,9 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
+
+        // Set max length for username
+        binding.textInputPseudo.filters = arrayOf(InputFilter.LengthFilter(10))
 
         binding.buttonCreateAccount.setOnClickListener {
 

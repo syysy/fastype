@@ -50,11 +50,8 @@ class LeaderBoardActivity :AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         NavBar(this).navItems(binding.navView)
 
-        val verticalRecyclerView =
-           this.findViewById<RecyclerView>(R.id.vertical_recyclerView)
-        verticalRecyclerView.adapter = LeaderBoardAdapter(this,
-            StatsRepository.Singleton.listPlayer,R.layout.leaderboard_vertical_profiles
-        )
+        val verticalRecyclerView = this.findViewById<RecyclerView>(R.id.vertical_recyclerView)
+        verticalRecyclerView.adapter = LeaderBoardAdapter(this, StatsRepository.Singleton.listPlayer,R.layout.leaderboard_vertical_profiles)
         verticalRecyclerView.addItemDecoration(ItemDecoration())
 
         // header changements

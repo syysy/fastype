@@ -10,14 +10,9 @@ class ProfilModel (
     var country : String = "Unknown"
 ) {
     /* mise à jour des données a chaque partie */
-    fun newGame(score: Int) {
+    fun newGame(score: Int, moyenneOld: Double) {
         this.numberGamePlayed++
-        if(this.numberGamePlayed == 1){
-            this.moyenne = ((this.moyenne * this.numberGamePlayed) + score ) / this.numberGamePlayed
-        }else{
-            this.moyenne = ((this.moyenne * this.numberGamePlayed-1) + score ) / this.numberGamePlayed
-        }
-
+        this.moyenne = ((moyenneOld * (this.numberGamePlayed-1)) + score ) / this.numberGamePlayed
         this.moyenne = Math.round(this.moyenne * 100.0) / 100.0 // deux nombres max apres la virgule
         if (score > this.bestGame) {
             this.bestGame = score

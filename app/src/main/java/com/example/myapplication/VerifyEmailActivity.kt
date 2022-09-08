@@ -28,8 +28,6 @@ class VerifyEmailActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
 
         binding.buttonRetry.setOnClickListener {
-            val act = SignInActivity()
-            act.emailFill(firebaseAuth.currentUser!!.email!!)
             val intent = Intent(this,SignInActivity::class.java)
             startActivity(intent)
             finish()
@@ -44,7 +42,7 @@ class VerifyEmailActivity : AppCompatActivity() {
             }
         }
         binding.buttonBackToLogin.setOnClickListener {
-            val intent = Intent(this,LoginBinding::class.java)
+            val intent = Intent(this,SignInActivity::class.java)
             startActivity(intent)
             finish()
         }

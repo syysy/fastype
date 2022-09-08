@@ -51,17 +51,26 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
 
+    <ImageView
+        android:id="@+id/player_country_leaderboard"
+        android:layout_width="30dp"
+        android:layout_height="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/player_name"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <TextView
         android:id="@+id/player_stats"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="103 mots/minutes"
-
-
+        android:text="103 mots/min"
+        android:layout_marginEnd="@dimen/default_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/player_name"
+
         app:layout_constraintTop_toTopOf="parent" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
 import com.example.myapplication.BaseDeDonnées.StatsRepository
+import com.example.myapplication.adapter.LeaderBoardAdapter
 import com.example.myapplication.databinding.GameBinding
 import com.example.myapplication.databinding.HeaderLayoutBinding
 import com.example.myapplication.objets.ProfilModel
@@ -70,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         @RequiresApi(Build.VERSION_CODES.N)
         @SuppressLint("SetTextI18n")
         override fun onFinish() {
-            userModel.newGame(scoreOfGame)
+            userModel.newGame(scoreOfGame,getMoyenne())
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").setValue(userModel.bestGame)
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").setValue(userModel.moyenne)
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").setValue(userModel.numberGamePlayed)
@@ -213,11 +214,11 @@ class MainActivity : AppCompatActivity() {
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").get().addOnSuccessListener {
             userModel.country = it.value.toString()
             try {
-                val obj = JSONObject(loadJSONFromAsset())
+                val obj = JSONObject(LeaderBoardAdapter.OpenAsset().loadJsonFromRaw(this))
                 if (it.value.toString() == "Unknown"){
-                    Glide.with(binding.root).load(Uri.parse(obj[it.value.toString()].toString())).into(imageCountry)
+                    Glide.with(applicationContext).load(Uri.parse(obj[it.value.toString()].toString())).into(imageCountry)
                 } else {
-                    ProfilActivity.Utils().fetchSVG(binding.root.context, obj[it.value.toString()].toString(),imageCountry)
+                    ProfilActivity.Utils().fetchSVG(applicationContext, obj[it.value.toString()].toString(),imageCountry)
                 }
             } catch (e: JSONException) {
                 e.printStackTrace()
@@ -318,6 +319,18 @@ class MainActivity : AppCompatActivity() {
         return -1
     }
 
+    fun getMoyenne() : Double{
+        firebaseAuth = FirebaseAuth.getInstance()
+        val moyenne : Double
+        val listPlayer = StatsRepository.Singleton.listPlayer
+        for ((index, i) in listPlayer.withIndex()) {
+            if (i.email == firebaseAuth.currentUser!!.email) {
+                moyenne = i.moyenne
+                return moyenne
+            }
+        }
+        return -1.0
+    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     fun loadWordsCSV() {
