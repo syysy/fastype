@@ -30,7 +30,7 @@ class SignUpActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
 
         // Set max length for username
-        binding.textInputPseudo.filters = arrayOf(InputFilter.LengthFilter(10))
+        binding.textInputPseudo.filters = arrayOf(InputFilter.LengthFilter(13))
 
         binding.buttonCreateAccount.setOnClickListener {
 

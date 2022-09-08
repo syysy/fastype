@@ -23,6 +23,7 @@ import com.google.android.gms.ads.AdView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import org.json.JSONObject
 import java.util.*
 
 class SettingsActivity : AppCompatActivity() {
@@ -95,9 +96,10 @@ class SettingsActivity : AppCompatActivity() {
         var context : Context
         binding.spinnerLanguages.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                val language = parent.getItemAtPosition(position).toString()
+                var language = parent.getItemAtPosition(position).toString()
                 if (language == "Français") {
-                    context = LocaleHelper.setLocale(this@SettingsActivity, "fr")
+                    language = "fr"
+                    context = LocaleHelper.setLocale(this@SettingsActivity, language)
                     resources.updateConfiguration(context.resources.configuration, context.resources.displayMetrics)
                     // condition si la langue change de celle par défaut
                     if (LocaleHelper.SELECTED_LANGUAGE != "fr") {
@@ -105,9 +107,9 @@ class SettingsActivity : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     }
-                }
-                if(language == "English") {
-                    context = LocaleHelper.setLocale(this@SettingsActivity, "en")
+                } else if (language == "English") {
+                    language = "en"
+                    context = LocaleHelper.setLocale(this@SettingsActivity, language)
                     resources.updateConfiguration(context.resources.configuration, context.resources.displayMetrics)
                     if (LocaleHelper.SELECTED_LANGUAGE != "en") {
                         val intent = Intent(this@SettingsActivity, MainActivity::class.java)
@@ -115,6 +117,9 @@ class SettingsActivity : AppCompatActivity() {
                         finish()
                     }
                 }
+
+                EditRessources(this@SettingsActivity).writeJsonFile("app_config.json", JSONObject().put("language", language))
+
             }
             override fun onNothingSelected(parent: AdapterView<*>) {
                 // Another interface callback

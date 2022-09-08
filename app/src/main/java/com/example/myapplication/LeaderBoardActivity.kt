@@ -51,7 +51,7 @@ class LeaderBoardActivity :AppCompatActivity() {
         NavBar(this).navItems(binding.navView)
 
         val verticalRecyclerView = this.findViewById<RecyclerView>(R.id.vertical_recyclerView)
-        verticalRecyclerView.adapter = LeaderBoardAdapter(this, StatsRepository.Singleton.listPlayer,R.layout.leaderboard_vertical_profiles)
+        verticalRecyclerView.adapter = LeaderBoardAdapter(this, StatsRepository.Singleton.listPlayer, R.layout.leaderboard_vertical_profiles)
         verticalRecyclerView.addItemDecoration(ItemDecoration())
 
         // header changements

@@ -124,7 +124,7 @@ class LeaderBoardAdapter(
             super.onCreate(savedInstanceState)
         }
 
-        fun loadJsonFromRaw(context: Context):String{
+        fun loadJsonFromRaw(context: Context): String{
             val jsonData = context.resources.openRawResource(R.raw.country).bufferedReader().use { it.readText() }
             return jsonData
         }

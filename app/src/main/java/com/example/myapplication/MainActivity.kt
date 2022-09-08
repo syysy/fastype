@@ -3,7 +3,6 @@ package com.example.myapplication
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -19,7 +18,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
@@ -34,15 +32,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import org.json.JSONException
 import org.json.JSONObject
-import org.w3c.dom.Text
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
-import java.nio.charset.Charset
-import java.time.LocalDateTime
 import java.util.*
-import kotlin.random.Random
-import kotlin.streams.toList
 
 
 class MainActivity : AppCompatActivity() {
@@ -57,7 +47,8 @@ class MainActivity : AppCompatActivity() {
     private var listStringWordsCsv: MutableList<String>? = null
     private lateinit var userModel : ProfilModel
     private var scoreOfGame = 0
-    private val deviceLanguage = LocaleHelper.SELECTED_LANGUAGE
+    private var deviceLanguage: String? = null
+    private val editRessources = EditRessources(this)
 
     private val Timer = object : CountDownTimer(60000, 1000) {
         var run = false
@@ -167,6 +158,16 @@ class MainActivity : AppCompatActivity() {
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         NavBar(this).navItems(binding.navView)
+
+
+        this.editRessources.writeJsonFile("app_config.json", JSONObject())
+        try {
+            this.deviceLanguage = this.editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
+        } catch (e: JSONException) {
+            this.editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
+            this.deviceLanguage = "en"
+        }
+
 
         this.loadWordsCSV()
         this.setWordsText()
@@ -337,12 +338,10 @@ class MainActivity : AppCompatActivity() {
         this.listWordsCsvGame.clear()
 
         // ouvre le fichier words.csv
-        val minput = when(this.deviceLanguage) {
-            "fr" -> InputStreamReader(assets.open("mots_fr.csv"))
-            else -> InputStreamReader(assets.open("mots_en.csv"))
+        val reader = when(this.deviceLanguage) {
+            "fr" -> editRessources.loadTextFile(R.raw.mots_fr)
+            else -> editRessources.loadTextFile(R.raw.mots_en)
         }
-
-        val reader = BufferedReader(minput)
 
         // créer une liste des 200 premiers mots tirés au hasard
         val listWordsString = mutableListOf<String>()
@@ -352,7 +351,7 @@ class MainActivity : AppCompatActivity() {
 
         var tmp = 0
         for (line in lines) {
-            var line = line.toString()
+            var line = line
             this.listWordsCsvGame.add(line)
             var length = line.length
 
@@ -377,24 +376,6 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     fun setWordsText() {
         binding.textGame.text = this.listStringWordsCsv!!.joinToString("")
-    }
-
-    fun loadJSONFromAsset(): String {
-        val json: String?
-        try {
-            val inputStream = assets.open("country.json")
-            val size = inputStream.available()
-            val buffer = ByteArray(size)
-            val charset: Charset = Charsets.UTF_8
-            inputStream.read(buffer)
-            inputStream.close()
-            json = String(buffer, charset)
-        }
-        catch (ex: IOException) {
-            ex.printStackTrace()
-            return ""
-        }
-        return json
     }
 
     override fun onStart() {

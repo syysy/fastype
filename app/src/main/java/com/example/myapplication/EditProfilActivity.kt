@@ -58,7 +58,7 @@ class EditProfilActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // set max length for pseudo
-        binding.textInputEditpseudo.filters = arrayOf(InputFilter.LengthFilter(10))
+        binding.textInputEditpseudo.filters = arrayOf(InputFilter.LengthFilter(13))
 
         toggle = ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open, R.string.close)
         binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
