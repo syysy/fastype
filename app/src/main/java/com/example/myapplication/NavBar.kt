@@ -63,7 +63,11 @@ class NavBar(private val context: Context): AppCompatActivity() {
                 finish()}
                 R.id.item_sendEmail -> sendEmailToggle()
                 //R.id.item_share ->
-                R.id.item_pub -> { context.startActivity(Intent(this.context,RewardAcivity::class.java)) }
+                R.id.item_pub -> {
+                    val rewardAcivity = RewardAcivity()
+                    while (rewardAcivity.loaded){ Thread.sleep(50) }
+                    context.startActivity(Intent(this.context,RewardAcivity::class.java))
+                }
             }
             true
         }
