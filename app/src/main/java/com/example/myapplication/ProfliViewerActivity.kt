@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.isInvisible
 import com.bumptech.glide.Glide
 import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.adapter.LeaderBoardAdapter
@@ -34,7 +35,7 @@ import java.nio.charset.Charset
 import java.util.*
 
 
-open class ProfilActivity : AppCompatActivity(){
+open class ProfliViewerActivity() : AppCompatActivity(){
 
     private lateinit var binding: ProfilBinding
     private lateinit var firebaseAuth: FirebaseAuth
@@ -48,20 +49,21 @@ open class ProfilActivity : AppCompatActivity(){
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         binding = ProfilBinding.inflate(layoutInflater)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
 
-        toggle = ActionBarDrawerToggle(this,binding.drawerLayout, R.string.open, R.string.close)
+
+
+        toggle = ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open, R.string.close)
         binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         NavBar(this).navItems(binding.navView)
 
         // header changements
-        val inflater: LayoutInflater = this@ProfilActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val inflater: LayoutInflater = this@ProfliViewerActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val viewGroup : ViewGroup = findViewById (R.id.nav_view)
         val view = inflater.inflate(R.layout.header_layout, viewGroup)
         val name : TextView = view.findViewById(R.id.text_username)
@@ -70,14 +72,22 @@ open class ProfilActivity : AppCompatActivity(){
         headerLayout = HeaderLayoutBinding.inflate(layoutInflater)
 
         // Changement de l'image du profil
-        userModel = ProfilModel("","",0.0,0,"")
+        userModel = ProfilModel("", "", 0.0, 0, "")
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
 
-        val userDate = firebaseAuth.currentUser
+        val playerEmail = intent.getSerializableExtra("playerEmail") as String
+        for (user in StatsRepository.Singleton.listPlayer) {
+            if (user.email == playerEmail) {
+                userModel = user
+                break
+            }
+        }
+
+        /*val userDate = firebaseAuth.currentUser
         val date = Date(userDate!!.metadata!!.creationTimestamp)
         val formatter = java.text.SimpleDateFormat("dd/MM/yyyy")
-        val formattedDate = formatter.format(date)
+        val formattedDate = formatter.format(date)*/
 
         val imageProfil : ImageView = findViewById(R.id.imageProfil)
         val textRank : TextView = findViewById(R.id.text_rank)
@@ -88,54 +98,24 @@ open class ProfilActivity : AppCompatActivity(){
         val textBestGame : TextView = findViewById(R.id.text_bestScore)
         val imageCountry : ImageView = findViewById(R.id.imageCountry)
 
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
-            userModel.name = it.value.toString()
-            textPseudo.text = userModel.name
-            name.text = userModel.name
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").get().addOnSuccessListener {
-            userModel.email = it.value.toString()
-            email.text = userModel.email
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").get().addOnSuccessListener {
-            userModel.country = it.value.toString()
-            try {
-                val obj = JSONObject(LeaderBoardAdapter.OpenAsset().loadJsonFromRaw(this))
-                if (it.value.toString() == "Unknown"){
-                    Glide.with(binding.root).load(Uri.parse(obj[it.value.toString()].toString())).into(imageCountry)
-                } else {
-                    Utils().fetchSVG(binding.root.context, obj[it.value.toString()].toString(),imageCountry)
-                }
-            } catch (e: JSONException) {
-                e.printStackTrace()
-            }
-        }
-
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").get().addOnSuccessListener {
-            userModel.moyenne = it.value.toString().toDouble()
-            textMoyenne.text = "Mean : " + userModel.moyenne.toString()
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
-            userModel.imageAvatarUrl = it.value.toString()
-            Glide.with(headerLayout.root).load(Uri.parse(it.value.toString())).into(image)
-            Glide.with(binding.root).load(Uri.parse(it.value.toString())).into(imageProfil)
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").get().addOnSuccessListener {
-            userModel.bestGame = it.value.toString().toInt()
-            textBestGame.text = "Best score : " + it.value.toString().toInt()
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
-            userModel.numberGamePlayed = it.value.toString().toInt()
-            textNbGameJouees.text = "Game Played : " + userModel.numberGamePlayed.toString()
-        }
+        Glide.with(binding.root).load(Uri.parse(userModel.imageAvatarUrl)).into(imageProfil)
         textRank.text = "Rank : " + MainActivity().getRank()
+        textMoyenne.text = "Mean : " + userModel.moyenne.toString()
+        textPseudo.text = userModel.name
+        textNbGameJouees.text = "Games played : " + userModel.numberGamePlayed.toString()
+        /*textCompteCreationDate.text = "Account creation date : $formattedDate"*/
+        textCompteCreationDate.isInvisible = true
 
-        textCompteCreationDate.text = "Account created on : $formattedDate"
+        textBestGame.text = "Best game : " + userModel.bestGame.toString()
 
-        binding.imageBrush.setOnClickListener {
-            startActivity(Intent(this, EditProfilActivity::class.java))
-            finish()
+        val obj = JSONObject(LeaderBoardAdapter.OpenAsset().loadJsonFromRaw(this))
+        if (userModel.country == "Unknown"){
+            Glide.with(binding.root).load(Uri.parse(obj[userModel.country].toString())).into(imageCountry)
+        } else {
+            Utils().fetchSVG(binding.root.context, obj[userModel.country].toString(), imageCountry)
         }
+
+        binding.imageBrush.isInvisible = true
 
 
         val mAdViewTop : AdView = binding.adViewTop
