@@ -71,7 +71,7 @@ class LeaderBoardAdapter(
             // si le joueur est le troisième on lui donne une couleur de fond différente
         }
 
-        holder.profilImage.setOnClickListener {
+        holder.itemLeaderboard.setOnClickListener {
             this.viewProfil(currentProfil.email)
         }
 
