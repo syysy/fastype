@@ -167,11 +167,12 @@ class MainActivity : AppCompatActivity() {
 
 
         try {
-            val language = this.editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
-            this.deviceLanguage = language
+            this.deviceLanguage = this.editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
+            LocaleHelper.setLocale(this, this.deviceLanguage!!)
         } catch (e: JSONException) {
             this.editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
             this.deviceLanguage = "en"
+            LocaleHelper.setLocale(this, "en")
         }
 
 
