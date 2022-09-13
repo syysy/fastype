@@ -10,6 +10,8 @@ import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.GameBinding
 import com.example.myapplication.databinding.WaitingScreenBinding
 import com.google.firebase.auth.FirebaseAuth
+import org.json.JSONException
+import org.json.JSONObject
 
 class WaitingActivity : AppCompatActivity() {
 
@@ -25,17 +27,27 @@ class WaitingActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
 
+        val editRessources = EditRessources(this)
+
+        try {
+            val deviceLanguage = editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
+            LocaleHelper.setLocale(this, deviceLanguage)
+        } catch (e: JSONException) {
+            editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
+            LocaleHelper.setLocale(this, "en")
+        }
+
         firebaseAuth = FirebaseAuth.getInstance()
         if (firebaseAuth.currentUser != null){
             if (firebaseAuth.currentUser!!.isEmailVerified){
                 StatsRepository().updateDate { startActivity(Intent(this, MainActivity::class.java))
                     finish() }
             } else {
-                startActivity(Intent(this,VerifyEmailActivity::class.java))
+                startActivity(Intent(this, VerifyEmailActivity::class.java))
                 finish()
             }
         } else {
-            startActivity(Intent(this,SignInActivity::class.java))
+            startActivity(Intent(this, SignInActivity::class.java))
             finish()
         }
     }
