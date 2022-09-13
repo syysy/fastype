@@ -24,6 +24,7 @@
             android:textSize="38sp"
             android:layout_marginTop="75dp"/>
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/vertical_recyclerView"
             android:layout_width="match_parent"

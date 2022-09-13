@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
@@ -10,12 +11,14 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
@@ -26,8 +29,10 @@ import com.example.myapplication.adapter.LeaderBoardAdapter
 import com.example.myapplication.databinding.GameBinding
 import com.example.myapplication.databinding.HeaderLayoutBinding
 import com.example.myapplication.objets.ProfilModel
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.rewarded.RewardItem
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import org.json.JSONException
@@ -49,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     private var scoreOfGame = 0
     private var deviceLanguage: String? = null
     private val editRessources = EditRessources(this)
+    private var mRewardedAd: RewardedAd? = null
 
     private val Timer = object : CountDownTimer(60000, 1000) {
         var run = false
@@ -258,6 +264,70 @@ class MainActivity : AppCompatActivity() {
 
         // jeu
         this.binding.textInputGame.addTextChangedListener(this.Jeu)
+
+
+
+        // Reward Ads
+
+
+
+        MobileAds.initialize(this) {}
+
+        var adRequest = AdRequest.Builder().build()
+
+        // faire un callback pour que la RewardActivity se lance seulement quand l'ad est chargée
+
+        RewardedAd.load(this,"ca-app-pub-6513418938502245/6795073405", adRequest, object : RewardedAdLoadCallback() {
+
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                mRewardedAd = null
+            }
+
+            override fun onAdLoaded(rewardedAd: RewardedAd) {
+                mRewardedAd = rewardedAd
+                mRewardedAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
+                    override fun onAdClicked() {
+                        // Called when a click is recorded for an ad.
+                    }
+
+                    override fun onAdDismissedFullScreenContent() {
+                        // Called when ad is dismissed.
+                        // Set the ad reference to null so you don't show the ad a second time.
+                        mRewardedAd = null
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(p0: AdError) {
+                        // Called when ad fails to show.
+                        mRewardedAd = null
+                    }
+
+                    override fun onAdImpression() {
+                        // Called when an impression is recorded for an ad.
+                    }
+
+                    override fun onAdShowedFullScreenContent() {
+                        // Called when ad is shown.
+                    }
+                }
+            }
+        })
+
+        binding.textHelpUs.setOnClickListener {
+            if (mRewardedAd != null) {
+                val activityContext: Activity = this
+                mRewardedAd?.show(activityContext, object : OnUserEarnedRewardListener {
+                    override fun onUserEarnedReward(rewardItem: RewardItem) {
+                        // Handle the reward.
+                        val rewardAmount: Int = rewardItem.amount
+                        val rewardType: String = rewardItem.type
+                        // ...
+                    }
+                })
+            } else {
+                Log.d("TAG", "The rewarded ad wasn't ready yet.")
+            }
+        }
+
     }
 
 

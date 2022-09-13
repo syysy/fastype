@@ -44,10 +44,6 @@
                 android:title="Nous contacter"
                 android:icon="@drawable/ic_rate"/>
 
-            <item
-                android:id="@+id/item_pub"
-                android:title="Regardez des pubs"
-                android:icon="@drawable/ic_play_button"/>
         </menu>
 
     </item>

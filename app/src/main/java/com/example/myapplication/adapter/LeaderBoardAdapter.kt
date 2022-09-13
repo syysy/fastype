@@ -133,7 +133,7 @@ class LeaderBoardAdapter(
     }
 
     fun viewProfil(playerEmail: String) {
-        context.startActivity(Intent(context, ProfliViewerActivity::class.java).putExtra("playerEmail", playerEmail))
+        context.startActivity(Intent(context, ProfliViewerActivity::class.java).putExtra("playerEmail", playerEmail).putExtra("user",firebaseAuth.currentUser))
     }
 
 }
