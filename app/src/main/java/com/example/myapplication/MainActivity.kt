@@ -160,9 +160,9 @@ class MainActivity : AppCompatActivity() {
         NavBar(this).navItems(binding.navView)
 
 
-        this.editRessources.writeJsonFile("app_config.json", JSONObject())
         try {
-            this.deviceLanguage = this.editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
+            val language = this.editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
+            this.deviceLanguage = language
         } catch (e: JSONException) {
             this.editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
             this.deviceLanguage = "en"
@@ -237,7 +237,7 @@ class MainActivity : AppCompatActivity() {
             userModel.numberGamePlayed = it.value.toString().toInt()
         }
         // afficher les players de la listPlayer du singleton statsrepository
-        when(this.deviceLanguage) {
+        when (this.deviceLanguage) {
             "fr" -> {
                 StatsRepository().updateDate {  binding.textPlayerRank.text = "Rang : " + getRank() }
             }
