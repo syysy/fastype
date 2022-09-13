@@ -81,13 +81,15 @@ open class ProfliViewerActivity() : AppCompatActivity(){
                 break
             }
         }
-
-
-        //var user = FirebaseAuth.getInstance().currentUser!!.email == playerEmail
-
-        /*val date = Date(user!!.metadata!!.creationTimestamp)
-        val formatter = SimpleDateFormat("dd/MM/yyyy")
-        val formattedDate = formatter.format(date)*/
+        val editRessources = EditRessources(this)
+        var deviceLanguage : String
+        try {
+            deviceLanguage = editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
+            LocaleHelper.setLocale(this, deviceLanguage)
+        } catch (e: JSONException) {
+            editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
+            deviceLanguage = "en"
+        }
 
         val imageProfil : ImageView = findViewById(R.id.imageProfil)
         val textRank : TextView = findViewById(R.id.text_rank)
@@ -98,14 +100,26 @@ open class ProfliViewerActivity() : AppCompatActivity(){
         val textBestGame : TextView = findViewById(R.id.text_bestScore)
         val imageCountry : ImageView = findViewById(R.id.imageCountry)
 
-        Glide.with(binding.root).load(Uri.parse(userModel.imageAvatarUrl)).into(imageProfil)
-        textRank.text = "Rank : " + MainActivity().getRank(userModel.email)
-        textMoyenne.text = "Mean : " + userModel.moyenne.toString()
-        textPseudo.text = userModel.name
-        textNbGameJouees.text = "Games played : " + userModel.numberGamePlayed.toString()
-        textCompteCreationDate.text = "Account creation date : " + userModel.date
+        when(deviceLanguage){
+            "fr" ->
+            {   textRank.text = "Rang : ${MainActivity().getRank(playerEmail)}"
+                textMoyenne.text = "Moyenne : " + userModel.moyenne.toString()
+                textNbGameJouees.text = "Nombre de parties jouées : " + userModel.numberGamePlayed.toString()
+                textCompteCreationDate.text = "Compte créé le : " + userModel.date
+                textBestGame.text = "Meilleur score : " + userModel.bestGame.toString()
+            }
+            else ->
+            {
+                textRank.text = "Rank : " + MainActivity().getRank(playerEmail)
+                textMoyenne.text = "Mean : " + userModel.moyenne.toString()
+                textNbGameJouees.text = "Games played : " + userModel.numberGamePlayed.toString()
+                textCompteCreationDate.text = "Account creation date : " + userModel.date
+                textBestGame.text = "Best game : " + userModel.bestGame.toString()
+            }
+        }
 
-        textBestGame.text = "Best game : " + userModel.bestGame.toString()
+        Glide.with(binding.root).load(Uri.parse(userModel.imageAvatarUrl)).into(imageProfil)
+        textPseudo.text = userModel.name
 
         val obj = JSONObject(LeaderBoardAdapter.OpenAsset().loadJsonFromRaw(this))
         if (userModel.country == "Unknown"){

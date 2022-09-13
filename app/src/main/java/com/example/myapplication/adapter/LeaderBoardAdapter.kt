@@ -114,7 +114,25 @@ class LeaderBoardAdapter(
         // le context contient toutes les informations de l'appli
         // modif les valeurs de base par les valeurs du profil
 
-        holder.profilBestGame?.text = currentProfil.bestGame.toString() + " mots/min"
+        val editRessources = EditRessources(context)
+        var deviceLanguage : String
+        try {
+            deviceLanguage = editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
+            LocaleHelper.setLocale(context, deviceLanguage)
+        } catch (e: JSONException) {
+            editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
+            deviceLanguage = "en"
+        }
+
+        when(deviceLanguage){
+            "fr" -> {
+                holder.profilBestGame?.text = currentProfil.bestGame.toString() + " mots/min"
+            }
+            else -> {
+                holder.profilBestGame?.text = currentProfil.bestGame.toString() + " words/min"
+            }
+        }
+
         holder.profilRank?.text = (position + 1).toString() + "."
 
         // si il y a égalité de score on affiche le même rang
