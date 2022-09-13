@@ -117,6 +117,13 @@ class LeaderBoardAdapter(
         holder.profilBestGame?.text = currentProfil.bestGame.toString() + " mots/min"
         holder.profilRank?.text = (position + 1).toString() + "."
 
+        // si il y a égalité de score on affiche le même rang
+        if (position > 0) {
+            if (listPlayer[position].bestGame == listPlayer[position - 1].bestGame) {
+                holder.profilRank?.text = (position).toString() + "."
+            }
+        }
+
     }
 
     override fun getItemCount(): Int = listPlayer.size

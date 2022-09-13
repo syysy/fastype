@@ -166,9 +166,12 @@ class EditProfilActivity : AppCompatActivity() {
             userModel.numberGamePlayed = it.value.toString().toInt()
             textNbGameJouees.text = "Game Played : " + userModel.numberGamePlayed.toString()
         }
-        textRank.text = "Rank : " + MainActivity().getRank()
+        textRank.text = "Rank : " + MainActivity().getRank(firebaseAuth.currentUser!!.email.toString())
 
-        textCompteCreationDate.text = "Account created on : $formattedDate"
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("creationDate").get().addOnSuccessListener {
+            userModel.date = it.value.toString()
+            textCompteCreationDate.text = "Account created on : ${it.value.toString()}"
+        }
 
 
         binding.imageProfil.setOnClickListener { pickImage() }

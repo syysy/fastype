@@ -73,6 +73,7 @@ open class ProfliViewerActivity() : AppCompatActivity(){
 
         val saveUser = intent.getStringExtra("user")
 
+
         val playerEmail = intent.getSerializableExtra("playerEmail") as String
         for (user in StatsRepository.Singleton.listPlayer) {
             if (user.email == playerEmail) {
@@ -98,12 +99,11 @@ open class ProfliViewerActivity() : AppCompatActivity(){
         val imageCountry : ImageView = findViewById(R.id.imageCountry)
 
         Glide.with(binding.root).load(Uri.parse(userModel.imageAvatarUrl)).into(imageProfil)
-        textRank.text = "Rank : " + MainActivity().getRank()
+        textRank.text = "Rank : " + MainActivity().getRank(userModel.email)
         textMoyenne.text = "Mean : " + userModel.moyenne.toString()
         textPseudo.text = userModel.name
         textNbGameJouees.text = "Games played : " + userModel.numberGamePlayed.toString()
-        //textCompteCreationDate.text = "Account creation date : $formattedDate"
-        //textCompteCreationDate.isInvisible = true
+        textCompteCreationDate.text = "Account creation date : " + userModel.date
 
         textBestGame.text = "Best game : " + userModel.bestGame.toString()
 

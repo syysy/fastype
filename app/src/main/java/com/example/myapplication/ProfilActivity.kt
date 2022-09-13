@@ -128,9 +128,15 @@ open class ProfilActivity : AppCompatActivity(){
             userModel.numberGamePlayed = it.value.toString().toInt()
             textNbGameJouees.text = "Game Played : " + userModel.numberGamePlayed.toString()
         }
-        textRank.text = "Rank : " + MainActivity().getRank()
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("creationDate").get().addOnSuccessListener {
+            userModel.date = it.value.toString()
+            textCompteCreationDate.text = "Account created on : ${it.value.toString()}"
+        }
 
-        textCompteCreationDate.text = "Account created on : $formattedDate"
+
+        textRank.text = "Rank : " + MainActivity().getRank(firebaseAuth.currentUser!!.email.toString())
+
+
 
         binding.imageBrush.setOnClickListener {
             startActivity(Intent(this, EditProfilActivity::class.java))
