@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.ViewGroup
@@ -24,6 +25,8 @@ import com.google.android.ads.nativetemplates.NativeTemplateStyle
 import com.google.android.ads.nativetemplates.TemplateView
 import com.google.android.gms.ads.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserInfo
 import com.google.firebase.database.*
 import com.pixplicity.sharp.Sharp
 import okhttp3.*
@@ -32,6 +35,7 @@ import org.json.JSONObject
 import java.io.IOException
 import java.io.InputStream
 import java.nio.charset.Charset
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -44,8 +48,7 @@ open class ProfliViewerActivity() : AppCompatActivity(){
     private lateinit var headerLayout : HeaderLayoutBinding
     private lateinit var userModel : ProfilModel
 
-    override fun onBackPressed() {
-    }
+    override fun onBackPressed() {}
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,27 +57,21 @@ open class ProfliViewerActivity() : AppCompatActivity(){
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(binding.root)
 
+        supportActionBar?.hide()
 
+        binding.imageClose.visibility = ImageView.VISIBLE
 
-        toggle = ActionBarDrawerToggle(this, binding.drawerLayout, R.string.open, R.string.close)
-        binding.drawerLayout.addDrawerListener(toggle) // add le toggle au layout
-        toggle.syncState()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        NavBar(this).navItems(binding.navView)
-
-        // header changements
-        val inflater: LayoutInflater = this@ProfliViewerActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val viewGroup : ViewGroup = findViewById (R.id.nav_view)
-        val view = inflater.inflate(R.layout.header_layout, viewGroup)
-        val name : TextView = view.findViewById(R.id.text_username)
-        val email : TextView = view.findViewById(R.id.text_user_mail)
-        val image : ImageView = view.findViewById(R.id.image_user)
-        headerLayout = HeaderLayoutBinding.inflate(layoutInflater)
+        binding.imageClose.setOnClickListener {
+            startActivity(Intent(this, LeaderBoardActivity::class.java))
+            finish()
+        }
 
         // Changement de l'image du profil
         userModel = ProfilModel("", "", 0.0, 0, "")
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
+
+        val saveUser = intent.getStringExtra("user")
 
         val playerEmail = intent.getSerializableExtra("playerEmail") as String
         for (user in StatsRepository.Singleton.listPlayer) {
@@ -84,9 +81,11 @@ open class ProfliViewerActivity() : AppCompatActivity(){
             }
         }
 
-        /*val userDate = firebaseAuth.currentUser
-        val date = Date(userDate!!.metadata!!.creationTimestamp)
-        val formatter = java.text.SimpleDateFormat("dd/MM/yyyy")
+
+        //var user = FirebaseAuth.getInstance().currentUser!!.email == playerEmail
+
+        /*val date = Date(user!!.metadata!!.creationTimestamp)
+        val formatter = SimpleDateFormat("dd/MM/yyyy")
         val formattedDate = formatter.format(date)*/
 
         val imageProfil : ImageView = findViewById(R.id.imageProfil)
@@ -103,8 +102,8 @@ open class ProfliViewerActivity() : AppCompatActivity(){
         textMoyenne.text = "Mean : " + userModel.moyenne.toString()
         textPseudo.text = userModel.name
         textNbGameJouees.text = "Games played : " + userModel.numberGamePlayed.toString()
-        /*textCompteCreationDate.text = "Account creation date : $formattedDate"*/
-        textCompteCreationDate.isInvisible = true
+        //textCompteCreationDate.text = "Account creation date : $formattedDate"
+        //textCompteCreationDate.isInvisible = true
 
         textBestGame.text = "Best game : " + userModel.bestGame.toString()
 
@@ -142,23 +141,6 @@ open class ProfliViewerActivity() : AppCompatActivity(){
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-    open fun loadJSONFromAsset(): String {
-        val json: String?
-        try {
-            val inputStream = assets.open("country.json")
-            val size = inputStream.available()
-            val buffer = ByteArray(size)
-            val charset: Charset = Charsets.UTF_8
-            inputStream.read(buffer)
-            inputStream.close()
-            json = String(buffer, charset)
-        }
-        catch (ex: IOException) {
-            ex.printStackTrace()
-            return ""
-        }
-        return json
     }
     class Utils {
 

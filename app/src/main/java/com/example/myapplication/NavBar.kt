@@ -7,6 +7,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -16,7 +17,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewbinding.ViewBinding
 import com.example.myapplication.BaseDeDonnées.StatsRepository
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.rewarded.RewardedAd
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -27,12 +30,18 @@ class NavBar(private val context: Context): AppCompatActivity() {
     private val version = "1.0.0"
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+
+    }
 
     fun navItems(navBar: NavigationView) {
 
         if (context is MainActivity) {
             navBar.menu.findItem(R.id.item_home).isChecked = true
             navBar.menu.findItem(R.id.item_home).isEnabled = false
+            // changer le background de l'item selectionné
         }
         if (context is ProfilActivity) {
             navBar.menu.findItem(R.id.item_profil).isChecked = true
@@ -63,11 +72,6 @@ class NavBar(private val context: Context): AppCompatActivity() {
                 finish()}
                 R.id.item_sendEmail -> sendEmailToggle()
                 //R.id.item_share ->
-                R.id.item_pub -> {
-                    val rewardAcivity = RewardAcivity()
-                    while (rewardAcivity.loaded){ Thread.sleep(50) }
-                    context.startActivity(Intent(this.context,RewardAcivity::class.java))
-                }
             }
             true
         }

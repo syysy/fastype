@@ -73,16 +73,6 @@ class RewardAcivity () : AppCompatActivity() {
             }
         })
 
-        // Show the ad if it's ready.
-        if (mRewardedAd != null) {
-            val activityContext = this
-            mRewardedAd?.show(activityContext) { rewardItem ->
-                // Handle the reward.
-                Toast.makeText(this@RewardAcivity, "Ad was completed.", Toast.LENGTH_SHORT).show()
-            }
-        } else {
-            Toast.makeText(this@RewardAcivity, "Ad wasn't loaded yet.", Toast.LENGTH_SHORT).show()
-        }
 
         binding.buttonLoadAd.setOnClickListener {
             if (mRewardedAd != null) {

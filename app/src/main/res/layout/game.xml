@@ -59,6 +59,17 @@
             app:layout_constraintTop_toBottomOf="@+id/text_player_name" />
 
 
+        <TextView
+            android:id="@+id/text_help_us"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Help us ! "
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageProfil"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textInputLayout_game"
+            app:layout_constraintTop_toBottomOf="@+id/button_refresh" />
+
     <com.google.android.gms.ads.AdView
         android:id="@+id/adViewBottom"
         android:layout_width="wrap_content"
@@ -158,6 +169,7 @@
         android:fitsSystemWindows="true"
         android:layout_gravity="start"
         app:headerLayout="@layout/header_layout"
+        app:itemIconTint="@color/black"
         app:menu="@menu/nav_header_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
