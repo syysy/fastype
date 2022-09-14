@@ -1,5 +1,10 @@
 package com.example.myapplication.objets
 
+import com.example.myapplication.BaseDeDonnées.StatsRepository.Singleton.databaseRef
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.gson.JsonObject
+
 class ProfilModel (
     var name : String = "",
     var email : String = "",
@@ -23,6 +28,27 @@ class ProfilModel (
         if (other === null || other !is ProfilModel) return false
         if (other === this) return true
         return other.email == this.email
+    }
+
+    fun instancierProfil(uid: String): ProfilModel {
+        val firebaseAuth = FirebaseAuth.getInstance()
+        val databaseRef = FirebaseDatabase.getInstance().getReference("players")
+        databaseRef.child(uid).get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                val data = it.result!!.value as HashMap<*, *>
+                this.name = data["name"] as String
+                this.email = data["email"] as String
+                this.moyenne = data["moyenne"] as Double
+                this.bestGame = data["bestGame"] as Int
+                this.imageAvatarUrl = data["imageAvatarUrl"] as String
+                this.numberGamePlayed = data["numberGamePlayed"] as Int
+                this.country = data["country"] as String
+            }
+        }.continueWith {
+            return@continueWith this
+        }
+        return this
+
     }
 
 }
