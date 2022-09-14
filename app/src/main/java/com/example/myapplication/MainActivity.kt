@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").setValue(userModel.bestGame)
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").setValue(userModel.moyenne)
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").setValue(userModel.numberGamePlayed)
-            val oldRank = getRank()
+            val oldRank = getRank(firebaseAuth.currentUser!!.email.toString())
             StatsRepository().updateDate { popupEndGame(oldRank)
                 stopGame()
             }
@@ -246,10 +246,10 @@ class MainActivity : AppCompatActivity() {
         // afficher les players de la listPlayer du singleton statsrepository
         when (this.deviceLanguage) {
             "fr" -> {
-                StatsRepository().updateDate {  binding.textPlayerRank.text = "Rang : " + getRank() }
+                StatsRepository().updateDate {  binding.textPlayerRank.text = "Rang : " + getRank(firebaseAuth.currentUser!!.email.toString()) }
             }
             else -> {
-                StatsRepository().updateDate {  binding.textPlayerRank.text = "Rank : " + getRank() }
+                StatsRepository().updateDate {  binding.textPlayerRank.text = "Rank : " + getRank(firebaseAuth.currentUser!!.email.toString()) }
             }
         }
 
@@ -334,7 +334,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     fun popupEndGame(oldRank: Int) {
-        val newRank = getRank()
+        val newRank = getRank(firebaseAuth.currentUser!!.email.toString())
         val popupBuilder = Dialog(this)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         popupBuilder.setContentView(R.layout.custom_dialog_endgame)
@@ -378,13 +378,16 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun getRank() : Int{
-        firebaseAuth = FirebaseAuth.getInstance()
+    fun getRank(email : String) : Int{
         val rank : Int
         val listPlayer = StatsRepository.Singleton.listPlayer
-        for ((index, i) in listPlayer.withIndex()) {
-            if (i.email == firebaseAuth.currentUser!!.email) {
-               rank = index + 1
+        for (i in 0 until listPlayer.size) {
+            if (listPlayer[i].email == email) {
+                if (i > 0 && listPlayer[i].bestGame == listPlayer[i - 1].bestGame){
+                    rank = i
+                } else {
+                    rank = i + 1
+                }
                 return rank
             }
         }

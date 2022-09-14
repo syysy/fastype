@@ -12,8 +12,10 @@ class ProfilModel (
     var bestGame: Int = 0,
     var imageAvatarUrl : String = "https://cdn.pixabay.com/photo/2013/07/13/10/44/man-157699_960_720.png",
     var numberGamePlayed : Int = 0,
-    var country : String = "Unknown"
+    var country : String = "Unknown",
+    var date : String = "01/01/2022"
 ) {
+
     /* mise à jour des données a chaque partie */
     fun newGame(score: Int, moyenneOld: Double) {
         this.numberGamePlayed++

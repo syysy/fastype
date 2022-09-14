@@ -113,7 +113,6 @@ open class ProfilActivity : AppCompatActivity(){
 
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").get().addOnSuccessListener {
             userModel.moyenne = it.value.toString().toDouble()
-            textMoyenne.text = "Mean : " + userModel.moyenne.toString()
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
             userModel.imageAvatarUrl = it.value.toString()
@@ -122,15 +121,45 @@ open class ProfilActivity : AppCompatActivity(){
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").get().addOnSuccessListener {
             userModel.bestGame = it.value.toString().toInt()
-            textBestGame.text = "Best score : " + it.value.toString().toInt()
         }
         databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
             userModel.numberGamePlayed = it.value.toString().toInt()
-            textNbGameJouees.text = "Game Played : " + userModel.numberGamePlayed.toString()
         }
-        textRank.text = "Rank : " + MainActivity().getRank()
 
-        textCompteCreationDate.text = "Account created on : $formattedDate"
+        databaseRef.child(firebaseAuth.currentUser!!.uid).child("creationDate").get().addOnSuccessListener {
+            userModel.date = it.value.toString()
+        }
+
+
+        textRank.text = "Rank : " + MainActivity().getRank(firebaseAuth.currentUser!!.email.toString())
+
+        val editRessources = EditRessources(this)
+        var deviceLanguage : String
+        try {
+            deviceLanguage = editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
+            LocaleHelper.setLocale(this, deviceLanguage)
+        } catch (e: JSONException) {
+            editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
+            deviceLanguage = "en"
+        }
+
+        when(deviceLanguage){
+            "fr" ->
+            {   textRank.text = "Rang : ${MainActivity().getRank(firebaseAuth.currentUser!!.email.toString())}"
+                textMoyenne.text = "Moyenne : " + userModel.moyenne.toString()
+                textNbGameJouees.text = "Nombre de parties jouées : " + userModel.numberGamePlayed.toString()
+                textCompteCreationDate.text = "Compte créé le : " + userModel.date
+                textBestGame.text = "Meilleur score : " + userModel.bestGame.toString()
+            }
+            else ->
+            {
+                textRank.text = "Rank : " + MainActivity().getRank(firebaseAuth.currentUser!!.email.toString())
+                textMoyenne.text = "Mean : " + userModel.moyenne.toString()
+                textNbGameJouees.text = "Games played : " + userModel.numberGamePlayed.toString()
+                textCompteCreationDate.text = "Account creation date : " + userModel.date
+                textBestGame.text = "Best game : " + userModel.bestGame.toString()
+            }
+        }
 
         binding.imageBrush.setOnClickListener {
             startActivity(Intent(this, EditProfilActivity::class.java))

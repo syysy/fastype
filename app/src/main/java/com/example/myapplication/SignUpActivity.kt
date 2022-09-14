@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import org.json.JSONObject
+import java.util.*
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -54,6 +55,10 @@ class SignUpActivity : AppCompatActivity() {
                             databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").setValue(0.0)
                             databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").setValue(name)
                             databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").setValue(0)
+                            val date = Date(firebaseAuth.currentUser!!.metadata!!.creationTimestamp)
+                            val formatter = java.text.SimpleDateFormat("dd/MM/yyyy")
+                            val formattedDate = formatter.format(date)
+                            databaseRef.child(firebaseAuth.currentUser!!.uid).child("creationDate").setValue(formattedDate)
 
                             firebaseAuth.currentUser!!.sendEmailVerification()
                             val intent = Intent(this, SignInActivity::class.java)
