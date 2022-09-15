@@ -38,19 +38,32 @@ class ProfilModel (
         this.uid = uid
     }
 
-    fun instancierProfil(uid: String): ProfilModel {
-        val firebaseAuth = FirebaseAuth.getInstance()
+    fun instancierProfil(uid: String, callback:() -> Unit): ProfilModel {
         val databaseRef = FirebaseDatabase.getInstance().getReference("players")
         databaseRef.child(uid).get().addOnCompleteListener {
             if (it.isSuccessful) {
                 val data = it.result!!.value as HashMap<*, *>
                 this.name = data["name"] as String
                 this.email = data["email"] as String
-                this.moyenne = data["moyenne"] as Double
-                this.bestGame = data["bestGame"] as Int
+                this.moyenne = try {
+                    data["moyenne"] as Double
+                } catch (e: Exception) {
+                    try {
+                        (data["moyenne"] as Long).toDouble()
+                    } catch (e: Exception) {
+                        0.0
+                    }
+                }
+
+
+
+                this.bestGame = (data["bestGame"] as Long).toInt()
                 this.imageAvatarUrl = data["imageAvatarUrl"] as String
-                this.numberGamePlayed = data["numberGamePlayed"] as Int
+                this.numberGamePlayed = (data["numberGamePlayed"] as Long).toInt()
                 this.country = data["country"] as String
+                this.date = data["creationDate"] as String
+                this.uid = uid
+                callback()
             }
         }.continueWith {
             return@continueWith this

@@ -67,20 +67,9 @@ open class ProfliViewerActivity() : AppCompatActivity(){
         }
 
         // Changement de l'image du profil
-        userModel = ProfilModel("", "", 0.0, 0, "")
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
 
-        val saveUser = intent.getStringExtra("user")
-
-
-        val playerEmail = intent.getSerializableExtra("playerEmail") as String
-        for (user in StatsRepository.Singleton.listPlayer) {
-            if (user.email == playerEmail) {
-                userModel = user
-                break
-            }
-        }
         val editRessources = EditRessources(this)
         var deviceLanguage : String
         try {
@@ -91,6 +80,8 @@ open class ProfliViewerActivity() : AppCompatActivity(){
             deviceLanguage = "en"
         }
 
+        val uid = intent.getStringExtra("uid")
+
         val imageProfil : ImageView = findViewById(R.id.imageProfil)
         val textRank : TextView = findViewById(R.id.text_rank)
         val textMoyenne : TextView = findViewById(R.id.textMoyenne)
@@ -100,33 +91,36 @@ open class ProfliViewerActivity() : AppCompatActivity(){
         val textBestGame : TextView = findViewById(R.id.text_bestScore)
         val imageCountry : ImageView = findViewById(R.id.imageCountry)
 
-        when(deviceLanguage){
-            "fr" ->
-            {   textRank.text = "Rang : ${MainActivity().getRank(playerEmail)}"
-                textMoyenne.text = "Moyenne : " + userModel.moyenne.toString()
-                textNbGameJouees.text = "Nombre de parties jouées : " + userModel.numberGamePlayed.toString()
-                textCompteCreationDate.text = "Compte créé le : " + userModel.date
-                textBestGame.text = "Meilleur score : " + userModel.bestGame.toString()
+            userModel = ProfilModel().instancierProfil(uid!!){
+            when(deviceLanguage){
+                "fr" ->
+                {   textRank.text = "Rang : ${MainActivity().getRank(uid)}"
+                    textMoyenne.text = "Moyenne : " + userModel.moyenne.toString()
+                    textNbGameJouees.text = "Nombre de parties jouées : " + userModel.numberGamePlayed.toString()
+                    textCompteCreationDate.text = "Compte créé le : " + userModel.date
+                    textBestGame.text = "Meilleur score : " + userModel.bestGame.toString()
+                }
+                else ->
+                {
+                    textRank.text = "Rank : " + MainActivity().getRank(uid)
+                    textMoyenne.text = "Mean : " + userModel.moyenne.toString()
+                    textNbGameJouees.text = "Games played : " + userModel.numberGamePlayed.toString()
+                    textCompteCreationDate.text = "Account creation date : " + userModel.date
+                    textBestGame.text = "Best game : " + userModel.bestGame.toString()
+                }
             }
-            else ->
-            {
-                textRank.text = "Rank : " + MainActivity().getRank(playerEmail)
-                textMoyenne.text = "Mean : " + userModel.moyenne.toString()
-                textNbGameJouees.text = "Games played : " + userModel.numberGamePlayed.toString()
-                textCompteCreationDate.text = "Account creation date : " + userModel.date
-                textBestGame.text = "Best game : " + userModel.bestGame.toString()
+
+            Glide.with(binding.root).load(Uri.parse(userModel.imageAvatarUrl)).into(imageProfil)
+            textPseudo.text = userModel.name
+
+            val obj = JSONObject(LeaderBoardAdapter.OpenAsset().loadJsonFromRaw(this))
+            if (userModel.country == "Unknown"){
+                Glide.with(binding.root).load(Uri.parse(obj[userModel.country].toString())).into(imageCountry)
+            } else {
+                Utils().fetchSVG(binding.root.context, obj[userModel.country].toString(), imageCountry)
             }
         }
 
-        Glide.with(binding.root).load(Uri.parse(userModel.imageAvatarUrl)).into(imageProfil)
-        textPseudo.text = userModel.name
-
-        val obj = JSONObject(LeaderBoardAdapter.OpenAsset().loadJsonFromRaw(this))
-        if (userModel.country == "Unknown"){
-            Glide.with(binding.root).load(Uri.parse(obj[userModel.country].toString())).into(imageCountry)
-        } else {
-            Utils().fetchSVG(binding.root.context, obj[userModel.country].toString(), imageCountry)
-        }
 
         binding.imageBrush.isInvisible = true
 

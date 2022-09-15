@@ -65,14 +65,11 @@ class LeaderBoardActivity :AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance()
         databaseRef = FirebaseDatabase.getInstance().getReference("players")
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
-            name.text = it.value.toString()
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").get().addOnSuccessListener {
-            email.text = it.value.toString()
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
-            Glide.with(headerLayout.root).load(it.value.toString()).into(image)
+
+        userModel = ProfilModel().instancierProfil(firebaseAuth.currentUser!!.uid){
+            name.text = userModel.name
+            email.text = userModel.email
+            Glide.with(headerLayout.root).load(userModel.imageAvatarUrl).into(image)
         }
 
     }
