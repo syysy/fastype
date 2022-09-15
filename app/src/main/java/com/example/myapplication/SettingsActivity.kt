@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.bumptech.glide.Glide
 import com.example.myapplication.databinding.HeaderLayoutBinding
 import com.example.myapplication.databinding.SettingsBinding
+import com.example.myapplication.objets.ProfilModel
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.firebase.auth.FirebaseAuth
@@ -33,6 +34,7 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var headerLayout : HeaderLayoutBinding
     private lateinit var databaseRef : DatabaseReference
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var userModel : ProfilModel
 
     override fun onBackPressed() {}
 
@@ -63,14 +65,10 @@ class SettingsActivity : AppCompatActivity() {
         val image : ImageView = view.findViewById(R.id.image_user)
         headerLayout = HeaderLayoutBinding.inflate(layoutInflater)
 
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
-            name.text = it.value.toString()
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").get().addOnSuccessListener {
-            email.text = it.value.toString()
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
-            Glide.with(headerLayout.root).load(Uri.parse(it.value.toString())).into(image)
+        userModel = ProfilModel().instancierProfil(firebaseAuth.currentUser!!.uid){
+            name.text = userModel.name
+            email.text = userModel.email
+            Glide.with(headerLayout.root).load(userModel.imageAvatarUrl).into(image)
         }
 
         // Pubs

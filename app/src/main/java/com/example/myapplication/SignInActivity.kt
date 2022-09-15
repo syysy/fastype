@@ -10,6 +10,7 @@ import com.example.myapplication.BaseDeDonnées.StatsRepository
 import com.example.myapplication.databinding.LoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserInfo
+import org.json.JSONObject
 
 class SignInActivity : AppCompatActivity() {
 
@@ -48,8 +49,12 @@ class SignInActivity : AppCompatActivity() {
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
                         if (firebaseAuth.currentUser!!.isEmailVerified) {
+                            val language = "en"
+                            val context = LocaleHelper.setLocale(this, language)
+                            resources.updateConfiguration(context.resources.configuration, context.resources.displayMetrics)
+                            EditRessources(this).writeJsonFile("app_config.json", JSONObject().put("language", language))
                             // lancement de la MainActivity + update du ladder
-                            StatsRepository().updateDate { startActivity(Intent(this,MainActivity::class.java)) }
+                            startActivity(Intent(this, WaitingActivity::class.java))
                             finish()
                         } else {
                             val intent = Intent(this, VerifyEmailActivity::class.java)

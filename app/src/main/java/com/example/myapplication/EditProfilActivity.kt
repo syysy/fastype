@@ -97,30 +97,26 @@ class EditProfilActivity : AppCompatActivity() {
         val imageCountry : ImageView = findViewById(R.id.imageCountry)
         val spinnerCountry : Spinner = findViewById(R.id.spinnerCountry)
 
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
-            userModel.name = it.value.toString()
-            textPseudo.setText(it.value.toString())
-            name.text = it.value.toString()
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").get().addOnSuccessListener {
-            userModel.email = it.value.toString()
-            email.text = it.value.toString()
-        }
-
         val obj = JSONObject(LeaderBoardAdapter.OpenAsset().loadJsonFromRaw(this))
         val arrayList: ArrayList<String> = ArrayList()
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").get().addOnSuccessListener {
 
-            userModel.country = it.value.toString()
+        userModel = ProfilModel().instancierProfil(firebaseAuth.currentUser!!.uid){
+            textPseudo.setText(userModel.name)
+            name.text = userModel.name
+            email.text = userModel.email
             try {
-                if (it.value.toString() == "Unknown"){
-                    Glide.with(binding.root).load(Uri.parse(obj[it.value.toString()].toString())).into(imageCountry)
+                val obj = JSONObject(LeaderBoardAdapter.OpenAsset().loadJsonFromRaw(this))
+                if (userModel.country == "Unknown"){
+                    Glide.with(applicationContext).load(Uri.parse(obj[userModel.country].toString())).into(imageCountry)
                 } else {
-                    ProfilActivity.Utils().fetchSVG(binding.root.context, obj[it.value.toString()].toString(),imageCountry)
+                    ProfilActivity.Utils()
+                        .fetchSVG(applicationContext, obj[userModel.country].toString(),imageCountry)
                 }
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
+
+
             for (key in obj.keys()) {
                 arrayList.add(key.toString())
             }
@@ -128,7 +124,39 @@ class EditProfilActivity : AppCompatActivity() {
                 ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arrayList)
             arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerCountry.setAdapter(arrayAdapter)
-            spinnerCountry.setSelection(arrayList.indexOf(it.value.toString()))
+            spinnerCountry.setSelection(arrayList.indexOf(userModel.country))
+
+
+            Glide.with(applicationContext).load(Uri.parse(userModel.imageAvatarUrl)).into(image)
+            Glide.with(applicationContext).load(Uri.parse(userModel.imageAvatarUrl)).into(imageProfil)
+
+            val editRessources = EditRessources(this)
+            var deviceLanguage : String
+            try {
+                deviceLanguage = editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
+                LocaleHelper.setLocale(this, deviceLanguage)
+            } catch (e: JSONException) {
+                editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
+                deviceLanguage = "en"
+            }
+            when(deviceLanguage){
+                "fr" ->
+                {   textRank.text = "Rang : ${MainActivity().getRank(userModel.uid)}"
+                    textMoyenne.text = "Moyenne : " + userModel.moyenne.toString()
+                    textNbGameJouees.text = "Nombre de parties jouées : " + userModel.numberGamePlayed.toString()
+                    textCompteCreationDate.text = "Compte créé le : " + userModel.date
+                    textBestGame.text = "Meilleur score : " + userModel.bestGame.toString()
+                }
+                else ->
+                {
+                    textRank.text = "Rank : " + MainActivity().getRank(userModel.uid)
+                    textMoyenne.text = "Mean : " + userModel.moyenne.toString()
+                    textNbGameJouees.text = "Games played : " + userModel.numberGamePlayed.toString()
+                    textCompteCreationDate.text = "Account creation date : " + userModel.date
+                    textBestGame.text = "Best game : " + userModel.bestGame.toString()
+                }
+            }
+
         }
 
         spinnerCountry.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -146,31 +174,6 @@ class EditProfilActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>) {
                 // Another interface callback
             }
-        }
-
-
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").get().addOnSuccessListener {
-            userModel.moyenne = it.value.toString().toDouble()
-            textMoyenne.text = "Mean : " + userModel.moyenne.toString()
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
-            userModel.imageAvatarUrl = it.value.toString()
-            Glide.with(headerLayout.root).load(Uri.parse(it.value.toString())).into(image)
-            Glide.with(binding.root).load(Uri.parse(it.value.toString())).into(imageProfil)
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").get().addOnSuccessListener {
-            userModel.bestGame = it.value.toString().toInt()
-            textBestGame.text = "Best score : " + it.value.toString().toInt()
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
-            userModel.numberGamePlayed = it.value.toString().toInt()
-            textNbGameJouees.text = "Game Played : " + userModel.numberGamePlayed.toString()
-        }
-        textRank.text = "Rank : " + MainActivity().getRank(firebaseAuth.currentUser!!.email.toString())
-
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("creationDate").get().addOnSuccessListener {
-            userModel.date = it.value.toString()
-            textCompteCreationDate.text = "Account created on : ${it.value.toString()}"
         }
 
 

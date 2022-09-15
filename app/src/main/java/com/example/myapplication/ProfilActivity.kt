@@ -109,6 +109,7 @@ open class ProfilActivity : AppCompatActivity(){
                 editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
                 deviceLanguage = "en"
             }
+
             when(deviceLanguage){
                 "fr" ->
                 {   textRank.text = "Rang : ${MainActivity().getRank(userModel.uid)}"

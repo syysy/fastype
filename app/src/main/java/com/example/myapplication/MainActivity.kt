@@ -68,11 +68,12 @@ class MainActivity : AppCompatActivity() {
         @RequiresApi(Build.VERSION_CODES.N)
         @SuppressLint("SetTextI18n")
         override fun onFinish() {
+            databaseRef = FirebaseDatabase.getInstance().getReference("users")
             userModel.newGame(scoreOfGame,getMoyenne())
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").setValue(userModel.bestGame)
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").setValue(userModel.moyenne)
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").setValue(userModel.numberGamePlayed)
-            val oldRank = getRank(firebaseAuth.currentUser!!.email.toString())
+            val oldRank = getRank(firebaseAuth.currentUser!!.uid)
             StatsRepository().updateDate { popupEndGame(oldRank)
                 stopGame()
             }
@@ -166,15 +167,17 @@ class MainActivity : AppCompatActivity() {
         NavBar(this).navItems(binding.navView)
 
 
+        var context : Context
         try {
-            this.deviceLanguage = this.editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
-            LocaleHelper.setLocale(this, this.deviceLanguage!!)
+            this.deviceLanguage = editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
+            context = LocaleHelper.setLocale(this, this.deviceLanguage!!)
+            resources.updateConfiguration(context.resources.configuration, context.resources.displayMetrics)
         } catch (e: JSONException) {
-            this.editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
             this.deviceLanguage = "en"
-            LocaleHelper.setLocale(this, "en")
+            editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
+            context = LocaleHelper.setLocale(this, "en")
+            resources.updateConfiguration(context.resources.configuration, context.resources.displayMetrics)
         }
-
 
         this.loadWordsCSV()
         this.setWordsText()
@@ -233,13 +236,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-
-
-        println( "Token :" + {firebaseAuth.currentUser!!.getIdToken(true)})
-
         // afficher les players de la listPlayer du singleton statsrepository
-
 
 
         // Pubs

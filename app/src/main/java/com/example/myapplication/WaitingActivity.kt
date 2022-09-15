@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -29,12 +30,15 @@ class WaitingActivity : AppCompatActivity() {
 
         val editRessources = EditRessources(this)
 
+        var context : Context
         try {
             val deviceLanguage = editRessources.loadEditableJsonFile("app_config.json")["language"].toString()
-            LocaleHelper.setLocale(this, deviceLanguage)
+            context = LocaleHelper.setLocale(this, deviceLanguage)
+            resources.updateConfiguration(context.resources.configuration, context.resources.displayMetrics)
         } catch (e: JSONException) {
             editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
-            LocaleHelper.setLocale(this, "en")
+            context = LocaleHelper.setLocale(this, "en")
+            resources.updateConfiguration(context.resources.configuration, context.resources.displayMetrics)
         }
 
         firebaseAuth = FirebaseAuth.getInstance()

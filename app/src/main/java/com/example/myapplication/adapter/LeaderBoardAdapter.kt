@@ -39,6 +39,7 @@ class LeaderBoardAdapter(
     private lateinit var databaseRef : DatabaseReference
     private lateinit var firebaseAuth : FirebaseAuth
     private var rank : Int = 0
+    private var actualPosition : Int = 1
 
     // boite pour ranger tout les composants à controler
 
@@ -59,16 +60,13 @@ class LeaderBoardAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val currentProfil = listPlayer[position]
-
-        holder.profilRank?.text = (position + 1).toString() + "."
-        rank = position + 1
         if (position > 0) {
-            if (listPlayer[position].bestGame == listPlayer[position - 1].bestGame) {
-                holder.profilRank?.text = (position).toString() + "."
-                rank = position
+            if (listPlayer[position].bestGame != listPlayer[position - 1].bestGame) {
+                actualPosition++
             }
         }
-
+        holder.profilRank?.text = (actualPosition).toString() + "."
+        rank = actualPosition
 
         holder.itemLeaderboard.setOnClickListener {
             this.viewProfil(currentProfil.uid)
