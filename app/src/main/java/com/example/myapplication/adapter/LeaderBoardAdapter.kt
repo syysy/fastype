@@ -38,6 +38,7 @@ class LeaderBoardAdapter(
 
     private lateinit var databaseRef : DatabaseReference
     private lateinit var firebaseAuth : FirebaseAuth
+    private var rank : Int = 0
 
     // boite pour ranger tout les composants à controler
 
@@ -56,23 +57,21 @@ class LeaderBoardAdapter(
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val currentProfil = listPlayer[position]
-        if (position == 0) {
-            holder.itemLeaderboard.background = getDrawable(context, R.drawable.backfirst)
-            // si le joueur est le premier on lui donne une couleur de fond différente
-        }
-        if (position == 1) {
-            holder.itemLeaderboard.background = getDrawable(context, R.drawable.backsecond)
-            // si le joueur est le second on lui donne une couleur de fond différente
-        }
-        if (position == 2) {
-            holder.itemLeaderboard.background = getDrawable(context, R.drawable.backthird)
-            // si le joueur est le troisième on lui donne une couleur de fond différente
+
+        holder.profilRank?.text = (position + 1).toString() + "."
+        rank = position + 1
+        if (position > 0) {
+            if (listPlayer[position].bestGame == listPlayer[position - 1].bestGame) {
+                holder.profilRank?.text = (position).toString() + "."
+                rank = position
+            }
         }
 
+
         holder.itemLeaderboard.setOnClickListener {
-            this.viewProfil(currentProfil.email)
+            this.viewProfil(currentProfil.uid)
         }
 
         // mettre à jour les players en fonction des potentiels changements de nom/ image de profils
@@ -123,7 +122,6 @@ class LeaderBoardAdapter(
             editRessources.writeJsonFile("app_config.json", JSONObject().put("language", "en"))
             deviceLanguage = "en"
         }
-
         when(deviceLanguage){
             "fr" -> {
                 holder.profilBestGame?.text = currentProfil.bestGame.toString() + " mots/min"
@@ -133,14 +131,23 @@ class LeaderBoardAdapter(
             }
         }
 
-        holder.profilRank?.text = (position + 1).toString() + "."
+
 
         // si il y a égalité de score on affiche le même rang
-        if (position > 0) {
-            if (listPlayer[position].bestGame == listPlayer[position - 1].bestGame) {
-                holder.profilRank?.text = (position).toString() + "."
-            }
+
+        if (rank == 1) {
+            holder.itemLeaderboard.background = getDrawable(context, R.drawable.backfirst)
+            // si le joueur est le premier on lui donne une couleur de fond différente
         }
+        if (rank == 2) {
+            holder.itemLeaderboard.background = getDrawable(context, R.drawable.backsecond)
+            // si le joueur est le second on lui donne une couleur de fond différente
+        }
+        if (rank == 3) {
+            holder.itemLeaderboard.background = getDrawable(context, R.drawable.backthird)
+            // si le joueur est le troisième on lui donne une couleur de fond différente
+        }
+
 
     }
 
@@ -157,8 +164,8 @@ class LeaderBoardAdapter(
         }
     }
 
-    fun viewProfil(playerEmail: String) {
-        context.startActivity(Intent(context, ProfliViewerActivity::class.java).putExtra("playerEmail", playerEmail).putExtra("user",firebaseAuth.currentUser))
+    fun viewProfil(playerUid: String) {
+        context.startActivity(Intent(context, ProfliViewerActivity::class.java).putExtra("uid", playerUid))
     }
 
 }

@@ -203,55 +203,43 @@ class MainActivity : AppCompatActivity() {
         val textPlayerRank : TextView = findViewById(R.id.text_player_rank)
         val imageCountry : ImageView = findViewById(R.id.image_player_country)
 
-
-        // récup du currentUser
-        userModel = ProfilModel("", "", 0.0, 0, "")
-
         firebaseAuth = FirebaseAuth.getInstance()
-        databaseRef = FirebaseDatabase.getInstance().getReference("players")
+        // récup du currentUser
 
-       databaseRef.child(firebaseAuth.currentUser!!.uid).child("name").get().addOnSuccessListener {
-            userModel.name = it.value.toString ()
+        userModel = ProfilModel().instancierProfil(firebaseAuth.currentUser!!.uid){
             textPlayerName.text = userModel.name
             name.text = userModel.name
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("email").get().addOnSuccessListener {
-            userModel.email = it.value.toString()
             email.text = userModel.email
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("country").get().addOnSuccessListener {
-            userModel.country = it.value.toString()
             try {
                 val obj = JSONObject(LeaderBoardAdapter.OpenAsset().loadJsonFromRaw(this))
-                if (it.value.toString() == "Unknown"){
-                    Glide.with(applicationContext).load(Uri.parse(obj[it.value.toString()].toString())).into(imageCountry)
+                if (userModel.country == "Unknown"){
+                    Glide.with(applicationContext).load(Uri.parse(obj[userModel.country].toString())).into(imageCountry)
                 } else {
-                    ProfilActivity.Utils().fetchSVG(applicationContext, obj[it.value.toString()].toString(),imageCountry)
+                    ProfilActivity.Utils().fetchSVG(applicationContext, obj[userModel.country].toString(),imageCountry)
                 }
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
+            Glide.with(applicationContext).load(Uri.parse(userModel.imageAvatarUrl)).into(image)
+            Glide.with(applicationContext).load(Uri.parse(userModel.imageAvatarUrl)).into(imageProfil)
+
+            when (this.deviceLanguage) {
+                "fr" -> {
+                    StatsRepository().updateDate {  binding.textPlayerRank.text = "Rang : " + getRank(userModel.uid) }
+                }
+                else -> {
+                    StatsRepository().updateDate {  binding.textPlayerRank.text = "Rank : " + getRank(userModel.uid) }
+                }
+            }
         }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("imageAvatarUrl").get().addOnSuccessListener {
-            userModel.imageAvatarUrl = it.value.toString()
-            Glide.with(applicationContext).load(Uri.parse(it.value.toString())).into(image)
-            Glide.with(applicationContext).load(Uri.parse(it.value.toString())).into(imageProfil)
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").get().addOnSuccessListener {
-            userModel.bestGame = it.value.toString().toInt()
-        }
-        databaseRef.child(firebaseAuth.currentUser!!.uid).child("numberGamePlayed").get().addOnSuccessListener {
-            userModel.numberGamePlayed = it.value.toString().toInt()
-        }
+
+
+
+
+        println( "Token :" + {firebaseAuth.currentUser!!.getIdToken(true)})
+
         // afficher les players de la listPlayer du singleton statsrepository
-        when (this.deviceLanguage) {
-            "fr" -> {
-                StatsRepository().updateDate {  binding.textPlayerRank.text = "Rang : " + getRank(firebaseAuth.currentUser!!.email.toString()) }
-            }
-            else -> {
-                StatsRepository().updateDate {  binding.textPlayerRank.text = "Rank : " + getRank(firebaseAuth.currentUser!!.email.toString()) }
-            }
-        }
+
 
 
         // Pubs
@@ -334,7 +322,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     fun popupEndGame(oldRank: Int) {
-        val newRank = getRank(firebaseAuth.currentUser!!.email.toString())
+        val newRank = getRank(userModel.uid)
         val popupBuilder = Dialog(this)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         popupBuilder.setContentView(R.layout.custom_dialog_endgame)
@@ -378,11 +366,11 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun getRank(email : String) : Int{
+    fun getRank(uid : String) : Int{
         val rank : Int
         val listPlayer = StatsRepository.Singleton.listPlayer
         for (i in 0 until listPlayer.size) {
-            if (listPlayer[i].email == email) {
+            if (listPlayer[i].uid == uid) {
                 if (i > 0 && listPlayer[i].bestGame == listPlayer[i - 1].bestGame){
                     rank = i
                 } else {
