@@ -27,13 +27,11 @@ import com.google.firebase.auth.FirebaseAuth
 class NavBar(private val context: Context): AppCompatActivity() {
 
     private val firebaseAuth = FirebaseAuth.getInstance()
-    private val version = "1.0.0"
+    private val version = "v0.7"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
     }
 
     fun navItems(navBar: NavigationView) {
@@ -56,7 +54,7 @@ class NavBar(private val context: Context): AppCompatActivity() {
             navBar.menu.findItem(R.id.item_settings).isEnabled = false
         }
 
-        navBar.menu.findItem(R.id.item_fastypeVersion).title = "Fastype version: $version"
+        navBar.menu.findItem(R.id.item_fastypeVersion).title = "Fastype $version"
 
 
         navBar.setNavigationItemSelectedListener {

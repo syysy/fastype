@@ -84,7 +84,7 @@ class SettingsActivity : AppCompatActivity() {
         mAdViewTop.loadAd(adRequestTop)
 
 
-        val languages = arrayListOf<String>("Select a language","Français", "English")
+        val languages = arrayListOf<String>("Select a language", "Français", "English")
 
         val arrayAdapter: ArrayAdapter<String> =
             ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, languages)
@@ -96,6 +96,9 @@ class SettingsActivity : AppCompatActivity() {
         var context : Context
         binding.spinnerLanguages.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                if (position == 0) {
+                    return
+                }
                 var language = parent.getItemAtPosition(position).toString()
                 if (language == "Français") {
                     language = "fr"
