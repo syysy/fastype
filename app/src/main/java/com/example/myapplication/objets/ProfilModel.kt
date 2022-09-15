@@ -13,7 +13,8 @@ class ProfilModel (
     var imageAvatarUrl : String = "https://cdn.pixabay.com/photo/2013/07/13/10/44/man-157699_960_720.png",
     var numberGamePlayed : Int = 0,
     var country : String = "Unknown",
-    var date : String = "01/01/2022"
+    var date : String = "01/01/2022",
+    var uid: String = ""
 ) {
 
     /* mise à jour des données a chaque partie */
@@ -30,6 +31,11 @@ class ProfilModel (
         if (other === null || other !is ProfilModel) return false
         if (other === this) return true
         return other.email == this.email
+    }
+
+
+    fun setUserUid(uid: String) {
+        this.uid = uid
     }
 
     fun instancierProfil(uid: String): ProfilModel {

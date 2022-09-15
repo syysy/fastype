@@ -25,15 +25,17 @@ class StatsRepository {
         databaseRef.addListenerForSingleValueEvent( object : ValueEventListener{
             override fun onDataChange(p0: DataSnapshot) {
                 // recolter la liste
-                for(i in p0.children){
+                for (i in p0.children) {
                     val user = i.getValue(ProfilModel::class.java)
-                    if (user != null){
-                        if (listPlayer.size == 0){
+
+                    if (user != null) {
+                        user.setUserUid(i.key.toString())
+                        if (listPlayer.size == 0) {
                             listPlayer.add(user)
                         }
                         if (user in listPlayer){ // verif si un user est déjà présent de le classement
                                 listPlayer[listPlayer.indexOf(user)].bestGame = user.bestGame
-                        }else{
+                        } else {
                             listPlayer.add(user)
                         }
                     }
