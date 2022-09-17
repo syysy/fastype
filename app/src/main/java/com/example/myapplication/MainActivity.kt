@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         @RequiresApi(Build.VERSION_CODES.N)
         @SuppressLint("SetTextI18n")
         override fun onFinish() {
-            databaseRef = FirebaseDatabase.getInstance().getReference("users")
+            databaseRef = FirebaseDatabase.getInstance().getReference("players")
             userModel.newGame(scoreOfGame,getMoyenne())
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("bestGame").setValue(userModel.bestGame)
             databaseRef.child(firebaseAuth.currentUser!!.uid).child("moyenne").setValue(userModel.moyenne)
@@ -362,17 +362,16 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-
     fun getRank(uid : String) : Int{
+        var currentPosition = 0
         val rank : Int
         val listPlayer = StatsRepository.Singleton.listPlayer
         for (i in 0 until listPlayer.size) {
+            if (i > 0 && listPlayer[i].bestGame != listPlayer[i - 1].bestGame){
+                currentPosition++
+            }
             if (listPlayer[i].uid == uid) {
-                if (i > 0 && listPlayer[i].bestGame == listPlayer[i - 1].bestGame){
-                    rank = i
-                } else {
-                    rank = i + 1
-                }
+                rank = currentPosition + 1
                 return rank
             }
         }
